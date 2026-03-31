@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { FiCheck, FiPercent, FiCalendar, FiDollarSign, FiCreditCard } from 'react-icons/fi'
 import { BsWhatsapp } from 'react-icons/bs'
 import { MODEL_SPECS } from '@/utils/modelSpecs'
-import { WHATSAPP_LINKS } from '@/utils/whatsappLinks'
+import { useLandingWhatsApp } from '@/app/contexts/AdAttributionContext'
 import { trackWhatsAppClick } from '@/utils/analytics'
 
 const FINANCING_BENEFITS = [
@@ -157,6 +157,7 @@ const FINANCING_DATA: Record<string, ModelFinancing> = {
 }
 
 export default function FinancingSection() {
+  const { linkFor } = useLandingWhatsApp()
   // Filter main models only
   const mainModels = MODEL_SPECS.filter((m) => !m.id.includes('-extended'))
   
@@ -546,7 +547,7 @@ export default function FinancingSection() {
 
               {/* CTA */}
               <a
-                href={WHATSAPP_LINKS.financing}
+                href={linkFor('financing')}
                 onClick={() => trackWhatsAppClick('financing-section')}
                 className="flex items-center justify-center gap-2 w-full px-8 py-4 bg-success-green text-white font-bold text-lg rounded-full hover:bg-green-600 transition-all hover:scale-105 shadow-xl"
               >
@@ -751,7 +752,7 @@ export default function FinancingSection() {
 
               {/* CTA */}
               <a
-                href={WHATSAPP_LINKS.financing}
+                href={linkFor('financing')}
                 onClick={() => trackWhatsAppClick('cash-purchase-section')}
                 className="flex items-center justify-center gap-2 w-full px-8 py-4 bg-electric-blue text-white font-bold text-lg rounded-full hover:bg-blue-600 transition-all hover:scale-105 shadow-xl"
               >

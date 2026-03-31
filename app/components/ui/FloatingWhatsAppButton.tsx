@@ -1,13 +1,18 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { Suspense, useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { BsWhatsapp } from 'react-icons/bs'
 import { FiX } from 'react-icons/fi'
-import { WHATSAPP_LINKS } from '@/utils/whatsappLinks'
+import { useLandingWhatsApp } from '@/app/contexts/AdAttributionContext'
 import { trackWhatsAppClick } from '@/utils/analytics'
 
-export default function FloatingWhatsAppButton() {
+function FloatingWhatsAppButtonInner() {
+  const pathname = usePathname()
+  const { linkFor, promo042026Link } = useLandingWhatsApp()
+  const isPromo042026 = pathname?.includes('/042026/promo')
+  const waHref = isPromo042026 ? promo042026Link() : linkFor('general')
   const [isVisible, setIsVisible] = useState(false)
   const [showTooltip, setShowTooltip] = useState(false)
 
@@ -74,9 +79,9 @@ export default function FloatingWhatsAppButton() {
 
           {/* WhatsApp Button */}
           <a
-            href={WHATSAPP_LINKS.general}
+            href={waHref}
             onClick={() => {
-              trackWhatsAppClick('floating-button')
+              trackWhatsAppClick(isPromo042026 ? 'promo-042026-floating' : 'floating-button')
               setShowTooltip(false)
             }}
             className="relative flex items-center justify-center w-14 h-14 md:w-16 md:h-16 bg-success-green rounded-full shadow-2xl hover:bg-green-600 hover:scale-110 transition-all"
@@ -90,5 +95,13 @@ export default function FloatingWhatsAppButton() {
         </motion.div>
       )}
     </AnimatePresence>
+  )
+}
+
+export default function FloatingWhatsAppButton() {
+  return (
+    <Suspense fallback={null}>
+      <FloatingWhatsAppButtonInner />
+    </Suspense>
   )
 }

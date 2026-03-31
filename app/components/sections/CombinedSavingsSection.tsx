@@ -5,26 +5,13 @@ import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from
 import { FiBattery, FiZap, FiTruck, FiUser, FiCheck, FiClock, FiStar, FiChevronLeft, FiChevronRight, FiMapPin, FiCalendar, FiDollarSign, FiPercent } from 'react-icons/fi'
 import { BsWhatsapp } from 'react-icons/bs'
 import { MODEL_SPECS } from '@/utils/modelSpecs'
-import { WHATSAPP_LINKS } from '@/utils/whatsappLinks'
+import {
+  ELECTRICITY_IDR_PER_KWH,
+  FUEL_KM_PER_LITER,
+  MODEL_EFFICIENCY,
+} from '@/lib/combinedSavingsFormulas'
+import { useLandingWhatsApp } from '@/app/contexts/AdAttributionContext'
 import { trackWhatsAppClick } from '@/utils/analytics'
-
-// Model efficiency in km/kWh
-// Formula: Efficiency = Range (km) / Battery Capacity (kWh)
-// Battery Capacity (kWh) = (Ah × Voltage) / 1000
-// Contoh: EdPower = 70Ah × 48V = 3.36 kWh, Range 135km → 135/3.36 = 40.18 km/kWh
-const calculateEfficiency = (rangeKm: number, batteryAh: number, voltage: number = 48): number => {
-  const batteryKWh = (batteryAh * voltage) / 1000
-  return rangeKm / batteryKWh
-}
-
-const MODEL_EFFICIENCY: Record<string, number> = {
-  edpower: calculateEfficiency(135, 70, 48),
-  athena: calculateEfficiency(100, 45, 48),
-  'athena-extended': calculateEfficiency(130, 60, 48),
-  victory: calculateEfficiency(100, 45, 48),
-  'victory-extended': calculateEfficiency(130, 60, 48),
-  mini: calculateEfficiency(80, 30, 48),
-}
 
 // Usage presets
 const USAGE_PRESETS = [
@@ -209,6 +196,7 @@ interface CombinedSavingsSectionProps {
 }
 
 export default function CombinedSavingsSection({ config }: CombinedSavingsSectionProps) {
+  const { linkFor } = useLandingWhatsApp()
   const mainModels = MODEL_SPECS.filter((m) => !m.id.includes('-extended'))
   
   // Calculator states
@@ -249,12 +237,6 @@ export default function CombinedSavingsSection({ config }: CombinedSavingsSectio
     pertamax: { name: 'Pertamax', price: 13000 },
   }
 
-  // Tarif listrik PLN R1 1.300VA+ (paling umum di Indonesia)
-  // Sumber: Tarif listrik PLN 2024-2025 untuk rumah tangga
-  // R1 1.300VA: Rp 1.444,70/kWh | R1 2.200VA: Rp 1.444,70/kWh
-  // Rata-rata tarif rumah tangga: Rp 1.445/kWh (dibulatkan)
-  const electricityPrice = 1445 // Rp per kWh (tarif R1 1.300VA+ yang paling umum)
-
   const actualModelId = selectedVariant === 'extended' && MODEL_SPECS.find((m) => m.id === selectedModel)?.hasExtended
     ? MODEL_SPECS.find((m) => m.id === selectedModel)?.extendedId || selectedModel
     : selectedModel
@@ -271,14 +253,13 @@ export default function CombinedSavingsSection({ config }: CombinedSavingsSectio
     return MODEL_SPECS.find(m => m.id === modelId)?.range || '0 km'
   }
 
-  const fuelEfficiency = 40
   const electricEfficiency = MODEL_EFFICIENCY[actualModelId] || MODEL_EFFICIENCY['edpower']
 
-  const monthlyFuelLiters = distance / fuelEfficiency
+  const monthlyFuelLiters = distance / FUEL_KM_PER_LITER
   const monthlyFuelCost = monthlyFuelLiters * fuelOptions[selectedFuel as keyof typeof fuelOptions].price
 
   const monthlyElectricityKWh = distance / electricEfficiency
-  const monthlyElectricityCost = monthlyElectricityKWh * electricityPrice
+  const monthlyElectricityCost = monthlyElectricityKWh * ELECTRICITY_IDR_PER_KWH
 
   const monthlySavings = monthlyFuelCost - monthlyElectricityCost
   const yearlySavings = monthlySavings * 12
@@ -643,7 +624,7 @@ export default function CombinedSavingsSection({ config }: CombinedSavingsSectio
                   <span>Lihat Harga & Cara Pembayaran</span>
                 </a>
                 <a
-                  href={WHATSAPP_LINKS.general}
+                  href={linkFor('general')}
                   onClick={() => trackWhatsAppClick('comparison-calculator')}
                   className="flex items-center justify-center gap-2 w-full px-6 py-4 bg-white border-2 border-success-green text-success-green font-bold rounded-full hover:bg-success-green/5 transition-all"
                 >
@@ -890,7 +871,7 @@ export default function CombinedSavingsSection({ config }: CombinedSavingsSectio
 
                           {/* CTA - Compact */}
                           <a
-                            href={WHATSAPP_LINKS.general}
+                            href={linkFor('general')}
                             onClick={() => trackWhatsAppClick('savings-story')}
                             className="flex items-center justify-center gap-2 w-full px-5 py-3 bg-white text-success-green font-bold rounded-full hover:bg-slate-50 transition-colors text-sm"
                           >

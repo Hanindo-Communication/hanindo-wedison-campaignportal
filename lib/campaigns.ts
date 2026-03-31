@@ -29,6 +29,10 @@ export interface CampaignConfig {
     description: string
     keywords: string
   }
+  /** Minimal nav: logo + WA only (e.g. promo landing without #models anchors) */
+  navigation?: 'default' | 'minimal'
+  /** FAQ copy density: promo ojol uses shorter driver-focused items */
+  faqMode?: 'default' | 'promo-ojol'
 }
 
 export interface CampaignVariants {
@@ -123,6 +127,41 @@ export const CAMPAIGNS: Campaigns = {
         title: 'Wedison untuk Ojol Driver - Hemat Biaya Operasional',
         description: 'Motor listrik Wedison untuk driver ojek online. Hemat Rp 500rb+/bulan, charge 15 menit, range 135km. Cocok untuk full-time driver.',
         keywords: 'motor listrik ojol, motor listrik grab, motor listrik gojek, hemat biaya operasional, motor listrik driver',
+      },
+    },
+  },
+  '042026': {
+    promo: {
+      name: 'Campaign Apr 2026 — Promo Ojol / Rute',
+      description:
+        'Landing promo April: kalkulator rute & perkiraan hemat vs BBM, nilai promo, konversi ke WhatsApp untuk traffic Meta, Google & TikTok.',
+      date: 'Apr 2026',
+      targetAudience: 'Driver ojol & pengguna rutin',
+      badge: {
+        text: 'Promo April 2026',
+        color: 'bg-secondary-teal/15 text-electric-blue',
+      },
+      hero: {
+        headline: 'Hemat Perjalanan Kamu dengan Motor Listrik Wedison',
+        subheadline:
+          'Masukkan rute jemput & tujuan, lihat perkiraan hemat vs BBM dan promo yang bisa kamu dapat — lalu lanjut chat tim kami.',
+        highlightBadge: 'Motor listrik · Rute harian',
+        ctaText: 'Cek hemat & promo',
+        ctaLink: '#route-promo-estimate',
+        secondaryCtaText: 'Chat WhatsApp',
+        secondaryCtaLink: 'whatsapp',
+        backgroundImage: '/images/campaigns/042026/hero-reference.png',
+      },
+      sections: ['ojol-route-promo', 'why-wedison', 'showroom', 'faq'],
+      whatsappLink: 'promo042026',
+      navigation: 'minimal',
+      faqMode: 'promo-ojol',
+      metadata: {
+        title: 'Wedison Promo April 2026 — Cek Hemat Rute & Promo Motor Listrik',
+        description:
+          'Perkiraan hemat per rute vs BBM, promo April, motor listrik Wedison dengan SuperCharge. Chat WhatsApp untuk detail.',
+        keywords:
+          'wedison, motor listrik, promo april 2026, ojol, hemat bbm, supercharge, kredit motor listrik',
       },
     },
   },

@@ -68,8 +68,8 @@ export default function DirectoryList({ onLogout }: DirectoryListProps) {
             <div className="text-sm text-slate-600">Active Campaigns</div>
           </div>
           <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
-            <div className="text-2xl font-bold text-orange-500">Jan 2026</div>
-            <div className="text-sm text-slate-600">Current Campaign</div>
+            <div className="text-2xl font-bold text-orange-500">Apr 2026</div>
+            <div className="text-sm text-slate-600">Latest campaign slot</div>
           </div>
           <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
             <div className="text-2xl font-bold text-purple-500">Live</div>

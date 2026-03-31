@@ -6,7 +6,8 @@ import Image from 'next/image'
 import { BsWhatsapp } from 'react-icons/bs'
 import { FiChevronDown, FiCheck, FiZap, FiBattery, FiDollarSign, FiUsers } from 'react-icons/fi'
 import Button from '../ui/Button'
-import { WHATSAPP_LINKS } from '@/utils/whatsappLinks'
+import { WHATSAPP_MESSAGES } from '@/utils/whatsappLinks'
+import { useLandingWhatsApp } from '@/app/contexts/AdAttributionContext'
 import { trackWhatsAppClick } from '@/utils/analytics'
 import { MODEL_SPECS, type ModelSpec } from '@/utils/modelSpecs'
 
@@ -41,6 +42,7 @@ const getModelImagePath = (modelId: string): string => {
 }
 
 export default function ModelsTabSection() {
+  const { linkFor } = useLandingWhatsApp()
   const mainModels = MODEL_SPECS.filter((model) => !model.id.includes('-extended'))
   
   const [activeTab, setActiveTab] = useState(0)
@@ -308,7 +310,13 @@ export default function ModelsTabSection() {
                 {/* CTA Buttons */}
                 <div className="flex flex-col sm:flex-row gap-3">
                   <Button
-                    href={WHATSAPP_LINKS[activeModel.whatsappLink as keyof typeof WHATSAPP_LINKS] || WHATSAPP_LINKS.general}
+                    href={
+                      linkFor(
+                        (activeModel.whatsappLink in WHATSAPP_MESSAGES
+                          ? activeModel.whatsappLink
+                          : 'general') as keyof typeof WHATSAPP_MESSAGES
+                      )
+                    }
                     onClick={() => trackWhatsAppClick(`model-${activeModel.id}`)}
                     variant="primary"
                     size="large"

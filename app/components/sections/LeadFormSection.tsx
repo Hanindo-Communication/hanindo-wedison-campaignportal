@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { FiUser, FiPhone, FiMapPin, FiSend, FiCheck, FiCreditCard } from 'react-icons/fi'
 import { BsWhatsapp } from 'react-icons/bs'
 import { MODEL_SPECS } from '@/utils/modelSpecs'
-import { WHATSAPP_LINKS, getWhatsAppLink } from '@/utils/whatsappLinks'
+import { useLandingWhatsApp } from '@/app/contexts/AdAttributionContext'
 import { trackWhatsAppClick, trackLeadFormSubmit } from '@/utils/analytics'
 
 interface FormData {
@@ -17,6 +17,7 @@ interface FormData {
 }
 
 export default function LeadFormSection() {
+  const { linkFor, linkForCustomMessage } = useLandingWhatsApp()
   const mainModels = MODEL_SPECS.filter((m) => !m.id.includes('-extended'))
   
   const [formData, setFormData] = useState<FormData>({
@@ -93,7 +94,7 @@ export default function LeadFormSection() {
       message += ` Program yang diminati: ${programLabels[formData.program] || formData.program}.`
     }
     message += ' Bisa info lebih lanjut?'
-    return getWhatsAppLink(message)
+    return linkForCustomMessage(message)
   }
 
   return (
@@ -136,7 +137,7 @@ export default function LeadFormSection() {
                 Kirim Lagi
               </button>
               <a
-                href={WHATSAPP_LINKS.general}
+                href={linkFor('general')}
                 onClick={() => trackWhatsAppClick('lead-form-success')}
                 className="flex items-center justify-center gap-2 px-6 py-3 bg-success-green text-white font-semibold rounded-full hover:bg-green-600 transition-colors"
               >

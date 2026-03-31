@@ -1,6 +1,7 @@
 'use client'
 
 import { type CampaignConfig } from '@/lib/campaigns'
+import { AdAttributionProvider } from '@/app/contexts/AdAttributionContext'
 import Navbar from '@/app/components/layout/Navbar'
 import Footer from '@/app/components/layout/Footer'
 import FloatingWhatsAppButton from '@/app/components/ui/FloatingWhatsAppButton'
@@ -12,6 +13,9 @@ import FinancingSection from '@/app/components/sections/FinancingSection'
 import ShowroomSection from '@/app/components/sections/ShowroomSection'
 import FAQSection from '@/app/components/sections/FAQSection'
 import LeadFormSection from '@/app/components/sections/LeadFormSection'
+import OjolRoutePromoSection from './sections/OjolRoutePromoSection'
+import WhyWedisonSection from '@/app/components/sections/WhyWedisonSection'
+import PromoTickerSection from '@/app/components/sections/PromoTickerSection'
 
 interface LandingPageClientProps {
   campaign: string
@@ -28,9 +32,14 @@ const SECTION_COMPONENTS: Record<string, React.ComponentType<{ config?: Campaign
   showroom: ShowroomSection,
   faq: FAQSection,
   'lead-form': LeadFormSection,
+  'ojol-route-promo': OjolRoutePromoSection,
+  'why-wedison': WhyWedisonSection,
+  'promo-ticker': PromoTickerSection,
 }
 
-export default function LandingPageClient({ campaign, variant, config }: LandingPageClientProps) {
+export default function LandingPageClient({ config }: LandingPageClientProps) {
+  const navVariant = config.navigation === 'minimal' ? 'minimal' : 'default'
+
   // Render sections based on config
   const renderSection = (sectionName: string) => {
     // Handle hero section separately
@@ -48,16 +57,18 @@ export default function LandingPageClient({ campaign, variant, config }: Landing
   }
 
   return (
-    <main className="min-h-screen bg-white overflow-x-hidden">
-      <Navbar />
-      
-      {/* Render sections in order defined by config */}
-      {config.sections.map((section) => renderSection(section))}
-      
-      <Footer />
-      
-      {/* Floating WhatsApp Button - Always Visible */}
-      <FloatingWhatsAppButton />
-    </main>
+    <AdAttributionProvider>
+      <main className="min-h-screen bg-white overflow-x-hidden">
+        <Navbar variant={navVariant} />
+
+        {/* Render sections in order defined by config */}
+        {config.sections.map((section) => renderSection(section))}
+
+        <Footer />
+
+        {/* Floating WhatsApp Button - Always Visible */}
+        <FloatingWhatsAppButton />
+      </main>
+    </AdAttributionProvider>
   )
 }

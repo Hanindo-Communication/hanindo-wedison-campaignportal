@@ -1,10 +1,11 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { FiMapPin, FiClock, FiPhone, FiNavigation } from 'react-icons/fi'
+import { FiMapPin, FiClock, FiNavigation } from 'react-icons/fi'
 import { BsWhatsapp } from 'react-icons/bs'
+import { type CampaignConfig } from '@/lib/campaigns'
 import { CONTACT } from '@/utils/constants'
-import { WHATSAPP_LINKS } from '@/utils/whatsappLinks'
+import { useLandingWhatsApp } from '@/app/contexts/AdAttributionContext'
 import { trackWhatsAppClick } from '@/utils/analytics'
 
 const SHOWROOM_FEATURES = [
@@ -12,42 +13,56 @@ const SHOWROOM_FEATURES = [
   'Konsultasi gratis',
   'Proses kredit di tempat',
   'Service dan after-sales',
-]
+] as const
 
-export default function ShowroomSection() {
+export default function ShowroomSection({ config }: { config?: CampaignConfig }) {
+  const { linkFor, promo042026Link } = useLandingWhatsApp()
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CONTACT.showroomAddress)}`
+  const testDriveHref =
+    config?.navigation === 'minimal' ? promo042026Link() : linkFor('testDrive')
 
   return (
-    <section id="showroom" className="py-12 md:py-20 bg-slate-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
+    <section
+      id="showroom"
+      className="relative scroll-mt-20 md:scroll-mt-24 overflow-hidden bg-gradient-to-b from-white via-slate-50/90 to-slate-50 py-16 md:py-24"
+      aria-labelledby="showroom-heading"
+    >
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-electric-blue/30 to-transparent" />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
-          initial={false}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-40px' }}
+          transition={{ duration: 0.45 }}
+          className="text-center max-w-3xl mx-auto mb-12 md:mb-16"
         >
-          <span className="inline-block px-4 py-2 bg-electric-blue/10 text-electric-blue rounded-full text-sm font-semibold mb-4">
-            Kunjungi Kami
-          </span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-800 mb-4">
-            Test Drive di{' '}
-            <span className="text-electric-blue">Showroom Kami</span>
+          <p className="text-sm font-semibold uppercase tracking-wide text-electric-blue mb-2">
+            Experience Center
+          </p>
+          <h2
+            id="showroom-heading"
+            className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight"
+          >
+            Test drive di{' '}
+            <span className="text-electric-blue">Showroom Wedison</span>
           </h2>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-            Rasakan langsung sensasi berkendara motor listrik Wedison
+          <p className="mt-4 text-lg text-slate-600 leading-relaxed">
+            Kunjungi kami di Pondok Indah — rasakan motor listrik &amp; tanya promo langsung ke tim.
           </p>
         </motion.div>
 
-        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-6 lg:gap-12">
-          {/* Left: Map */}
+        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-12 lg:items-stretch">
           <motion.div
-            initial={false}
-            animate={{ opacity: 1, x: 0 }}
-            className="relative w-full rounded-3xl overflow-hidden bg-slate-200"
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-32px' }}
+            transition={{ duration: 0.4 }}
+            className="relative w-full min-h-0 rounded-2xl border border-slate-200/80 bg-slate-100/40 shadow-sm shadow-slate-200/50 ring-1 ring-slate-900/[0.04] overflow-hidden"
           >
-            {/* Map Iframe - vertical aspect ratio on mobile, auto on desktop */}
             <div className="relative aspect-[3/4] sm:aspect-square lg:aspect-auto lg:h-full lg:min-h-[400px]">
               <iframe
+                title="Peta lokasi showroom Wedison Pondok Indah"
                 src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodeURIComponent(CONTACT.showroomAddress)}`}
                 width="100%"
                 height="100%"
@@ -57,11 +72,9 @@ export default function ShowroomSection() {
                 referrerPolicy="no-referrer-when-downgrade"
                 className="absolute inset-0"
               />
-              
-              {/* Fallback if map doesn't load */}
-              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-electric-blue/20 to-cyan-500/20 pointer-events-none opacity-0 transition-opacity duration-300">
-                <div className="text-center text-slate-600 pointer-events-none">
-                  <FiMapPin className="text-4xl mx-auto mb-2 text-electric-blue" />
+              <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-gradient-to-br from-electric-blue/10 to-cyan-500/10 opacity-0 transition-opacity duration-300">
+                <div className="text-center text-slate-600">
+                  <FiMapPin className="text-4xl mx-auto mb-2 text-electric-blue" aria-hidden />
                   <p className="font-semibold">Showroom Wedison</p>
                   <p className="text-sm">Pondok Indah, Jakarta Selatan</p>
                 </div>
@@ -69,79 +82,74 @@ export default function ShowroomSection() {
             </div>
           </motion.div>
 
-          {/* Right: Info */}
           <motion.div
-            initial={false}
-          animate={{ opacity: 1, x: 0 }}
-            className="space-y-6"
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-32px' }}
+            transition={{ duration: 0.4, delay: 0.06 }}
+            className="flex flex-col gap-5 md:gap-6"
           >
-            {/* Address Card */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200">
+            <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-slate-200/60">
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-electric-blue/10 rounded-full flex items-center justify-center flex-shrink-0">
-                  <FiMapPin className="text-xl text-electric-blue" />
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-electric-blue/15 to-secondary-teal/10 text-electric-blue">
+                  <FiMapPin className="text-xl" aria-hidden />
                 </div>
-                <div>
-                  <h3 className="text-lg font-bold text-slate-800 mb-1">Alamat</h3>
-                  <p className="text-slate-600" translate="no">{CONTACT.showroomAddress}</p>
+                <div className="min-w-0">
+                  <h3 className="text-lg font-semibold text-slate-900">Alamat</h3>
+                  <p className="mt-1 text-slate-600 leading-relaxed" translate="no">
+                    {CONTACT.showroomAddress}
+                  </p>
                   <a
                     href={googleMapsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 mt-2 text-electric-blue font-medium hover:underline"
+                    className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-electric-blue hover:underline"
                   >
-                    <FiNavigation className="text-sm" />
-                    <span>Buka di Google Maps</span>
+                    <FiNavigation className="text-base shrink-0" aria-hidden />
+                    Buka di Google Maps
                   </a>
                 </div>
               </div>
             </div>
 
-            {/* Hours Card */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200">
+            <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-slate-200/60">
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-success-green/10 rounded-full flex items-center justify-center flex-shrink-0">
-                  <FiClock className="text-xl text-success-green" />
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-success-green/15 to-emerald-500/10 text-success-green">
+                  <FiClock className="text-xl" aria-hidden />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-slate-800 mb-1">Jam Operasional</h3>
-                  <p className="text-slate-600">{CONTACT.showroomHours.weekday}</p>
+                  <h3 className="text-lg font-semibold text-slate-900">Jam operasional</h3>
+                  <p className="mt-1 text-slate-600">{CONTACT.showroomHours.weekday}</p>
                   <p className="text-slate-600">{CONTACT.showroomHours.weekend}</p>
                 </div>
               </div>
             </div>
 
-            {/* Features */}
-            <div className="bg-gradient-to-br from-electric-blue to-cyan-500 rounded-2xl p-6 text-white">
-              <h3 className="text-lg font-bold mb-4">Yang Bisa Anda Lakukan</h3>
-              <div className="grid grid-cols-2 gap-3">
-                {SHOWROOM_FEATURES.map((feature, index) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
-                      <span className="text-xs">✓</span>
-                    </div>
-                    <span className="text-sm">{feature}</span>
+            <div className="rounded-2xl border border-electric-blue/15 bg-gradient-to-br from-electric-blue/[0.07] to-secondary-teal/[0.05] p-6 ring-1 ring-slate-900/[0.03]">
+              <h3 className="text-lg font-semibold text-slate-900">Yang bisa kamu lakukan</h3>
+              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {SHOWROOM_FEATURES.map((feature) => (
+                  <div key={feature} className="flex items-center gap-2.5 text-[15px] text-slate-700">
+                    <span
+                      className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-electric-blue/15 text-electric-blue text-xs font-bold"
+                      aria-hidden
+                    >
+                      ✓
+                    </span>
+                    <span>{feature}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="pt-1">
               <a
-                href={WHATSAPP_LINKS.testDrive}
+                href={testDriveHref}
                 onClick={() => trackWhatsAppClick('showroom-test-drive')}
-                className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-success-green text-white font-semibold rounded-full hover:bg-green-600 transition-all hover:scale-105 shadow-lg"
+                className="flex w-full min-h-[52px] items-center justify-center gap-2 rounded-full bg-success-green px-6 py-3.5 text-center text-base font-semibold text-white shadow-md transition-all hover:bg-green-600 hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-success-green/50"
               >
-                <BsWhatsapp className="text-xl" />
-                <span>Booking Test Drive</span>
-              </a>
-              <a
-                href={`tel:${CONTACT.phone.replace(/[^0-9+]/g, '')}`}
-                className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-white text-slate-700 font-semibold rounded-full border-2 border-slate-200 hover:border-electric-blue hover:text-electric-blue transition-all"
-              >
-                <FiPhone className="text-xl" />
-                <span>Telepon</span>
+                <BsWhatsapp className="text-xl shrink-0" aria-hidden />
+                <span>Booking test drive</span>
               </a>
             </div>
           </motion.div>

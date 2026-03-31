@@ -4,7 +4,8 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FiPlus, FiMinus, FiBattery, FiZap, FiTrendingUp, FiShield, FiTool, FiSmartphone } from 'react-icons/fi'
 import { BsWhatsapp } from 'react-icons/bs'
-import { WHATSAPP_LINKS } from '@/utils/whatsappLinks'
+import { type CampaignConfig } from '@/lib/campaigns'
+import { useLandingWhatsApp } from '@/app/contexts/AdAttributionContext'
 import { trackWhatsAppClick } from '@/utils/analytics'
 
 interface FAQItem {
@@ -156,9 +157,126 @@ const FAQ_CATEGORIES: FAQCategory[] = [
   },
 ]
 
-export default function FAQSection() {
+const PROMO_OJOL_FAQ: FAQItem[] = [
+  {
+    question: 'Apakah angka hemat di halaman ini sama dengan biaya nyata?',
+    answer:
+      'Itu perkiraan ilustratif dari asumsi jarak demo dan harga per km. Untuk hitungan resmi, promo terbaru, dan simulasi cicilan, chat tim kami di WhatsApp.',
+  },
+  {
+    question: 'Motor Wedison cocok untuk driver ojol full-time?',
+    answer:
+      'Banyak driver memakai model dengan range lebih panjang dan SuperCharge 15 menit untuk istirahat singkat. Pilihan model bisa disesuaikan dengan pola narik kamu.',
+  },
+  {
+    question: 'Bagaimana cara test ride atau lihat unit?',
+    answer:
+      'Hubungi kami via WhatsApp untuk jadwal ke Experience Center atau lokasi terdekat. Tim akan bantu pilih model dan penjelasan promo April.',
+  },
+  {
+    question: 'Apa itu SuperCharge?',
+    answer:
+      'SuperCharge adalah pengisian cepat Wedison (sekitar 10–80% dalam ~15 menit pada model yang mendukung), sehingga cocok untuk jeda singkat antar order.',
+  },
+  {
+    question: 'Promo April berlaku untuk semua model?',
+    answer:
+      'Syarat dan ketersediaan promo mengikuti kebijakan resmi. Tanya detail lewat WhatsApp agar cocok dengan model dan lokasi kamu.',
+  },
+]
+
+interface FAQSectionProps {
+  config?: CampaignConfig
+}
+
+export default function FAQSection({ config }: FAQSectionProps) {
+  const { linkFor, promo042026Link } = useLandingWhatsApp()
   const [activeCategory, setActiveCategory] = useState(FAQ_CATEGORIES[0].id)
   const [openIndex, setOpenIndex] = useState<number | null>(0)
+
+  const faqCtaHref = config?.faqMode === 'promo-ojol' ? promo042026Link() : linkFor('general')
+
+  if (config?.faqMode === 'promo-ojol') {
+    const togglePromo = (index: number) => {
+      setOpenIndex(openIndex === index ? null : index)
+    }
+    return (
+      <section id="faq" className="py-12 md:py-20 bg-slate-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={false}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-10"
+          >
+            <span className="inline-block px-4 py-2 bg-electric-blue/10 text-electric-blue rounded-full text-sm font-semibold mb-4">
+              FAQ
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">
+              Tanya sebelum <span className="text-electric-blue">chat WhatsApp</span>
+            </h2>
+            <p className="text-lg text-slate-600">
+              Jawaban singkat untuk driver &amp; pengguna harian — detail promo via WhatsApp.
+            </p>
+          </motion.div>
+
+          <div className="space-y-3">
+            {PROMO_OJOL_FAQ.map((item, index) => (
+              <motion.div
+                key={index}
+                initial={false}
+                animate={{ opacity: 1, y: 0 }}
+                className="border-2 border-slate-200 rounded-2xl overflow-hidden hover:border-electric-blue/30 transition-colors bg-white"
+              >
+                <button
+                  type="button"
+                  onClick={() => togglePromo(index)}
+                  className="w-full flex items-center justify-between gap-4 p-4 md:p-5 text-left hover:bg-slate-50/80 transition-colors"
+                >
+                  <h3 className="text-base md:text-lg font-semibold text-slate-800 pr-4">
+                    {item.question}
+                  </h3>
+                  <div
+                    className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+                      openIndex === index ? 'bg-electric-blue text-white' : 'bg-slate-100 text-slate-600'
+                    }`}
+                  >
+                    {openIndex === index ? <FiMinus className="text-lg" /> : <FiPlus className="text-lg" />}
+                  </div>
+                </button>
+                <AnimatePresence>
+                  {openIndex === index && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: 'easeInOut' }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-4 md:px-5 pb-4 md:pb-5">
+                        <p className="text-slate-600 leading-relaxed">{item.answer}</p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.div initial={false} animate={{ opacity: 1, y: 0 }} className="mt-10 text-center">
+            <p className="text-slate-600 mb-4">Siap diskusi promo &amp; model?</p>
+            <a
+              href={faqCtaHref}
+              onClick={() => trackWhatsAppClick('faq-section-promo-042026')}
+              className="inline-flex items-center gap-2 px-8 py-4 bg-success-green text-white font-semibold rounded-full hover:bg-green-600 transition-all hover:scale-105 shadow-lg"
+            >
+              <BsWhatsapp className="text-xl" />
+              <span>Tanya Langsung via WhatsApp</span>
+            </a>
+          </motion.div>
+        </div>
+      </section>
+    )
+  }
 
   const toggleFAQ = (index: number) => {
     setOpenIndex(openIndex === index ? null : index)
@@ -291,7 +409,7 @@ export default function FAQSection() {
             Masih punya pertanyaan lain?
           </p>
           <a
-            href={WHATSAPP_LINKS.general}
+            href={linkFor('general')}
             onClick={(e) => {
               trackWhatsAppClick('faq-section')
               // Don't prevent default - let WhatsApp link open normally
