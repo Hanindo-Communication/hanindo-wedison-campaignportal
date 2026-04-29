@@ -25,7 +25,7 @@ export function getPromoModelPlaceholders(): PromoModelPlaceholder[] {
   return main.map((m) => ({
     id: m.id,
     name: m.name,
-    imageSrc: `/images/campaigns/042026/models/${m.id}-placeholder.svg`,
+    imageSrc: `/images/campaigns/052026/models/${m.id}-placeholder.svg`,
     detailUrl: `${WEDISON_PRODUCT_BASE}`,
     highlights: highlightsFromSpec(m),
   }))

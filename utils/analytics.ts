@@ -132,6 +132,15 @@ export const trackSectionView = (sectionName: string) => {
   trackEvent('view', 'Section', sectionName)
 }
 
+/** Pre-chat modal: intent + tier + platform sebelum redirect ke wa.me */
+export const trackWhatsAppPreChatSubmit = (
+  intentId: string,
+  leadTier: string,
+  platformKey: string
+) => {
+  trackEvent('submit', 'WhatsAppPreChat', `${intentId}|${leadTier}|${platformKey}`)
+}
+
 export const trackLeadFormSubmit = (program: string, model?: string, testMode: boolean = false) => {
   trackEvent('submit', 'LeadForm', program, model ? 1 : 0)
   

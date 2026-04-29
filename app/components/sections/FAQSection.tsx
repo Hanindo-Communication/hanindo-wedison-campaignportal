@@ -5,8 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { FiPlus, FiMinus, FiBattery, FiZap, FiTrendingUp, FiShield, FiTool, FiSmartphone } from 'react-icons/fi'
 import { BsWhatsapp } from 'react-icons/bs'
 import { type CampaignConfig } from '@/lib/campaigns'
-import { useLandingWhatsApp } from '@/app/contexts/AdAttributionContext'
-import { trackWhatsAppClick } from '@/utils/analytics'
+import { useWhatsAppPreChat } from '@/app/contexts/WhatsAppPreChatContext'
 
 interface FAQItem {
   question: string
@@ -160,28 +159,23 @@ const FAQ_CATEGORIES: FAQCategory[] = [
 const PROMO_OJOL_FAQ: FAQItem[] = [
   {
     question: 'Apakah angka hemat di halaman ini sama dengan biaya nyata?',
-    answer:
-      'Itu perkiraan ilustratif dari asumsi jarak demo dan harga per km. Untuk hitungan resmi, promo terbaru, dan simulasi cicilan, chat tim kami di WhatsApp.',
+    answer: 'Ilustrasi dari asumsi demo. Hitungan resmi & promo terbaru — WhatsApp.',
   },
   {
     question: 'Motor Wedison cocok untuk driver ojol full-time?',
-    answer:
-      'Banyak driver memakai model dengan range lebih panjang dan SuperCharge 15 menit untuk istirahat singkat. Pilihan model bisa disesuaikan dengan pola narik kamu.',
+    answer: 'Banyak pakai range panjang + SuperCharge ~15 menit di jeda. Model disesuaikan pola narik.',
   },
   {
     question: 'Bagaimana cara test ride atau lihat unit?',
-    answer:
-      'Hubungi kami via WhatsApp untuk jadwal ke Experience Center atau lokasi terdekat. Tim akan bantu pilih model dan penjelasan promo April.',
+    answer: 'WhatsApp untuk jadwal Experience Center; tim bantu model &amp; promo.',
   },
   {
     question: 'Apa itu SuperCharge?',
-    answer:
-      'SuperCharge adalah pengisian cepat Wedison (sekitar 10–80% dalam ~15 menit pada model yang mendukung), sehingga cocok untuk jeda singkat antar order.',
+    answer: 'Charge cepat Wedison (~10–80% ~15 menit, model mendukung) — pas jeda order.',
   },
   {
-    question: 'Promo April berlaku untuk semua model?',
-    answer:
-      'Syarat dan ketersediaan promo mengikuti kebijakan resmi. Tanya detail lewat WhatsApp agar cocok dengan model dan lokasi kamu.',
+    question: 'Promo Mei berlaku untuk semua model?',
+    answer: 'Ikuti kebijakan resmi. Detail per model &amp; lokasi — WhatsApp.',
   },
 ]
 
@@ -190,11 +184,17 @@ interface FAQSectionProps {
 }
 
 export default function FAQSection({ config }: FAQSectionProps) {
-  const { linkFor, promo042026Link } = useLandingWhatsApp()
+  const { openPreChat } = useWhatsAppPreChat()
   const [activeCategory, setActiveCategory] = useState(FAQ_CATEGORIES[0].id)
   const [openIndex, setOpenIndex] = useState<number | null>(0)
 
-  const faqCtaHref = config?.faqMode === 'promo-ojol' ? promo042026Link() : linkFor('general')
+  const openFaqWa = () => {
+    if (config?.faqMode === 'promo-ojol') {
+      openPreChat({ kind: 'promo052026', promoParts: {} })
+    } else {
+      openPreChat({ kind: 'messageKey', messageKey: 'general' })
+    }
+  }
 
   if (config?.faqMode === 'promo-ojol') {
     const togglePromo = (index: number) => {
@@ -214,9 +214,7 @@ export default function FAQSection({ config }: FAQSectionProps) {
             <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">
               Tanya sebelum <span className="text-electric-blue">chat WhatsApp</span>
             </h2>
-            <p className="text-lg text-slate-600">
-              Jawaban singkat untuk driver &amp; pengguna harian — detail promo via WhatsApp.
-            </p>
+            <p className="text-base text-slate-600 md:text-lg">Intinya di sini; detail promo lewat WhatsApp.</p>
           </motion.div>
 
           <div className="space-y-3">
@@ -263,15 +261,15 @@ export default function FAQSection({ config }: FAQSectionProps) {
           </div>
 
           <motion.div initial={false} animate={{ opacity: 1, y: 0 }} className="mt-10 text-center">
-            <p className="text-slate-600 mb-4">Siap diskusi promo &amp; model?</p>
-            <a
-              href={faqCtaHref}
-              onClick={() => trackWhatsAppClick('faq-section-promo-042026')}
+            <p className="text-slate-600 mb-4 text-sm md:text-base">Mau lanjut ke tim?</p>
+            <button
+              type="button"
+              onClick={openFaqWa}
               className="inline-flex items-center gap-2 px-8 py-4 bg-success-green text-white font-semibold rounded-full hover:bg-green-600 transition-all hover:scale-105 shadow-lg"
             >
               <BsWhatsapp className="text-xl" />
               <span>Tanya Langsung via WhatsApp</span>
-            </a>
+            </button>
           </motion.div>
         </div>
       </section>
@@ -408,17 +406,14 @@ export default function FAQSection({ config }: FAQSectionProps) {
           <p className="text-slate-600 mb-4">
             Masih punya pertanyaan lain?
           </p>
-          <a
-            href={linkFor('general')}
-            onClick={(e) => {
-              trackWhatsAppClick('faq-section')
-              // Don't prevent default - let WhatsApp link open normally
-            }}
+          <button
+            type="button"
+            onClick={() => openPreChat({ kind: 'messageKey', messageKey: 'general' })}
             className="inline-flex items-center gap-2 px-8 py-4 bg-success-green text-white font-semibold rounded-full hover:bg-green-600 transition-all hover:scale-105 shadow-lg"
           >
             <BsWhatsapp className="text-xl" />
             <span>Tanya Langsung via WhatsApp</span>
-          </a>
+          </button>
         </motion.div>
       </div>
     </section>

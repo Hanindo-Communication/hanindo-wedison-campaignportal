@@ -33,6 +33,11 @@ export interface CampaignConfig {
   navigation?: 'default' | 'minimal'
   /** FAQ copy density: promo ojol uses shorter driver-focused items */
   faqMode?: 'default' | 'promo-ojol'
+  /** Popup gambar full layar (~1s setelah load), tutup pakai X. Ganti imageSrc dari placeholder ke asset final sebelum live. */
+  heroPopupBanner?: {
+    imageSrc: string
+    alt?: string
+  }
 }
 
 export interface CampaignVariants {
@@ -130,38 +135,40 @@ export const CAMPAIGNS: Campaigns = {
       },
     },
   },
-  '042026': {
+  '052026': {
     promo: {
-      name: 'Campaign Apr 2026 — Promo Ojol / Rute',
+      name: 'Campaign Mei 2026 — Promo Ojol / Rute',
       description:
-        'Landing promo April: kalkulator rute & perkiraan hemat vs BBM, nilai promo, konversi ke WhatsApp untuk traffic Meta, Google & TikTok.',
-      date: 'Apr 2026',
+        'Landing promo Mei: kalkulator rute & perkiraan hemat vs BBM, nilai promo, konversi ke WhatsApp untuk traffic Meta, Google & TikTok.',
+      date: 'Mei 2026',
       targetAudience: 'Driver ojol & pengguna rutin',
       badge: {
-        text: 'Promo April 2026',
+        text: 'Promo Mei 2026',
         color: 'bg-secondary-teal/15 text-electric-blue',
       },
       hero: {
         headline: 'Hemat Perjalanan Kamu dengan Motor Listrik Wedison',
-        subheadline:
-          'Masukkan rute jemput & tujuan, lihat perkiraan hemat vs BBM dan promo yang bisa kamu dapat — lalu lanjut chat tim kami.',
+        subheadline: 'Isi rute → lihat perkiraan hemat vs BBM → chat tim untuk promo & next step.',
         highlightBadge: 'Motor listrik · Rute harian',
         ctaText: 'Cek hemat & promo',
         ctaLink: '#route-promo-estimate',
         secondaryCtaText: 'Chat WhatsApp',
         secondaryCtaLink: 'whatsapp',
-        backgroundImage: '/images/campaigns/042026/hero-reference.png',
+        backgroundImage: '/images/campaigns/052026/hero-reference.png',
       },
       sections: ['ojol-route-promo', 'why-wedison', 'showroom', 'faq'],
-      whatsappLink: 'promo042026',
+      heroPopupBanner: {
+        imageSrc: '/images/campaigns/052026/hero-popup-placeholder.svg',
+        alt: 'Placeholder pop-up — ganti sebelum live',
+      },
+      whatsappLink: 'promo052026',
       navigation: 'minimal',
       faqMode: 'promo-ojol',
       metadata: {
-        title: 'Wedison Promo April 2026 — Cek Hemat Rute & Promo Motor Listrik',
-        description:
-          'Perkiraan hemat per rute vs BBM, promo April, motor listrik Wedison dengan SuperCharge. Chat WhatsApp untuk detail.',
+        title: 'Wedison Promo Mei 2026 — Cek Hemat Rute & Promo Motor Listrik',
+        description: 'Estimasi hemat rute vs BBM, promo Mei, SuperCharge. Detail — WhatsApp.',
         keywords:
-          'wedison, motor listrik, promo april 2026, ojol, hemat bbm, supercharge, kredit motor listrik',
+          'wedison, motor listrik, promo mei 2026, ojol, hemat bbm, supercharge, kredit motor listrik',
       },
     },
   },

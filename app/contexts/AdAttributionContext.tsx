@@ -13,12 +13,13 @@ import {
   type AdAttribution,
   ORGANIC_ATTRIBUTION,
   parseAdAttributionFromUrl,
+  resolveLandingAttribution,
 } from '@/lib/adSourceFromUrl'
 import {
   WHATSAPP_MESSAGES,
-  buildPromo042026WhatsAppLink,
+  buildPromo052026WhatsAppLink,
   buildWhatsAppLinkWithAttribution,
-  type Promo042026MessageParts,
+  type Promo052026MessageParts,
 } from '@/utils/whatsappLinks'
 
 const STORAGE_KEY = 'wedison_ad_attr_v1'
@@ -32,7 +33,10 @@ function readStoredAttribution(): AdAttribution | null {
     if (!raw) return null
     const parsed = JSON.parse(raw) as AdAttribution
     if (parsed && typeof parsed.refCode === 'string' && typeof parsed.sourceLine === 'string') {
-      return parsed
+      return {
+        ...parsed,
+        platformKey: parsed.platformKey ?? 'organic',
+      }
     }
   } catch {
     /* ignore */
@@ -44,21 +48,23 @@ function AdAttributionProviderInner({ children }: { children: ReactNode }) {
   const searchParams = useSearchParams()
 
   const attribution = useMemo(() => {
-    const fromUrl = parseAdAttributionFromUrl(searchParams)
-    if (fromUrl) return fromUrl
-    const stored = readStoredAttribution()
-    if (stored) return stored
-    return ORGANIC_ATTRIBUTION
+    return resolveLandingAttribution(
+      parseAdAttributionFromUrl(searchParams),
+      readStoredAttribution(),
+      searchParams
+    )
   }, [searchParams])
 
   useEffect(() => {
-    const fromUrl = parseAdAttributionFromUrl(searchParams)
-    if (fromUrl) {
-      try {
-        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(fromUrl))
-      } catch {
-        /* ignore */
-      }
+    const merged = resolveLandingAttribution(
+      parseAdAttributionFromUrl(searchParams),
+      readStoredAttribution(),
+      searchParams
+    )
+    try {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(merged))
+    } catch {
+      /* ignore */
     }
   }, [searchParams])
 
@@ -90,9 +96,9 @@ export function useLandingWhatsApp() {
         buildWhatsAppLinkWithAttribution(WHATSAPP_MESSAGES[messageKey], attribution),
       linkForCustomMessage: (message: string) =>
         buildWhatsAppLinkWithAttribution(message, attribution),
-      /** Promo April / ojol block — merges calculator fields + attribution */
-      promo042026Link: (parts: Omit<Promo042026MessageParts, 'adSourceLine' | 'attribution'> = {}) =>
-        buildPromo042026WhatsAppLink({
+      /** Promo Mei / ojol block — merges calculator fields + attribution */
+      promo052026Link: (parts: Omit<Promo052026MessageParts, 'adSourceLine' | 'attribution'> = {}) =>
+        buildPromo052026WhatsAppLink({
           ...parts,
           attribution,
         }),

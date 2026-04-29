@@ -7,8 +7,7 @@ import { BsWhatsapp } from 'react-icons/bs'
 import { FiChevronDown, FiCheck, FiZap, FiBattery, FiDollarSign, FiUsers } from 'react-icons/fi'
 import Button from '../ui/Button'
 import { WHATSAPP_MESSAGES } from '@/utils/whatsappLinks'
-import { useLandingWhatsApp } from '@/app/contexts/AdAttributionContext'
-import { trackWhatsAppClick } from '@/utils/analytics'
+import { useWhatsAppPreChat } from '@/app/contexts/WhatsAppPreChatContext'
 import { MODEL_SPECS, type ModelSpec } from '@/utils/modelSpecs'
 
 // Best For badges for each model
@@ -42,7 +41,7 @@ const getModelImagePath = (modelId: string): string => {
 }
 
 export default function ModelsTabSection() {
-  const { linkFor } = useLandingWhatsApp()
+  const { openPreChat, registerBrowseContext } = useWhatsAppPreChat()
   const mainModels = MODEL_SPECS.filter((model) => !model.id.includes('-extended'))
   
   const [activeTab, setActiveTab] = useState(0)
@@ -63,6 +62,14 @@ export default function ModelsTabSection() {
     setShowSpecs(false)
     setImageError(false)
   }, [activeTab, selectedVariant])
+
+  useEffect(() => {
+    registerBrowseContext({
+      modelId: activeModel.id,
+      modelName: activeModel.name,
+      section: 'models',
+    })
+  }, [activeModel.id, activeModel.name, registerBrowseContext])
 
   const specs = [
     { label: 'Range', value: activeModel.range, highlight: true },
@@ -310,14 +317,14 @@ export default function ModelsTabSection() {
                 {/* CTA Buttons */}
                 <div className="flex flex-col sm:flex-row gap-3">
                   <Button
-                    href={
-                      linkFor(
-                        (activeModel.whatsappLink in WHATSAPP_MESSAGES
+                    onClick={() => {
+                      const mk = (
+                        activeModel.whatsappLink in WHATSAPP_MESSAGES
                           ? activeModel.whatsappLink
-                          : 'general') as keyof typeof WHATSAPP_MESSAGES
-                      )
-                    }
-                    onClick={() => trackWhatsAppClick(`model-${activeModel.id}`)}
+                          : 'general'
+                      ) as keyof typeof WHATSAPP_MESSAGES
+                      openPreChat({ kind: 'messageKey', messageKey: mk })
+                    }}
                     variant="primary"
                     size="large"
                     className="flex-1"

@@ -5,8 +5,7 @@ import { motion } from 'framer-motion'
 import { FiCheck, FiPercent, FiCalendar, FiDollarSign, FiCreditCard } from 'react-icons/fi'
 import { BsWhatsapp } from 'react-icons/bs'
 import { MODEL_SPECS } from '@/utils/modelSpecs'
-import { useLandingWhatsApp } from '@/app/contexts/AdAttributionContext'
-import { trackWhatsAppClick } from '@/utils/analytics'
+import { useWhatsAppPreChat } from '@/app/contexts/WhatsAppPreChatContext'
 
 const FINANCING_BENEFITS = [
   'Cicilan x Kredivo',
@@ -157,7 +156,7 @@ const FINANCING_DATA: Record<string, ModelFinancing> = {
 }
 
 export default function FinancingSection() {
-  const { linkFor } = useLandingWhatsApp()
+  const { openPreChat, registerBrowseContext } = useWhatsAppPreChat()
   // Filter main models only
   const mainModels = MODEL_SPECS.filter((m) => !m.id.includes('-extended'))
   
@@ -171,6 +170,14 @@ export default function FinancingSection() {
   const actualModelId = selectedVariant === 'extended' && selectedModel.hasExtended
     ? selectedModel.extendedId || selectedModel.id
     : selectedModel.id
+
+  useEffect(() => {
+    registerBrowseContext({
+      section: 'financing',
+      modelId: actualModelId,
+      modelName: selectedModel.name,
+    })
+  }, [actualModelId, selectedModel.name, registerBrowseContext])
 
   // Get financing data for selected model
   const getModelFinancingKey = (modelId: string): string => {
@@ -547,8 +554,11 @@ export default function FinancingSection() {
 
               {/* CTA */}
               <a
-                href={linkFor('financing')}
-                onClick={() => trackWhatsAppClick('financing-section')}
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault()
+                  openPreChat({ kind: 'messageKey', messageKey: 'financing' })
+                }}
                 className="flex items-center justify-center gap-2 w-full px-8 py-4 bg-success-green text-white font-bold text-lg rounded-full hover:bg-green-600 transition-all hover:scale-105 shadow-xl"
               >
                 <BsWhatsapp className="text-2xl" />
@@ -752,8 +762,11 @@ export default function FinancingSection() {
 
               {/* CTA */}
               <a
-                href={linkFor('financing')}
-                onClick={() => trackWhatsAppClick('cash-purchase-section')}
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault()
+                  openPreChat({ kind: 'messageKey', messageKey: 'financing' })
+                }}
                 className="flex items-center justify-center gap-2 w-full px-8 py-4 bg-electric-blue text-white font-bold text-lg rounded-full hover:bg-blue-600 transition-all hover:scale-105 shadow-xl"
               >
                 <BsWhatsapp className="text-2xl" />

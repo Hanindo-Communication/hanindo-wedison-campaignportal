@@ -2,6 +2,14 @@
 
 import type { AdAttribution } from '@/lib/adSourceFromUrl'
 
+/** Satu baris ringkas: platform + UTM (dipotong agar aman untuk wa.me). */
+function compactTrackingLine(attr: AdAttribution): string {
+  let s = `src=${attr.platformKey}`
+  const utmJoined = [attr.utmCampaign, attr.utmMedium, attr.utmContent].filter(Boolean).join('|')
+  if (utmJoined) s += ` utm=${utmJoined}`
+  return s.length > 140 ? `${s.slice(0, 137)}…` : s
+}
+
 const WHATSAPP_NUMBER = '6282124657804' // Wedison WhatsApp Support
 
 export const getWhatsAppLink = (message: string): string => {
@@ -31,33 +39,59 @@ export const WHATSAPP_MESSAGES = {
   
   general: 'Halo! Saya tertarik dengan motor listrik Wedison. Bisa info lengkapnya?',
 
-  promo042026:
-    'Halo! Saya dari landing Promo April Wedison (ojol/rute). Mau tanya promo & langkah berikutnya.',
+  promo052026:
+    'Halo! Saya tertarik promo Mei Wedison (ojol/rute), mau tanya detail & next step.',
 }
 
 export function getAttributionHeaderLines(attr: AdAttribution): string[] {
+  return [
+    `[REF:${attr.refCode}] Mohon jangan dihapus — tracking internal.`,
+    compactTrackingLine(attr),
+  ]
+}
+
+/** Isi promo Mei (Halo, rute, estimasi, …) tanpa blok attribution. */
+export function buildPromo052026UserBodyLines(parts: {
+  pickup?: string
+  dropoff?: string
+  distanceKm?: number
+  savingsIdr?: number
+  promoTierLabel?: string
+  modelName?: string
+}): string[] {
   const lines: string[] = []
-  lines.push(
-    `[REF:${attr.refCode}] Mohon jangan hapus baris ini — tim pakai kode ini untuk bantu lebih cepat.`
-  )
-  if (attr.sourceLine) lines.push(attr.sourceLine)
-  if (attr.platformNote) lines.push(attr.platformNote)
+  lines.push('Halo! Saya tertarik promo Mei Wedison (ojol/rute), mau tanya detail & next step.')
+  if (parts.pickup && parts.dropoff) {
+    lines.push(`Rute: ${parts.pickup} → ${parts.dropoff}`)
+  }
+  if (parts.distanceKm != null && parts.savingsIdr != null) {
+    lines.push(
+      `Estimasi: ~${parts.distanceKm.toFixed(1)} km · hemat vs BBM ~Rp ${parts.savingsIdr.toLocaleString('id-ID')} (ilustrasi)`,
+    )
+  }
+  if (parts.promoTierLabel) lines.push(parts.promoTierLabel)
+  if (parts.modelName) lines.push(`Model: ${parts.modelName}`)
   return lines
 }
 
-export function prependAttributionToMessage(baseMessage: string, attr: AdAttribution): string {
-  const header = getAttributionHeaderLines(attr)
-  return [...header, '', baseMessage.trim()].join('\n')
+export function prependAttributionToMessage(
+  baseMessage: string,
+  attr: AdAttribution,
+  extraMetaLines: string[] = []
+): string {
+  const top = [...getAttributionHeaderLines(attr), ...extraMetaLines].filter(Boolean)
+  return [...top, '', baseMessage.trim()].join('\n')
 }
 
 export function buildWhatsAppLinkWithAttribution(
   baseMessage: string,
-  attr: AdAttribution
+  attr: AdAttribution,
+  extraMetaLines: string[] = []
 ): string {
-  return getWhatsAppLink(prependAttributionToMessage(baseMessage, attr))
+  return getWhatsAppLink(prependAttributionToMessage(baseMessage, attr, extraMetaLines))
 }
 
-export type Promo042026MessageParts = {
+export type Promo052026MessageParts = {
   /** Prefer `attribution` from landing context */
   adSourceLine?: string
   attribution?: AdAttribution
@@ -69,31 +103,20 @@ export type Promo042026MessageParts = {
   modelName?: string
 }
 
-/** Build WA prefill for /042026/promo — pickup/dropoff/estimate optional after user runs calculator. */
-export function buildPromo042026Message(parts: Promo042026MessageParts): string {
-  const lines: string[] = []
+/** Build WA prefill for /052026/promo — pickup/dropoff/estimate optional after user runs calculator. */
+export function buildPromo052026Message(parts: Promo052026MessageParts): string {
+  const body = buildPromo052026UserBodyLines(parts).join('\n')
   if (parts.attribution) {
-    lines.push(...getAttributionHeaderLines(parts.attribution))
-    lines.push('')
-  } else if (parts.adSourceLine) {
-    lines.push(parts.adSourceLine)
+    return [...getAttributionHeaderLines(parts.attribution), '', body].join('\n')
   }
-  lines.push('Halo! Saya dari landing Promo April Wedison (ojol/rute).')
-  if (parts.pickup && parts.dropoff) {
-    lines.push(`Rute: ${parts.pickup} → ${parts.dropoff}`)
+  if (parts.adSourceLine) {
+    return [parts.adSourceLine, '', body].join('\n')
   }
-  if (parts.distanceKm != null && parts.savingsIdr != null) {
-    lines.push(`Perkiraan jarak: ~${parts.distanceKm.toFixed(1)} km (ilustrasi)`)
-    lines.push(`Perkiraan hemat vs BBM: ~Rp ${parts.savingsIdr.toLocaleString('id-ID')} (ilustrasi)`)
-  }
-  if (parts.promoTierLabel) lines.push(parts.promoTierLabel)
-  if (parts.modelName) lines.push(`Tertarik membahas model: ${parts.modelName}`)
-  lines.push('Mau tanya promo & next step. Terima kasih!')
-  return lines.join('\n')
+  return body
 }
 
-export function buildPromo042026WhatsAppLink(parts: Promo042026MessageParts = {}): string {
-  return getWhatsAppLink(buildPromo042026Message(parts))
+export function buildPromo052026WhatsAppLink(parts: Promo052026MessageParts = {}): string {
+  return getWhatsAppLink(buildPromo052026Message(parts))
 }
 
 // Pre-configured WhatsApp Links
@@ -109,5 +132,5 @@ export const WHATSAPP_LINKS = {
   charging: getWhatsAppLink(WHATSAPP_MESSAGES.charging),
   general: getWhatsAppLink(WHATSAPP_MESSAGES.general),
 
-  promo042026: getWhatsAppLink(WHATSAPP_MESSAGES.promo042026),
+  promo052026: getWhatsAppLink(WHATSAPP_MESSAGES.promo052026),
 }

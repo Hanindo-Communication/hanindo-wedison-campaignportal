@@ -23,13 +23,20 @@ const nextConfig = {
     unoptimized: process.env.NODE_ENV === 'development',
   },
   
+  async redirects() {
+    return [
+      { source: '/042026/promo', destination: '/052026/promo', permanent: true },
+    ]
+  },
+
   // Performance optimizations
   poweredByHeader: false,
   compress: true,
   
-  // Experimental features for better performance
+  // `optimizePackageImports` + framer-motion memicu require `./vendor-chunks/motion-dom.js`
+  // yang tidak ada di server bundle (Next 15 + webpack). react-icons tetap aman.
   experimental: {
-    optimizePackageImports: ['framer-motion', 'react-icons'],
+    optimizePackageImports: ['react-icons'],
   },
   
   // Webpack optimizations

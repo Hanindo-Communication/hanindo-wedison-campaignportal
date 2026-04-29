@@ -5,14 +5,21 @@ import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { BsWhatsapp } from 'react-icons/bs'
 import { FiX } from 'react-icons/fi'
-import { useLandingWhatsApp } from '@/app/contexts/AdAttributionContext'
-import { trackWhatsAppClick } from '@/utils/analytics'
+import { useWhatsAppPreChat } from '@/app/contexts/WhatsAppPreChatContext'
 
 function FloatingWhatsAppButtonInner() {
   const pathname = usePathname()
-  const { linkFor, promo042026Link } = useLandingWhatsApp()
-  const isPromo042026 = pathname?.includes('/042026/promo')
-  const waHref = isPromo042026 ? promo042026Link() : linkFor('general')
+  const { openPreChat } = useWhatsAppPreChat()
+  const isPromo052026 = pathname?.includes('/052026/promo')
+
+  const openFloatingWa = () => {
+    if (isPromo052026) {
+      openPreChat({ kind: 'promo052026', promoParts: {} })
+    } else {
+      openPreChat({ kind: 'messageKey', messageKey: 'general' })
+    }
+    setShowTooltip(false)
+  }
   const [isVisible, setIsVisible] = useState(false)
   const [showTooltip, setShowTooltip] = useState(false)
 
@@ -78,20 +85,17 @@ function FloatingWhatsAppButtonInner() {
           </AnimatePresence>
 
           {/* WhatsApp Button */}
-          <a
-            href={waHref}
-            onClick={() => {
-              trackWhatsAppClick(isPromo042026 ? 'promo-042026-floating' : 'floating-button')
-              setShowTooltip(false)
-            }}
+          <button
+            type="button"
+            onClick={openFloatingWa}
             className="relative flex items-center justify-center w-14 h-14 md:w-16 md:h-16 bg-success-green rounded-full shadow-2xl hover:bg-green-600 hover:scale-110 transition-all"
             aria-label="Chat WhatsApp"
           >
             <BsWhatsapp className="text-2xl md:text-3xl text-white" />
-            
+
             {/* Pulse Animation */}
             <span className="absolute inset-0 rounded-full bg-success-green animate-ping opacity-25" />
-          </a>
+          </button>
         </motion.div>
       )}
     </AnimatePresence>

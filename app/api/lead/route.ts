@@ -3,14 +3,27 @@ import { NextResponse } from 'next/server'
 // Edge Runtime for Cloudflare Pages
 export const runtime = 'edge'
 
-const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxta1aDG6Btj7zovplN9JsNpZLXeumUw-zHnx3HlMb23aEvs1fPPXKTf_lK-8rnskqMTQ/exec'
+/** Override di hosting: `GOOGLE_SHEETS_WEBAPP_URL` */
+const DEFAULT_GOOGLE_SHEETS_WEBAPP =
+  'https://script.google.com/macros/s/AKfycbyfUr5-_bFreuIp58q6YphAPd0ro_QzoXNgMrZ38rkcCyNNy_llkEpkfS-IHb-i-ff3Rw/exec'
+
+function googleSheetsWebAppUrl(): string {
+  const fromEnv =
+    typeof process !== 'undefined' && process.env.GOOGLE_SHEETS_WEBAPP_URL?.trim()
+      ? process.env.GOOGLE_SHEETS_WEBAPP_URL.trim()
+      : ''
+  return fromEnv || DEFAULT_GOOGLE_SHEETS_WEBAPP
+}
 
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    
-    const res = await fetch(GOOGLE_SHEETS_URL, {
+
+    const res = await fetch(googleSheetsWebAppUrl(), {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify(body),
     })
     

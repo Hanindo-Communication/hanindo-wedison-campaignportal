@@ -5,8 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { usePathname } from 'next/navigation'
 import { FiMenu, FiX } from 'react-icons/fi'
 import { BsWhatsapp } from 'react-icons/bs'
-import { useLandingWhatsApp } from '@/app/contexts/AdAttributionContext'
-import { trackWhatsAppClick } from '@/utils/analytics'
+import { useWhatsAppPreChat } from '@/app/contexts/WhatsAppPreChatContext'
 import Logo from '../ui/Logo'
 
 const NAV_LINKS = [
@@ -23,12 +22,19 @@ interface NavbarProps {
 
 function NavbarInner({ variant = 'default' }: NavbarProps) {
   const pathname = usePathname()
-  const { linkFor, promo042026Link } = useLandingWhatsApp()
+  const { openPreChat } = useWhatsAppPreChat()
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
-  const isPromo042026 = pathname?.includes('/042026/promo')
-  const navWaHref = isPromo042026 ? promo042026Link() : linkFor('general')
+  const isPromo052026 = pathname?.includes('/052026/promo')
+
+  const openNavWa = () => {
+    if (isPromo052026) {
+      openPreChat({ kind: 'promo052026', promoParts: {} })
+    } else {
+      openPreChat({ kind: 'messageKey', messageKey: 'general' })
+    }
+  }
 
   const links = variant === 'minimal' ? [] : NAV_LINKS
 
@@ -94,14 +100,14 @@ function NavbarInner({ variant = 'default' }: NavbarProps) {
 
             {/* WA + mobile menu — satu grup supaya di mobile tidak “nyangkut” di tengah */}
             <div className="flex shrink-0 items-center gap-2 md:gap-3">
-              <a
-                href={navWaHref}
-                onClick={() => trackWhatsAppClick('navbar')}
+              <button
+                type="button"
+                onClick={openNavWa}
                 className="inline-flex items-center gap-2 px-4 py-2.5 md:px-5 bg-success-green text-white text-sm md:text-base font-semibold rounded-full hover:bg-green-600 transition-all hover:scale-105 shadow-lg"
               >
                 <BsWhatsapp className="text-lg" />
                 <span>Chat WhatsApp</span>
-              </a>
+              </button>
               {variant !== 'minimal' ? (
                 <button
                   type="button"
@@ -146,17 +152,17 @@ function NavbarInner({ variant = 'default' }: NavbarProps) {
                   </a>
                 ))}
                 <div className="pt-4 border-t border-slate-200">
-                  <a
-                    href={navWaHref}
+                  <button
+                    type="button"
                     onClick={() => {
-                      trackWhatsAppClick('navbar-mobile')
+                      openNavWa()
                       setIsMobileMenuOpen(false)
                     }}
                     className="flex items-center justify-center gap-2 w-full px-6 py-3 bg-success-green text-white font-semibold rounded-full hover:bg-green-600 transition-colors"
                   >
                     <BsWhatsapp className="text-xl" />
                     <span>Chat WhatsApp</span>
-                  </a>
+                  </button>
                 </div>
               </div>
             </motion.div>

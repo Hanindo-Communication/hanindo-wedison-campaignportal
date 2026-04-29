@@ -1,30 +1,32 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect, useRef } from 'react'
 import { flushSync } from 'react-dom'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
-import { FiChevronDown, FiMapPin, FiMousePointer, FiNavigation, FiX } from 'react-icons/fi'
+import { FiMapPin, FiMousePointer, FiNavigation, FiX } from 'react-icons/fi'
 import { BsWhatsapp } from 'react-icons/bs'
 import { type CampaignConfig } from '@/lib/campaigns'
 import { estimateRouteSavings, type RouteEstimateResult } from '@/lib/estimateOjolRouteSavings'
-import { useLandingWhatsApp } from '@/app/contexts/AdAttributionContext'
+import { useWhatsAppPreChat } from '@/app/contexts/WhatsAppPreChatContext'
 import { OJOL_ROUTE_LOCATION_SUGGESTIONS } from '@/lib/ojolRouteLocations'
 import { firePromoEstimateConfetti } from '@/lib/promoEstimateConfetti'
 import { getPromoModelPlaceholders, type PromoModelPlaceholder } from '@/lib/promoModelPlaceholders'
+import { distanceExceedsRatedRange, recommendPromoModelIdForDistanceKm } from '@/lib/recommendPromoModelForRoute'
+import { useScrollLock } from '@/lib/useScrollLock'
 import { MODEL_SPECS } from '@/utils/modelSpecs'
-import { trackWhatsAppClick } from '@/utils/analytics'
 import PromoTickerSection from '@/app/components/sections/PromoTickerSection'
+import RouteLocationCombobox from '@/app/components/ui/RouteLocationCombobox'
 
 const SOCIAL_PROOF = [
   {
-    quote: 'Dulu BBM habis ratusan ribu sebulan. Sekarang operasional listrik jauh lebih ringan — cocok buat narik seharian.',
+    quote: 'Operasional listrik jauh lebih ringan dari BBM — enak buat narik harian.',
     name: 'Budi Santoso',
     role: 'Driver ojek online',
   },
   {
-    quote: 'SuperCharge 15 menit itu yang bikin yakin: istirahat sebentar, lanjut jalan lagi.',
+    quote: 'SuperCharge 15 menit: istirahat bentar, lanjut order.',
     name: 'Sari Dewi',
     role: 'Driver & komuter',
   },
@@ -32,7 +34,7 @@ const SOCIAL_PROOF = [
 
 function OjolRoutePromoSectionContent({ config }: { config: CampaignConfig }) {
   const { hero } = config
-  const { promo042026Link } = useLandingWhatsApp()
+  const { openPreChat, registerBrowseContext } = useWhatsAppPreChat()
   const reduceMotion = useReducedMotion()
 
   const [pickup, setPickup] = useState('')
@@ -40,30 +42,80 @@ function OjolRoutePromoSectionContent({ config }: { config: CampaignConfig }) {
   const [error, setError] = useState('')
   const [result, setResult] = useState<RouteEstimateResult | null>(null)
   const [modalModel, setModalModel] = useState<PromoModelPlaceholder | null>(null)
+  /** Modal dibuka dari estimasi rute (auto / tombol rekomendasi), bukan dari chip "Lihat model motor" */
+  const [modelModalFromRouteRecommendation, setModelModalFromRouteRecommendation] = useState(false)
+  const skipAutoRecommendationPopup = useRef(false)
+
+  useScrollLock(modalModel != null)
+
+  useEffect(() => {
+    registerBrowseContext({ section: 'route-promo' })
+  }, [registerBrowseContext])
+
+  const openModelModal = (m: PromoModelPlaceholder, fromRouteRecommendation: boolean) => {
+    setModalModel(m)
+    setModelModalFromRouteRecommendation(fromRouteRecommendation)
+  }
+
+  const closeModelModal = () => {
+    setModalModel(null)
+    setModelModalFromRouteRecommendation(false)
+  }
 
   const models = useMemo(() => getPromoModelPlaceholders(), [])
 
-  const waBase = useMemo(
-    () =>
-      promo042026Link({
-        pickup: pickup.trim() || undefined,
-        dropoff: dropoff.trim() || undefined,
-        distanceKm: result?.distanceKm,
-        savingsIdr: result?.savingsIdr,
-        promoTierLabel: result?.promoTierLabel,
-      }),
-    [promo042026Link, pickup, dropoff, result]
-  )
+  const recommendedModel = useMemo(() => {
+    if (!result) return null
+    const id = recommendPromoModelIdForDistanceKm(result.distanceKm)
+    return models.find((m) => m.id === id) ?? null
+  }, [result, models])
 
-  const waWithModel = (m: PromoModelPlaceholder) =>
-    promo042026Link({
+  const recommendedSpec = useMemo(() => {
+    if (!recommendedModel) return null
+    return MODEL_SPECS.find((m) => m.id === recommendedModel.id) ?? null
+  }, [recommendedModel])
+
+  const routeExceedsRatedRange =
+    result && recommendedModel ? distanceExceedsRatedRange(result.distanceKm, recommendedModel.id) : false
+
+  useEffect(() => {
+    if (!result || !recommendedModel) return
+    skipAutoRecommendationPopup.current = false
+    const t = window.setTimeout(() => {
+      if (!skipAutoRecommendationPopup.current) {
+        openModelModal(recommendedModel, true)
+      }
+    }, 1000)
+    return () => window.clearTimeout(t)
+  }, [result, recommendedModel])
+
+  const promoWaParts = useMemo(
+    () => ({
       pickup: pickup.trim() || undefined,
       dropoff: dropoff.trim() || undefined,
       distanceKm: result?.distanceKm,
       savingsIdr: result?.savingsIdr,
       promoTierLabel: result?.promoTierLabel,
-      modelName: m.name,
-    })
+    }),
+    [pickup, dropoff, result],
+  )
+
+  const openPromoWa = (extra?: { modelName?: string }) => {
+    const hintParts: string[] = []
+    if (result) {
+      hintParts.push(
+        `Simulasi rute promo Mei (~${result.distanceKm.toFixed(1)} km, hemat vs BBM) — mau detail promo & langkah lanjut.`
+      )
+    }
+    if (extra?.modelName) {
+      hintParts.push(`Fokus ke model ${extra.modelName}.`)
+    }
+    const hint = hintParts.length > 0 ? hintParts.join(' ') : undefined
+    openPreChat(
+      { kind: 'promo052026', promoParts: { ...promoWaParts, ...extra } },
+      hint ? { kebutuhanHint: hint, suggestedIntent: 'explore' } : undefined
+    )
+  }
 
   const handleEstimate = () => {
     setError('')
@@ -156,54 +208,34 @@ function OjolRoutePromoSectionContent({ config }: { config: CampaignConfig }) {
                   <label htmlFor="pickup" className="sr-only">
                     Lokasi jemput
                   </label>
-                  <div className="relative">
-                    <FiNavigation className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-electric-blue" aria-hidden />
-                    <FiChevronDown
-                      className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500"
-                      aria-hidden
-                    />
-                    <input
-                      id="pickup"
-                      name="pickup"
-                      autoComplete="off"
-                      list="route-location-suggestions"
-                      placeholder="Lokasi jemput"
-                      value={pickup}
-                      onChange={(e) => setPickup(e.target.value)}
-                      className="min-h-[48px] w-full rounded-xl border border-white/15 bg-slate-900/90 pl-11 pr-10 text-base text-white placeholder:text-slate-500 focus:border-electric-blue focus:outline-none focus:ring-2 focus:ring-electric-blue/40"
-                    />
-                  </div>
+                  <RouteLocationCombobox
+                    id="pickup"
+                    name="pickup"
+                    value={pickup}
+                    onChange={setPickup}
+                    placeholder="Lokasi jemput"
+                    suggestions={OJOL_ROUTE_LOCATION_SUGGESTIONS}
+                    aria-label="Lokasi jemput"
+                    iconLeft={<FiNavigation className="h-5 w-5 text-electric-blue" aria-hidden />}
+                  />
                 </div>
                 <div>
                   <label htmlFor="dropoff" className="sr-only">
                     Lokasi tujuan
                   </label>
-                  <div className="relative">
-                    <FiMapPin className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-secondary-teal" aria-hidden />
-                    <FiChevronDown
-                      className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500"
-                      aria-hidden
-                    />
-                    <input
-                      id="dropoff"
-                      name="dropoff"
-                      autoComplete="off"
-                      list="route-location-suggestions"
-                      placeholder="Lokasi tujuan"
-                      value={dropoff}
-                      onChange={(e) => setDropoff(e.target.value)}
-                      className="min-h-[48px] w-full rounded-xl border border-white/15 bg-slate-900/90 pl-11 pr-10 text-base text-white placeholder:text-slate-500 focus:border-electric-blue focus:outline-none focus:ring-2 focus:ring-electric-blue/40"
-                    />
-                  </div>
+                  <RouteLocationCombobox
+                    id="dropoff"
+                    name="dropoff"
+                    value={dropoff}
+                    onChange={setDropoff}
+                    placeholder="Lokasi tujuan"
+                    suggestions={OJOL_ROUTE_LOCATION_SUGGESTIONS}
+                    aria-label="Lokasi tujuan"
+                    iconLeft={<FiMapPin className="h-5 w-5 text-secondary-teal" aria-hidden />}
+                  />
                 </div>
               </div>
             </div>
-
-            <datalist id="route-location-suggestions">
-              {OJOL_ROUTE_LOCATION_SUGGESTIONS.map((loc) => (
-                <option key={loc} value={loc} />
-              ))}
-            </datalist>
 
             {error ? (
               <p className="mt-3 text-sm text-amber-300" role="alert">
@@ -219,20 +251,18 @@ function OjolRoutePromoSectionContent({ config }: { config: CampaignConfig }) {
               >
                 {hero.ctaText}
               </button>
-              <a
-                href={waBase}
-                onClick={() => trackWhatsAppClick('promo-042026-hero')}
+              <button
+                type="button"
+                onClick={() => openPromoWa()}
                 className="inline-flex min-h-[48px] flex-1 items-center justify-center gap-2 rounded-xl border border-white/20 bg-success-green px-6 py-3 text-base font-semibold text-white hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-success-green/60"
               >
                 <BsWhatsapp className="text-xl" aria-hidden />
                 {hero.secondaryCtaText ?? 'Chat WhatsApp'}
-              </a>
+              </button>
             </div>
             <p className="mt-3 text-xs text-slate-500 leading-relaxed">
-              Jarak ilustratif (bukan peta). Perbandingan BBM vs listrik memakai{' '}
-              <strong className="font-medium text-slate-400">rumus yang sama</strong> dengan kalkulator &ldquo;Hitung Hemat&rdquo; di
-              landing utama (Pertalite, tarif listrik rumah, asumsi model EdPower). Bagian promo di hasil adalah tambahan — bukan
-              penawaran resmi; detail lewat WhatsApp.
+              Jarak perkiraan (bukan GPS). Rumus sama dengan Hitung Hemat di landing utama. Angka ilustrasi — konfirmasi promo ke
+              tim.
             </p>
           </div>
         </div>
@@ -251,23 +281,21 @@ function OjolRoutePromoSectionContent({ config }: { config: CampaignConfig }) {
               <div className="rounded-xl bg-slate-950/95 p-5 sm:p-8">
                 <h2 className="text-xl sm:text-2xl font-bold text-white">Perkiraan untuk rute kamu</h2>
                 <p className="mt-1 text-sm text-slate-400">
-                  Jarak ~{result.distanceKm.toFixed(1)} km · bandingan biaya operasional ilustratif
+                  ~{result.distanceKm.toFixed(1)} km · biaya operasional ilustratif
                 </p>
                 <p className="mt-2 text-xs text-slate-500">
-                  Asumsi perhitungan utama:{' '}
-                  {MODEL_SPECS.find((m) => m.id === result.assumptionModelId)?.name ?? 'EdPower'} · BBM Pertalite · listrik rumah (
-                  kalkulator hemat)
+                  Asumsi: {MODEL_SPECS.find((m) => m.id === result.assumptionModelId)?.name ?? 'EdPower'} · Pertalite · listrik rumah
                 </p>
 
                 <dl className="mt-6 grid gap-4 sm:grid-cols-2">
                   <div className="rounded-xl border border-white/10 bg-slate-900/80 p-4">
-                    <dt className="text-sm text-slate-400">Perkiraan biaya BBM (motor konvensional)</dt>
+                    <dt className="text-sm text-slate-400">Perkiraan BBM (motor bensin)</dt>
                     <dd className="mt-1 text-2xl font-bold tabular-nums text-white">
                       Rp {result.baselineBbmIdr.toLocaleString('id-ID')}
                     </dd>
                   </div>
                   <div className="rounded-xl border border-electric-blue/30 bg-electric-blue/10 p-4">
-                    <dt className="text-sm text-electric-blue/90">Perkiraan biaya listrik (ilustrasi)</dt>
+                    <dt className="text-sm text-electric-blue/90">Perkiraan listrik (ilustrasi)</dt>
                     <dd className="mt-1 text-2xl font-bold tabular-nums text-white">
                       Rp {result.electricCostIdr.toLocaleString('id-ID')}
                     </dd>
@@ -275,23 +303,77 @@ function OjolRoutePromoSectionContent({ config }: { config: CampaignConfig }) {
                 </dl>
 
                 <div className="mt-6 rounded-xl border border-success-green/30 bg-success-green/10 px-4 py-4">
-                  <p className="text-sm font-medium text-success-green">Perkiraan hemat vs BBM (ilustrasi)</p>
+                  <p className="text-sm font-medium text-success-green">Hemat vs BBM (ilustrasi)</p>
                   <p className="mt-1 text-3xl font-bold tabular-nums text-white">
                     Rp {result.savingsIdr.toLocaleString('id-ID')}
                   </p>
                 </div>
 
                 <div className="mt-6 rounded-xl border border-secondary-teal/40 bg-slate-900/90 p-4">
-                  <p className="text-sm font-semibold text-secondary-teal">Promo &amp; nilai untuk perjalanan ini</p>
+                  <p className="text-sm font-semibold text-secondary-teal">Promo untuk rute ini</p>
                   <p className="mt-2 text-lg font-bold text-white">
-                    Setelah diskon promo ~{result.promoDiscountPercent}%:{' '}
-                    <span className="text-secondary-teal">
-                      Rp {result.promoElectricIdr.toLocaleString('id-ID')}
-                    </span>{' '}
-                    <span className="text-base font-normal text-slate-400">(perkiraan biaya energi)</span>
+                    Diskon ilustrasi ~{result.promoDiscountPercent}%:{' '}
+                    <span className="text-secondary-teal">Rp {result.promoElectricIdr.toLocaleString('id-ID')}</span>{' '}
+                    <span className="text-base font-normal text-slate-400">(energi)</span>
                   </p>
                   <p className="mt-2 text-sm text-slate-400">{result.promoTierLabel}</p>
                 </div>
+
+                {recommendedModel && recommendedSpec ? (
+                  <div
+                    id="route-promo-model-recommendation"
+                    className="mt-6 rounded-xl border border-electric-blue/35 bg-gradient-to-br from-electric-blue/15 via-slate-900/95 to-slate-950 p-4 sm:p-5"
+                  >
+                    <p className="text-xs font-semibold uppercase tracking-wider text-electric-blue/90">
+                      Rekomendasi motor
+                    </p>
+                    <h3 className="mt-1 text-lg font-bold text-white sm:text-xl">
+                      Untuk ~{result.distanceKm.toFixed(1)} km
+                    </h3>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-300">
+                      Ilustrasi paling pas: <strong className="font-semibold text-white">{recommendedModel.name}</strong>
+                      {recommendedSpec.range ? (
+                        <>
+                          {' '}
+                          (~<strong className="text-white">{recommendedSpec.range}</strong> sekali charge, ringkasan produk).
+                        </>
+                      ) : null}
+                    </p>
+                    {routeExceedsRatedRange ? (
+                      <p className="mt-3 rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm text-amber-100">
+                        Jarak di atas perkiraan sekali charge model ini — pertimbangkan charge di tengah rute atau tanya tim opsi
+                        lain.
+                      </p>
+                    ) : null}
+                    <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center">
+                      <div className="relative h-28 w-full shrink-0 overflow-hidden rounded-xl border border-white/10 bg-slate-900 sm:h-32 sm:w-44">
+                        <Image
+                          src={recommendedModel.imageSrc}
+                          alt={`Wedison ${recommendedModel.name}`}
+                          fill
+                          className="object-cover object-center"
+                          sizes="(max-width:640px) 100vw, 176px"
+                          unoptimized={recommendedModel.imageSrc.endsWith('.svg')}
+                        />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-base font-semibold text-white">Wedison {recommendedModel.name}</p>
+                        <p className="mt-1 text-sm text-slate-400">Acuan spesifikasi model vs jarak rute di atas.</p>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            skipAutoRecommendationPopup.current = true
+                            openModelModal(recommendedModel, true)
+                          }}
+                          className="mt-3 inline-flex min-h-[44px] items-center justify-center rounded-xl border border-electric-blue/50 bg-electric-blue/20 px-4 py-2 text-sm font-semibold text-electric-blue transition hover:bg-electric-blue/30 focus:outline-none focus:ring-2 focus:ring-electric-blue/50"
+                        >
+                          Lihat detail &amp; foto model
+                        </button>
+                      </div>
+                    </div>
+                    <p className="mt-3 text-xs text-slate-500">Preview model bisa muncul otomatis ±1 detik setelah hasil.</p>
+                  </div>
+                ) : null}
 
                 <details className="mt-4 group rounded-xl border border-white/10 bg-slate-900/60">
                   <summary className="cursor-pointer list-none px-4 py-3 text-sm font-medium text-slate-200 [&::-webkit-details-marker]:hidden flex items-center justify-between gap-2">
@@ -299,8 +381,7 @@ function OjolRoutePromoSectionContent({ config }: { config: CampaignConfig }) {
                     <span className="text-slate-500 group-open:rotate-180 transition-transform">▼</span>
                   </summary>
                   <div className="border-t border-white/10 px-4 py-3 text-sm text-slate-400 leading-relaxed">
-                    Promo April bersifat promosi umum; syarat dan ketersediaan unit mengikuti kebijakan Wedison. Chat WhatsApp untuk
-                    konfirmasi promo yang berlaku untuk kamu.
+                    Syarat &amp; ketersediaan mengikuti kebijakan Wedison — konfirmasi via WhatsApp.
                   </div>
                 </details>
 
@@ -309,27 +390,55 @@ function OjolRoutePromoSectionContent({ config }: { config: CampaignConfig }) {
                     Bagaimana perkiraan ini dihitung?
                     <span className="text-slate-500 group-open:rotate-180 transition-transform">▼</span>
                   </summary>
-                  <div className="border-t border-white/10 px-4 py-3 text-sm text-slate-400 leading-relaxed">
-                    Jarak antar titik adalah ilustrasi (bukan routing GPS). Biaya BBM mengikuti kalkulator landing: konsumsi{' '}
-                    ~40 km/liter × harga Pertalite. Biaya listrik: jarak ÷ efisiensi model (km/kWh, sama seperti &ldquo;Hitung
-                    Hemat&rdquo;) × tarif listrik rumah Rp 1.445/kWh. Blok promo menambahkan diskon ilustratif pada biaya listrik untuk
-                    menggambarkan promo April — bisa diganti API rute &amp; harga resmi nanti.
+                  <div className="border-t border-white/10 px-4 py-3 text-sm text-slate-400 leading-relaxed space-y-3">
+                    <p>
+                      <strong className="text-slate-300">Jarak</strong> ~{result.distanceKm.toFixed(1)} km (heuristik lokasi, bukan
+                      peta).
+                    </p>
+                    <p>
+                      <strong className="text-slate-300">BBM (motor konvensional)</strong> ≈ liter × harga/liter. Liter = jarak ÷{' '}
+                      {result.breakdown.fuelKmPerLiter} km/L ={' '}
+                      <span className="tabular-nums text-slate-200">
+                        {result.breakdown.fuelLiters.toLocaleString('id-ID', { maximumFractionDigits: 2 })} L
+                      </span>{' '}
+                      × Rp {result.breakdown.fuelPriceIdrPerLiter.toLocaleString('id-ID')} →{' '}
+                      <span className="tabular-nums text-slate-200">
+                        Rp {result.baselineBbmIdr.toLocaleString('id-ID')}
+                      </span>
+                      .
+                    </p>
+                    <p>
+                      <strong className="text-slate-300">
+                        Listrik (ilustrasi,{' '}
+                        {MODEL_SPECS.find((m) => m.id === result.assumptionModelId)?.name ?? 'EdPower'})
+                      </strong>{' '}
+                      ≈ kWh × Rp/kWh. kWh = jarak ÷ {result.breakdown.kmPerKwhElectric.toFixed(2)} km/kWh ={' '}
+                      <span className="tabular-nums text-slate-200">
+                        {result.breakdown.electricityKWh.toLocaleString('id-ID', { maximumFractionDigits: 2 })} kWh
+                      </span>{' '}
+                      × Rp {result.breakdown.electricityIdrPerKwh.toLocaleString('id-ID')} →{' '}
+                      <span className="tabular-nums text-slate-200">
+                        Rp {result.electricCostIdr.toLocaleString('id-ID')}
+                      </span>
+                      .
+                    </p>
+                    <p>
+                      <strong className="text-slate-300">Hemat vs BBM</strong> = BBM − listrik (sebelum promo). Promo: diskon
+                      ilustratif ~{result.promoDiscountPercent}% pada listrik.
+                    </p>
                   </div>
                 </details>
 
-                <p className="mt-6 text-base text-slate-300">
-                  Langkah berikutnya: tanya jadwal test ride atau lokasi Experience Center lewat WhatsApp — tim kami bantu cocokkan model
-                  dan promo.
-                </p>
+                <p className="mt-6 text-base text-slate-300">Test ride &amp; promo — tanya langsung di WhatsApp.</p>
 
-                <a
-                  href={waBase}
-                  onClick={() => trackWhatsAppClick('promo-042026-after-estimate')}
+                <button
+                  type="button"
+                  onClick={() => openPromoWa()}
                   className="mt-4 flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl bg-success-green px-6 py-3 text-lg font-semibold text-white hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-white/40"
                 >
                   <BsWhatsapp className="text-xl" aria-hidden />
-                  Chat WhatsApp — lanjut &amp; tanya promo
-                </a>
+                  Chat WhatsApp — tanya promo
+                </button>
               </div>
             </motion.div>
           ) : null}
@@ -344,19 +453,22 @@ function OjolRoutePromoSectionContent({ config }: { config: CampaignConfig }) {
             />
             Lihat model motor
           </h3>
-          <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-400">
+          <p className="mt-2 max-w-xl text-sm text-slate-400">
             <span className="inline-flex items-center gap-1.5 rounded-md bg-white/5 px-2 py-0.5 text-slate-300 ring-1 ring-white/10">
               <FiMousePointer className="h-3.5 w-3.5 text-electric-blue" aria-hidden />
-              Klik / tap
+              Tap
             </span>{' '}
-            salah satu model di bawah untuk buka preview — foto masih placeholder (ganti ke aset resmi Wedison kapan saja).
+            model untuk preview (foto placeholder).
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
             {models.map((m) => (
               <button
                 key={m.id}
                 type="button"
-                onClick={() => setModalModel(m)}
+                onClick={() => {
+                  skipAutoRecommendationPopup.current = true
+                  openModelModal(m, false)
+                }}
                 title={`Klik untuk preview ${m.name}`}
                 aria-label={`Buka preview model ${m.name}`}
                 className="group relative min-h-[44px] cursor-pointer select-none overflow-hidden rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-md transition-all duration-200 hover:-translate-y-0.5 hover:border-electric-blue/45 hover:bg-white/20 hover:shadow-lg hover:shadow-electric-blue/15 active:translate-y-0 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-electric-blue focus:ring-offset-2 focus:ring-offset-slate-950"
@@ -401,18 +513,22 @@ function OjolRoutePromoSectionContent({ config }: { config: CampaignConfig }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
-            onClick={() => setModalModel(null)}
+            onClick={closeModelModal}
           >
             <motion.div
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: 20, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-white/15 bg-slate-950 shadow-2xl"
+              className={`relative w-full max-w-lg overflow-hidden rounded-2xl bg-slate-950 shadow-2xl ${
+                modelModalFromRouteRecommendation
+                  ? 'border border-electric-blue/35 ring-1 ring-electric-blue/20'
+                  : 'border border-white/15'
+              }`}
             >
               <button
                 type="button"
-                onClick={() => setModalModel(null)}
+                onClick={closeModelModal}
                 className="absolute right-3 top-3 z-10 rounded-full bg-slate-900/90 p-2 text-white hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-white"
                 aria-label="Tutup"
               >
@@ -428,7 +544,25 @@ function OjolRoutePromoSectionContent({ config }: { config: CampaignConfig }) {
                 />
               </div>
               <div className="p-5">
-                <h4 id="model-modal-title" className="text-xl font-bold text-white">
+                {modelModalFromRouteRecommendation ? (
+                  <div
+                    id="model-modal-route-context"
+                    className="mb-4 rounded-xl border border-electric-blue/25 bg-electric-blue/10 px-3 py-3 text-sm leading-relaxed text-slate-200"
+                  >
+                    <p className="text-xs font-semibold uppercase tracking-wider text-electric-blue/95">
+                      Rekomendasi dari estimasi rute
+                    </p>
+                    <p className="mt-2 text-slate-200">
+                      Mapping dari jarak ilustratif ke spesifikasi produk — bukan jaminan di jalan.{' '}
+                      <strong className="font-medium text-white">Syarat, stok &amp; promo</strong> lewat tim Wedison.
+                    </p>
+                  </div>
+                ) : null}
+                <h4
+                  id="model-modal-title"
+                  className="text-xl font-bold text-white"
+                  aria-describedby={modelModalFromRouteRecommendation ? 'model-modal-route-context' : undefined}
+                >
                   Wedison {modalModel.name}
                 </h4>
                 <Link
@@ -456,17 +590,17 @@ function OjolRoutePromoSectionContent({ config }: { config: CampaignConfig }) {
                     ))}
                   </div>
                 ) : null}
-                <a
-                  href={waWithModel(modalModel)}
+                <button
+                  type="button"
                   onClick={() => {
-                    trackWhatsAppClick('promo-042026-model-modal')
-                    setModalModel(null)
+                    openPromoWa({ modelName: modalModel.name })
+                    closeModelModal()
                   }}
                   className="mt-4 flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-success-green px-4 py-3 font-semibold text-white hover:bg-green-600"
                 >
                   <BsWhatsapp className="text-xl" aria-hidden />
                   Tanya model ini via WhatsApp
-                </a>
+                </button>
               </div>
             </motion.div>
           </motion.div>

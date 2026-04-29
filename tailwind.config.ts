@@ -30,7 +30,10 @@ const config: Config = {
         },
       },
       animation: {
-        marquee: 'marquee 50s linear infinite',
+        /** Strip gambar */
+        marquee: 'marquee 60s linear infinite',
+        /** Strip teks — durasi beda supaya tidak “nempel” dengan strip gambar */
+        'marquee-text': 'marquee 78s linear infinite',
       },
     },
   },

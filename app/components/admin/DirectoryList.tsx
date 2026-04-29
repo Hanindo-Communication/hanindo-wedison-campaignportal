@@ -85,8 +85,7 @@ export default function DirectoryList({ onLogout }: DirectoryListProps) {
           </div>
         </div>
 
-        {/* Landing Pages Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid items-stretch md:grid-cols-2 lg:grid-cols-3 gap-6">
           {landingPages.map((page, index) => (
             <motion.div
               key={page.id}
@@ -95,58 +94,60 @@ export default function DirectoryList({ onLogout }: DirectoryListProps) {
               transition={{ delay: index * 0.1 }}
               onMouseEnter={() => setHoveredItem(page.id)}
               onMouseLeave={() => setHoveredItem(null)}
-              className="relative"
+              className="relative flex min-h-0 h-full"
             >
-              <Link href={page.path}>
+              <Link href={page.path} className="flex min-h-0 w-full min-w-0">
                 <div
-                  className={`bg-white rounded-2xl p-6 shadow-sm border-2 transition-all duration-300 ${
+                  className={`flex h-full min-h-0 w-full flex-col rounded-2xl border-2 bg-white p-6 shadow-sm transition-all duration-300 ${
                     hoveredItem === page.id
                       ? 'border-electric-blue shadow-lg scale-[1.02]'
                       : 'border-slate-200 hover:border-slate-300'
                   }`}
                 >
                   {/* Badge */}
-                  <div className="flex items-start justify-between mb-4">
+                  <div className="mb-4 flex shrink-0 items-start justify-between gap-2">
                     <span
-                      className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${
+                      className={`inline-flex min-w-0 max-w-[85%] items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold ${
                         page.config.badge?.color || 'bg-electric-blue/10 text-electric-blue'
                       }`}
                     >
-                      <FiTag className="text-sm" />
-                      {page.config.badge?.text || page.variantId}
+                      <FiTag className="shrink-0 text-sm" />
+                      <span className="truncate">{page.config.badge?.text || page.variantId}</span>
                     </span>
                     <FiExternalLink
-                      className={`text-lg transition-colors ${
+                      className={`shrink-0 text-lg transition-colors ${
                         hoveredItem === page.id ? 'text-electric-blue' : 'text-slate-400'
                       }`}
                     />
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-xl font-bold text-slate-800 mb-2">
+                  <h3 className="mb-2 line-clamp-2 min-h-[3.5rem] text-xl font-bold leading-snug text-slate-800">
                     {page.config.name || `${page.campaignId} - ${page.variantId}`}
                   </h3>
 
-                  {/* Description */}
-                  <p className="text-sm text-slate-600 mb-4 line-clamp-2">
+                  {/* Description — tinggi baris tetap 2 untuk semua kartu */}
+                  <p className="mb-4 line-clamp-2 min-h-[2.5rem] text-sm leading-relaxed text-slate-600">
                     {page.config.description || 'Landing page untuk campaign ini'}
                   </p>
 
-                  {/* Meta Info */}
-                  <div className="flex flex-wrap gap-3 text-xs text-slate-500">
-                    <span className="flex items-center gap-1">
-                      <FiCalendar />
+                  {/* Meta — satu baris, audiens panjang dipotong */}
+                  <div className="flex min-w-0 shrink-0 flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500">
+                    <span className="flex shrink-0 items-center gap-1">
+                      <FiCalendar className="shrink-0" />
                       {page.config.date || 'Jan 2026'}
                     </span>
-                    <span className="flex items-center gap-1">
-                      <FiUsers />
-                      {page.config.targetAudience || 'General'}
+                    <span className="flex min-w-0 max-w-full items-center gap-1">
+                      <FiUsers className="shrink-0" />
+                      <span className="truncate" title={page.config.targetAudience || 'General'}>
+                        {page.config.targetAudience || 'General'}
+                      </span>
                     </span>
                   </div>
 
-                  {/* Path */}
-                  <div className="mt-4 pt-4 border-t border-slate-100">
-                    <code className="text-xs text-slate-500 bg-slate-50 px-2 py-1 rounded">
+                  {/* Path — selalu di dasar kartu */}
+                  <div className="mt-auto shrink-0 border-t border-slate-100 pt-4">
+                    <code className="block truncate rounded bg-slate-50 px-2 py-1 text-xs text-slate-500">
                       {page.path}
                     </code>
                   </div>

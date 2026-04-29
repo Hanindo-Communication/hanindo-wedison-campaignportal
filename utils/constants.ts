@@ -11,12 +11,34 @@ export const COLORS = {
   border: '#E2E8F0',
 }
 
+/** Lokasi showroom untuk section peta & CTA (Jakarta + Bandung). */
+export const SHOWROOM_LOCATIONS = [
+  {
+    id: 'jakarta' as const,
+    title: 'Jakarta',
+    area: 'Pondok Indah, Jakarta Selatan',
+    address: 'Jl. Arteri Pondok Indah No. 30A-C, Jakarta Selatan',
+    embedQuery: 'Jl. Arteri Pondok Indah No. 30A-C, Jakarta Selatan Wedison',
+    mapsUrl:
+      'https://www.google.com/maps/search/?api=1&query=' +
+      encodeURIComponent('Jl. Arteri Pondok Indah No. 30A-C, Jakarta Selatan'),
+  },
+  {
+    id: 'bandung' as const,
+    title: 'Bandung',
+    area: 'Experience Center, Kota Bandung',
+    address: 'Experience Center Wedison Bandung',
+    embedQuery: 'Wedison Experience Center Bandung',
+    mapsUrl: 'https://maps.app.goo.gl/28tRGZi43qA8uu76A',
+  },
+] as const
+
 // Contact Information
 export const CONTACT = {
   phone: '0821-2465-7804',
   whatsapp: '+6282124657804',
   email: 'support@wedison.co',
-  showroomAddress: 'Jl. Arteri Pondok Indah No. 30A-C, Jakarta Selatan',
+  showroomAddress: SHOWROOM_LOCATIONS[0].address,
   showroomHours: {
     weekday: 'Senin - Jumat: 10:00 - 19:00',
     weekend: 'Sabtu - Minggu: 10:00 - 17:00',

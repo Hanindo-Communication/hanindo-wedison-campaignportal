@@ -1,8 +1,9 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import { type CampaignConfig } from '@/lib/campaigns'
 import { AdAttributionProvider } from '@/app/contexts/AdAttributionContext'
-import Navbar from '@/app/components/layout/Navbar'
+import { WhatsAppPreChatProvider } from '@/app/contexts/WhatsAppPreChatContext'
 import Footer from '@/app/components/layout/Footer'
 import FloatingWhatsAppButton from '@/app/components/ui/FloatingWhatsAppButton'
 import HeroSection from './sections/HeroSection'
@@ -16,6 +17,12 @@ import LeadFormSection from '@/app/components/sections/LeadFormSection'
 import OjolRoutePromoSection from './sections/OjolRoutePromoSection'
 import WhyWedisonSection from '@/app/components/sections/WhyWedisonSection'
 import PromoTickerSection from '@/app/components/sections/PromoTickerSection'
+import HeroPopupBanner from '@/app/components/ui/HeroPopupBanner'
+
+const Navbar = dynamic(() => import('@/app/components/layout/Navbar'), {
+  ssr: true,
+  loading: () => null,
+})
 
 interface LandingPageClientProps {
   campaign: string
@@ -58,17 +65,26 @@ export default function LandingPageClient({ config }: LandingPageClientProps) {
 
   return (
     <AdAttributionProvider>
-      <main className="min-h-screen bg-white overflow-x-hidden">
-        <Navbar variant={navVariant} />
+      <WhatsAppPreChatProvider>
+        <main className="min-h-screen bg-white overflow-x-hidden">
+          <Navbar variant={navVariant} />
 
-        {/* Render sections in order defined by config */}
-        {config.sections.map((section) => renderSection(section))}
+          {config.heroPopupBanner ? (
+            <HeroPopupBanner
+              imageSrc={config.heroPopupBanner.imageSrc}
+              alt={config.heroPopupBanner.alt}
+            />
+          ) : null}
 
-        <Footer />
+          {/* Render sections in order defined by config */}
+          {config.sections.map((section) => renderSection(section))}
 
-        {/* Floating WhatsApp Button - Always Visible */}
-        <FloatingWhatsAppButton />
-      </main>
+          <Footer />
+
+          {/* Floating WhatsApp Button - Always Visible */}
+          <FloatingWhatsAppButton />
+        </main>
+      </WhatsAppPreChatProvider>
     </AdAttributionProvider>
   )
 }

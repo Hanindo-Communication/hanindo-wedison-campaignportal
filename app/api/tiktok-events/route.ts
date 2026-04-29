@@ -60,12 +60,16 @@ export async function POST(request: Request) {
     // Get access token from environment variable
     const accessToken = process.env.TIKTOK_EVENTS_API_TOKEN
     
+    // Tanpa token, pixel client tetap jalan; Events API opsional. Jangan 500 (spam error & monitoring).
     if (!accessToken) {
-      console.error('TikTok Events API token not configured')
-      return NextResponse.json(
-        { error: 'TikTok Events API token not configured' },
-        { status: 500 }
-      )
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('[tiktok-events] TIKTOK_EVENTS_API_TOKEN tidak diset — event diskip.')
+      }
+      return NextResponse.json({
+        success: true,
+        skipped: true,
+        message: 'TikTok Events API not configured',
+      })
     }
 
     // Get event data from request body
@@ -124,13 +128,19 @@ export async function POST(request: Request) {
       body: JSON.stringify(payload),
     })
 
-    const responseData = await response.json()
+    const responseText = await response.text()
+    let responseData: unknown = null
+    try {
+      responseData = responseText ? JSON.parse(responseText) : null
+    } catch {
+      responseData = { parseError: true, bodyPreview: responseText.slice(0, 400) }
+    }
 
     if (!response.ok) {
       console.error('TikTok Events API error:', responseData)
       return NextResponse.json(
         { error: 'TikTok Events API error', details: responseData },
-        { status: response.status }
+        { status: response.status >= 400 && response.status < 600 ? response.status : 502 }
       )
     }
 

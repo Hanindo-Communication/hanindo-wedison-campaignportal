@@ -9,26 +9,22 @@ const REASONS = [
   {
     icon: FiZap,
     title: 'SuperCharge — isi daya cepat',
-    body:
-      'SuperCharge adalah solusi pengisian cepat dari Wedison: perkiraan isi baterai dari sekitar 10% ke 80% dalam 15 menit pada model yang mendukung — hemat waktu tanpa mengorbankan kualitas pengisian.',
+    body: '~10–80% baterai dalam ~15 menit (model yang mendukung).',
   },
   {
     icon: FiMapPin,
     title: 'Jaringan pengisian nasional',
-    body:
-      'Lebih dari 100 titik SuperCharge tersebar di Indonesia di lokasi strategis, sehingga lebih mudah merencanakan perjalanan harian tanpa khawatir kehabisan daya.',
+    body: '100+ titik SuperCharge di Indonesia untuk rute harian.',
   },
   {
     icon: MdEnergySavingsLeaf,
     title: 'Energi lebih efisien per jarak tempuh',
-    body:
-      'Untuk jarak yang sama, motor listrik Wedison memakai energi secara lebih efisien dibanding motor konvensional — selaras dengan narasi efisiensi di situs resmi Wedison.',
+    body: 'Untuk jarak sama, energi per km lebih ringan vs motor bensin.',
   },
   {
     icon: FiWind,
     title: 'Tanpa emisi knalpot',
-    body:
-      'Ditenagai listrik, setiap perjalanan berkontribusi pada udara perkotaan yang lebih bersih dibanding emisi knalpot motor bensin.',
+    body: 'Listrik = tanpa asap knalpot di jalan.',
   },
 ] as const
 
@@ -58,10 +54,8 @@ export default function WhyWedisonSection() {
           >
             Kenapa Wedison?
           </h2>
-          <p className="mt-4 text-lg text-slate-600 leading-relaxed">
-            Ringkasan alasan memilih motor listrik Wedison — disesuaikan dari pesan utama di{' '}
-            <span className="whitespace-nowrap">wedison.co</span> (SuperCharge, efisiensi, dan dampak
-            berkendara).
+          <p className="mt-4 text-base text-slate-600 leading-relaxed md:text-lg">
+            Fokus ke yang sering dicari: charge cepat, jaringan, efisiensi, dan berkendara lebih bersih.
           </p>
         </motion.div>
 

@@ -8,7 +8,6 @@ export default function TikTokPageView() {
   const pathname = usePathname()
 
   useEffect(() => {
-    // Track page view via TikTok Events API
     trackPageViewAPI()
   }, [pathname])
 

@@ -5,8 +5,8 @@ import { motion } from 'framer-motion'
 import { FiUser, FiPhone, FiMapPin, FiSend, FiCheck, FiCreditCard } from 'react-icons/fi'
 import { BsWhatsapp } from 'react-icons/bs'
 import { MODEL_SPECS } from '@/utils/modelSpecs'
-import { useLandingWhatsApp } from '@/app/contexts/AdAttributionContext'
-import { trackWhatsAppClick, trackLeadFormSubmit } from '@/utils/analytics'
+import { trackLeadFormSubmit } from '@/utils/analytics'
+import { useWhatsAppPreChat } from '@/app/contexts/WhatsAppPreChatContext'
 
 interface FormData {
   name: string
@@ -17,7 +17,7 @@ interface FormData {
 }
 
 export default function LeadFormSection() {
-  const { linkFor, linkForCustomMessage } = useLandingWhatsApp()
+  const { openPreChat } = useWhatsAppPreChat()
   const mainModels = MODEL_SPECS.filter((m) => !m.id.includes('-extended'))
   
   const [formData, setFormData] = useState<FormData>({
@@ -41,22 +41,18 @@ export default function LeadFormSection() {
     setIsSubmitting(true)
     setError('')
 
-    // Google Apps Script URL - submit directly from client
-    const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxta1aDG6Btj7zovplN9JsNpZLXeumUw-zHnx3HlMb23aEvs1fPPXKTf_lK-8rnskqMTQ/exec'
-
     try {
-      // Submit directly to Google Apps Script (bypasses Cloudflare edge issues)
-      const response = await fetch(GOOGLE_SHEETS_URL, {
+      const response = await fetch('/api/lead', {
         method: 'POST',
-        mode: 'no-cors', // Required for Google Apps Script
-        headers: {
-          'Content-Type': 'text/plain',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       })
 
-      // With no-cors mode, we can't read the response, but if no error thrown, assume success
-      // Track successful form submission
+      if (!response.ok) {
+        const errBody = await response.json().catch(() => ({}))
+        throw new Error((errBody as { error?: string }).error || `HTTP ${response.status}`)
+      }
+
       trackLeadFormSubmit(formData.program, formData.model)
       
       setIsSubmitted(true)
@@ -78,8 +74,7 @@ export default function LeadFormSection() {
     }
   }
 
-  // Generate WhatsApp message from form data
-  const generateWhatsAppMessage = () => {
+  const buildLeadCustomMessage = () => {
     const model = mainModels.find((m) => m.id === formData.model)
     let message = `Halo! Saya ${formData.name || '[Nama]'} dari ${formData.location || '[Kota]'}.`
     if (model) {
@@ -87,14 +82,14 @@ export default function LeadFormSection() {
     }
     if (formData.program) {
       const programLabels: Record<string, string> = {
-        'cash': 'Cash/Tunai',
-        'installment': 'Cicilan',
-        'rent-to-own': 'Rent to Own'
+        cash: 'Cash/Tunai',
+        installment: 'Cicilan',
+        'rent-to-own': 'Rent to Own',
       }
       message += ` Program yang diminati: ${programLabels[formData.program] || formData.program}.`
     }
     message += ' Bisa info lebih lanjut?'
-    return linkForCustomMessage(message)
+    return message
   }
 
   return (
@@ -136,14 +131,14 @@ export default function LeadFormSection() {
               >
                 Kirim Lagi
               </button>
-              <a
-                href={linkFor('general')}
-                onClick={() => trackWhatsAppClick('lead-form-success')}
+              <button
+                type="button"
+                onClick={() => openPreChat({ kind: 'messageKey', messageKey: 'general' })}
                 className="flex items-center justify-center gap-2 px-6 py-3 bg-success-green text-white font-semibold rounded-full hover:bg-green-600 transition-colors"
               >
                 <BsWhatsapp className="text-xl" />
                 <span>Chat WhatsApp</span>
-              </a>
+              </button>
             </div>
           </motion.div>
         ) : (
@@ -280,14 +275,16 @@ export default function LeadFormSection() {
                   )}
                   <span>{isSubmitting ? 'Mengirim...' : 'Kirim Data'}</span>
                 </button>
-                <a
-                  href={generateWhatsAppMessage()}
-                  onClick={() => trackWhatsAppClick('lead-form-whatsapp')}
+                <button
+                  type="button"
+                  onClick={() =>
+                    openPreChat({ kind: 'customBaseMessage', baseMessage: buildLeadCustomMessage() })
+                  }
                   className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-success-green text-white font-semibold rounded-full hover:bg-green-600 transition-all"
                 >
                   <BsWhatsapp className="text-xl" />
                   <span>Chat WhatsApp Langsung</span>
-                </a>
+                </button>
               </div>
             </form>
           </motion.div>

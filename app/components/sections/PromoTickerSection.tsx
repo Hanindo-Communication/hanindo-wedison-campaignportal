@@ -1,32 +1,76 @@
 'use client'
 
+import Image from 'next/image'
 import { Suspense, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useReducedMotion } from 'framer-motion'
 import { FiPause, FiPlay } from 'react-icons/fi'
 import { BsWhatsapp } from 'react-icons/bs'
 import { getAdSourceLine } from '@/lib/adSourceFromUrl'
-import { buildPromo042026WhatsAppLink } from '@/utils/whatsappLinks'
-import { trackWhatsAppClick } from '@/utils/analytics'
+import { useWhatsAppPreChat } from '@/app/contexts/WhatsAppPreChatContext'
 
-/** Placeholder saluran promo — ganti teks ini saat materi resmi ada */
+/**
+ * Placeholder banner — ganti `imageSrc` per item saat asset siap.
+ * Rasio tampilan: 16:9 (disarankan aset **1920×1080** px; cocok untuk strip horizontal).
+ */
+const TICKER_BANNER_PLACEHOLDER = '/images/promo-ticker-banner-placeholder.svg'
+
 const TICKER_ITEMS = [
-  'Promo April 2026 — paket & diskon mengikuti kebijakan Wedison (detail via WhatsApp)',
-  'SuperCharge — pengisian cepat di jaringan Wedison untuk dukung operasional harian',
-  'Konsultasi model & cicilan — tim kami bantu cocokkan kebutuhan kamu',
-  'Test drive & pengalaman langsung di Experience Center Pondok Indah',
-  'Program trade-in & pembiayaan — tanya ketersediaan promo periode ini',
+  {
+    id: 'apr-2026',
+    text: 'Promo Mei 2026 — detail & syarat via WhatsApp',
+    imageSrc: TICKER_BANNER_PLACEHOLDER,
+  },
+  {
+    id: 'supercharge',
+    text: 'SuperCharge — charge cepat di jaringan Wedison',
+    imageSrc: TICKER_BANNER_PLACEHOLDER,
+  },
+  {
+    id: 'konsultasi',
+    text: 'Konsultasi model & cicilan — chat tim',
+    imageSrc: TICKER_BANNER_PLACEHOLDER,
+  },
+  {
+    id: 'test-drive',
+    text: 'Test drive — Experience Center Pondok Indah',
+    imageSrc: TICKER_BANNER_PLACEHOLDER,
+  },
+  {
+    id: 'trade-in',
+    text: 'Trade-in & pembiayaan — tanya periode ini',
+    imageSrc: TICKER_BANNER_PLACEHOLDER,
+  },
 ] as const
+
+function TickerImageSlide({ src, label }: { src: string; label: string }) {
+  return (
+    <div
+      className="relative w-[min(88vw,340px)] shrink-0 overflow-hidden rounded-xl bg-slate-800 ring-1 ring-white/15 aspect-[16/9] sm:w-[400px] md:w-[480px]"
+    >
+      <Image
+        src={src}
+        alt=""
+        fill
+        unoptimized={src.endsWith('.svg')}
+        className="object-cover object-center"
+        sizes="(max-width:768px) 88vw, 480px"
+      />
+      <span className="sr-only">{label}</span>
+    </div>
+  )
+}
+
+const marqueePaused = (paused: boolean) =>
+  `${paused ? '[animation-play-state:paused]' : ''} group-hover:[animation-play-state:paused]`
 
 function PromoTickerSectionInner() {
   const searchParams = useSearchParams()
   const reduceMotion = useReducedMotion()
   const [userPaused, setUserPaused] = useState(false)
+  const { openPreChat } = useWhatsAppPreChat()
 
   const adSourceLine = getAdSourceLine(searchParams)
-  const waHref = buildPromo042026WhatsAppLink({
-    adSourceLine: adSourceLine || undefined,
-  })
 
   const runMarquee = !reduceMotion
 
@@ -44,8 +88,7 @@ function PromoTickerSectionInner() {
               Program &amp; promo
             </h2>
             <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-200">
-              Ringkasan jalur promo (placeholder). Detail resmi, syarat, dan periode berlaku selalu dikonfirmasi lewat tim
-              Wedison — pakai tombol jeda jika teks terlalu cepat.
+              Cuplikan promo (placeholder). Konfirmasi resmi lewat tim — pakai jeda kalau teks kecepetan.
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2 md:justify-end">
@@ -69,55 +112,98 @@ function PromoTickerSectionInner() {
                 )}
               </button>
             ) : null}
-            <a
-              href={waHref}
-              onClick={() => trackWhatsAppClick('promo-ticker-section')}
+            <button
+              type="button"
+              onClick={() =>
+                openPreChat({
+                  kind: 'promo052026',
+                  promoParts: { adSourceLine: adSourceLine || undefined },
+                })
+              }
               className="inline-flex items-center gap-2 rounded-full bg-success-green px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-white/30"
             >
               <BsWhatsapp className="text-lg" aria-hidden />
               Tanya promo
-            </a>
+            </button>
           </div>
         </div>
 
         {runMarquee ? (
-          <div className="group relative mt-6 overflow-hidden rounded-xl border border-white/15 bg-slate-900 py-3.5">
-            <div
-              className={`flex w-max gap-0 will-change-transform animate-marquee ${
-                userPaused ? '[animation-play-state:paused]' : ''
-              } group-hover:[animation-play-state:paused]`}
-            >
-              {[0, 1].map((copy) => (
-                <div
-                  key={copy}
-                  className="flex shrink-0 items-center gap-10 px-6 md:gap-16 md:px-10"
-                  aria-hidden={copy === 1}
-                >
-                  {TICKER_ITEMS.map((text) => (
-                    <span
-                      key={`${copy}-${text.slice(0, 24)}`}
-                      className="inline-flex items-center gap-2 whitespace-nowrap text-sm text-white md:text-[15px]"
-                    >
-                      <span className="h-2 w-2 shrink-0 rounded-full bg-secondary-teal shadow-[0_0_8px_rgba(6,182,212,0.6)]" />
-                      {text}
-                    </span>
-                  ))}
-                </div>
-              ))}
+          <div className="group mt-6 space-y-3">
+            {/* Strip 1: banner gambar (atas) */}
+            <div className="relative overflow-hidden rounded-xl border border-white/15 bg-slate-900 py-3">
+              <div
+                className={`flex w-max will-change-transform animate-marquee ${marqueePaused(
+                  userPaused,
+                )}`}
+              >
+                {[0, 1].map((copy) => (
+                  <div
+                    key={`img-${copy}`}
+                    className="flex shrink-0 items-center gap-5 px-5 md:gap-7 md:px-8"
+                    aria-hidden={copy === 1}
+                  >
+                    {TICKER_ITEMS.map((item) => (
+                      <TickerImageSlide key={`${copy}-img-${item.id}`} src={item.imageSrc} label={item.text} />
+                    ))}
+                  </div>
+                ))}
+              </div>
             </div>
+
+            {/* Strip 2: teks (bawah), animasi terpisah */}
+            <div className="relative overflow-hidden rounded-xl border border-white/15 bg-slate-900/95 py-3.5">
+              <div
+                className={`flex w-max will-change-transform animate-marquee-text ${marqueePaused(
+                  userPaused,
+                )}`}
+              >
+                {[0, 1].map((copy) => (
+                  <div
+                    key={`txt-${copy}`}
+                    className="flex shrink-0 items-center gap-10 px-6 md:gap-16 md:px-10"
+                    aria-hidden={copy === 1}
+                  >
+                    {TICKER_ITEMS.map((item) => (
+                      <span
+                        key={`${copy}-txt-${item.id}`}
+                        className="inline-flex items-center gap-2 whitespace-nowrap text-sm text-white md:text-[15px]"
+                      >
+                        <span
+                          className="h-2 w-2 shrink-0 rounded-full bg-secondary-teal shadow-[0_0_8px_rgba(6,182,212,0.6)]"
+                          aria-hidden
+                        />
+                        {item.text}
+                      </span>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+
             <p className="sr-only">
-              Teks promo bergulir; hover atau jeda untuk membaca. Konten placeholder hingga materi resmi tersedia.
+              Dua baris promo bergulir: banner gambar di atas, teks di bawah. Hover atau jeda untuk membaca. Gambar
+              placeholder hingga materi resmi tersedia.
             </p>
           </div>
         ) : (
-          <ul className="mt-6 space-y-3 rounded-xl border border-white/15 bg-slate-900 p-4 text-sm text-slate-100 md:p-5">
-            {TICKER_ITEMS.map((text) => (
-              <li key={text} className="flex gap-2">
-                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-secondary-teal" aria-hidden />
-                <span>{text}</span>
-              </li>
-            ))}
-          </ul>
+          <div className="mt-6 space-y-4">
+            <ul className="flex flex-col gap-3 rounded-xl border border-white/15 bg-slate-900 p-4 md:p-5">
+              {TICKER_ITEMS.map((item) => (
+                <li key={`still-${item.id}`} className="list-none">
+                  <TickerImageSlide src={item.imageSrc} label={item.text} />
+                </li>
+              ))}
+            </ul>
+            <ul className="space-y-3 rounded-xl border border-white/15 bg-slate-900 p-4 text-sm text-slate-100 md:p-5">
+              {TICKER_ITEMS.map((item) => (
+                <li key={item.id} className="flex gap-2">
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-secondary-teal" aria-hidden />
+                  <span>{item.text}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
       </div>
     </section>
@@ -127,7 +213,10 @@ function PromoTickerSectionInner() {
 function PromoTickerFallback() {
   return (
     <section className="border-y border-white/10 bg-slate-950 py-10">
-      <div className="mx-auto h-20 max-w-7xl animate-pulse rounded-xl bg-slate-800/80 px-4 sm:px-6 lg:px-8" />
+      <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 sm:px-6 lg:px-8">
+        <div className="h-24 animate-pulse rounded-xl bg-slate-800/80" />
+        <div className="h-14 animate-pulse rounded-xl bg-slate-800/60" />
+      </div>
     </section>
   )
 }

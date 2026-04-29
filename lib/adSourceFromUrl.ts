@@ -11,6 +11,10 @@ export type AdAttribution = {
   platformKey: AdPlatformKey
   /** Short context line — varies by platform */
   platformNote?: string
+  /** Dari URL utm_* — dipakai di header WA & log sheet (truncated) */
+  utmCampaign?: string
+  utmMedium?: string
+  utmContent?: string
 }
 
 export const ORGANIC_ATTRIBUTION: AdAttribution = {
@@ -127,4 +131,51 @@ export function getAdSourceLine(searchParams: URLSearchParams | null): string {
   if (!searchParams) return ''
   const a = parseAdAttributionFromUrl(searchParams)
   return a?.sourceLine ?? ''
+}
+
+const UTM_MAX = { campaign: 48, medium: 24, content: 48 } as const
+
+function trimUtmParam(raw: string | null, max: number): string | undefined {
+  if (raw == null) return undefined
+  const t = raw.trim().replace(/\s+/g, ' ')
+  if (!t) return undefined
+  return t.slice(0, max)
+}
+
+/** Ambil utm_* dari query; nilai dipotong agar aman untuk wa.me & sheet. */
+export function utmFieldsFromSearchParams(p: URLSearchParams): Pick<
+  AdAttribution,
+  'utmCampaign' | 'utmMedium' | 'utmContent'
+> {
+  const utmCampaign = trimUtmParam(p.get('utm_campaign'), UTM_MAX.campaign)
+  const utmMedium = trimUtmParam(p.get('utm_medium'), UTM_MAX.medium)
+  const utmContent = trimUtmParam(p.get('utm_content'), UTM_MAX.content)
+  const out: Pick<AdAttribution, 'utmCampaign' | 'utmMedium' | 'utmContent'> = {}
+  if (utmCampaign) out.utmCampaign = utmCampaign
+  if (utmMedium) out.utmMedium = utmMedium
+  if (utmContent) out.utmContent = utmContent
+  return out
+}
+
+/** Gabungkan utm dari URL ke objek attribution (hanya field yang ada di URL). */
+export function mergeUtmFromUrlParams(attr: AdAttribution, p: URLSearchParams): AdAttribution {
+  const u = utmFieldsFromSearchParams(p)
+  return { ...attr, ...u }
+}
+
+/**
+ * Attribution final untuk landing: klik id / utm_source, lalu utm campaign layer,
+ * dengan fallback session (stored) lalu organik.
+ */
+export function resolveLandingAttribution(
+  fromClickOrSource: AdAttribution | null,
+  stored: AdAttribution | null,
+  p: URLSearchParams
+): AdAttribution {
+  const base = fromClickOrSource ?? stored ?? ORGANIC_ATTRIBUTION
+  const withPlatform: AdAttribution = {
+    ...base,
+    platformKey: base.platformKey ?? 'organic',
+  }
+  return mergeUtmFromUrlParams(withPlatform, p)
 }

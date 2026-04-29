@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" role="img" aria-label="Placeholder banner promo 1920×1080 (16:9)">
+  <defs>
+    <linearGradient id="ptp" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e293b"/>
+      <stop offset="100%" style="stop-color:#0f172a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#ptp)"/>
+  <rect x="48" y="48" width="1824" height="984" rx="24" fill="none" stroke="#475569" stroke-width="4" stroke-dasharray="24 18"/>
+  <rect x="120" y="380" width="200" height="150" rx="16" fill="#334155" stroke="#64748b" stroke-width="2"/>
+  <circle cx="180" cy="430" r="28" fill="#64748b"/>
+  <path d="M140 500 L200 440 L230 470 L280 410 L340 500 Z" fill="#475569"/>
+  <text x="960" y="520" text-anchor="middle" fill="#e2e8f0" font-family="system-ui,Segoe UI,sans-serif" font-size="56" font-weight="700">Banner promo</text>
+  <text x="960" y="600" text-anchor="middle" fill="#94a3b8" font-family="system-ui,Segoe UI,sans-serif" font-size="36">Ganti gambar final di TICKER_ITEMS → imageSrc</text>
+  <text x="960" y="680" text-anchor="middle" fill="#cbd5e1" font-family="system-ui,Segoe UI,sans-serif" font-size="32">Aset disarankan: 1920 × 1080 px (16:9)</text>
+</svg>

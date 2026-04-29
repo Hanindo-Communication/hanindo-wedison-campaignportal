@@ -10,8 +10,7 @@ import {
   FUEL_KM_PER_LITER,
   MODEL_EFFICIENCY,
 } from '@/lib/combinedSavingsFormulas'
-import { useLandingWhatsApp } from '@/app/contexts/AdAttributionContext'
-import { trackWhatsAppClick } from '@/utils/analytics'
+import { useWhatsAppPreChat } from '@/app/contexts/WhatsAppPreChatContext'
 
 // Usage presets
 const USAGE_PRESETS = [
@@ -196,7 +195,7 @@ interface CombinedSavingsSectionProps {
 }
 
 export default function CombinedSavingsSection({ config }: CombinedSavingsSectionProps) {
-  const { linkFor } = useLandingWhatsApp()
+  const { openPreChat, registerBrowseContext } = useWhatsAppPreChat()
   const mainModels = MODEL_SPECS.filter((m) => !m.id.includes('-extended'))
   
   // Calculator states
@@ -267,6 +266,14 @@ export default function CombinedSavingsSection({ config }: CombinedSavingsSectio
 
   const selectedModelData = MODEL_SPECS.find((m) => m.id === actualModelId) || MODEL_SPECS[0]
   const currentMainModel = MODEL_SPECS.find((m) => m.id === selectedModel) || MODEL_SPECS[0]
+
+  useEffect(() => {
+    registerBrowseContext({
+      section: 'hitung-hemat',
+      modelId: actualModelId,
+      modelName: selectedModelData.name,
+    })
+  }, [actualModelId, selectedModelData.name, registerBrowseContext])
 
   // Total Hemat calculation
   const SAVINGS_YEARS = 5
@@ -623,14 +630,14 @@ export default function CombinedSavingsSection({ config }: CombinedSavingsSectio
                   <FiDollarSign className="text-xl" />
                   <span>Lihat Harga & Cara Pembayaran</span>
                 </a>
-                <a
-                  href={linkFor('general')}
-                  onClick={() => trackWhatsAppClick('comparison-calculator')}
+                <button
+                  type="button"
+                  onClick={() => openPreChat({ kind: 'messageKey', messageKey: 'general' })}
                   className="flex items-center justify-center gap-2 w-full px-6 py-4 bg-white border-2 border-success-green text-success-green font-bold rounded-full hover:bg-success-green/5 transition-all"
                 >
                   <BsWhatsapp className="text-xl" />
                   <span>Saya Mau Hemat Juga!</span>
-                </a>
+                </button>
               </div>
             </div>
           </div>
@@ -870,14 +877,14 @@ export default function CombinedSavingsSection({ config }: CombinedSavingsSectio
                           </div>
 
                           {/* CTA - Compact */}
-                          <a
-                            href={linkFor('general')}
-                            onClick={() => trackWhatsAppClick('savings-story')}
+                          <button
+                            type="button"
+                            onClick={() => openPreChat({ kind: 'messageKey', messageKey: 'general' })}
                             className="flex items-center justify-center gap-2 w-full px-5 py-3 bg-white text-success-green font-bold rounded-full hover:bg-slate-50 transition-colors text-sm"
                           >
                             <BsWhatsapp className="text-lg" />
                             <span>Saya Mau Hemat Juga!</span>
-                          </a>
+                          </button>
                         </motion.div>
                       </AnimatePresence>
                     </div>

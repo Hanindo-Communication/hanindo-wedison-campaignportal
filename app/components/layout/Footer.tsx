@@ -2,13 +2,12 @@
 
 import { BsWhatsapp } from 'react-icons/bs'
 import { FiMapPin, FiMail, FiClock } from 'react-icons/fi'
-import { CONTACT } from '@/utils/constants'
-import { useLandingWhatsApp } from '@/app/contexts/AdAttributionContext'
-import { trackWhatsAppClick } from '@/utils/analytics'
+import { CONTACT, SHOWROOM_LOCATIONS } from '@/utils/constants'
+import { useWhatsAppPreChat } from '@/app/contexts/WhatsAppPreChatContext'
 import Logo from '../ui/Logo'
 
 export default function Footer() {
-  const { linkFor } = useLandingWhatsApp()
+  const { openPreChat } = useWhatsAppPreChat()
 
   return (
     <footer className="bg-slate-900 text-white">
@@ -27,14 +26,14 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4">Kontak</h3>
             <ul className="space-y-4">
               <li>
-                <a
-                  href={linkFor('general')}
-                  onClick={() => trackWhatsAppClick('footer-phone')}
-                  className="flex items-start gap-3 text-slate-400 hover:text-white transition-colors"
+                <button
+                  type="button"
+                  onClick={() => openPreChat({ kind: 'messageKey', messageKey: 'general' })}
+                  className="flex w-full items-start gap-3 text-left text-slate-400 hover:text-white transition-colors"
                 >
                   <BsWhatsapp className="text-lg mt-1 flex-shrink-0" aria-hidden />
                   <span>{CONTACT.phone}</span>
-                </a>
+                </button>
               </li>
               <li>
                 <a
@@ -51,10 +50,25 @@ export default function Footer() {
           <div className="md:col-span-2 lg:col-span-1">
             <h3 className="text-lg font-semibold mb-4">Lokasi</h3>
             <ul className="space-y-4">
-              <li className="flex items-start gap-3 text-slate-400">
-                <FiMapPin className="text-lg mt-1 flex-shrink-0" aria-hidden />
-                <span translate="no">{CONTACT.showroomAddress}</span>
-              </li>
+              {SHOWROOM_LOCATIONS.map((loc) => (
+                <li key={loc.id} className="flex items-start gap-3 text-slate-400">
+                  <FiMapPin className="mt-1 flex-shrink-0 text-lg" aria-hidden />
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-slate-200">{loc.title}</p>
+                    <p className="mt-0.5" translate="no">
+                      {loc.address}
+                    </p>
+                    <a
+                      href={loc.mapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-1 inline-block text-sm text-electric-blue hover:underline"
+                    >
+                      Google Maps
+                    </a>
+                  </div>
+                </li>
+              ))}
               <li className="flex items-start gap-3 text-slate-400">
                 <FiClock className="text-lg mt-1 flex-shrink-0" aria-hidden />
                 <div>
