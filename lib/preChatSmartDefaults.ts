@@ -7,7 +7,7 @@ export type OpenPreChatOptions = {
   suggestedIntent?: WhatsAppPrefilterIntentId
 }
 
-/** CTA “Booking test drive” dari section Showroom saat payload masih `promo052026` (landing minimal). */
+/** CTA “Jadwal test drive” dari section Showroom saat payload masih `promo052026` (landing minimal). */
 export const OPEN_PRECHAT_SHOWROOM_TEST_DRIVE: OpenPreChatOptions = {
   suggestedIntent: 'test_drive',
   kebutuhanHint:

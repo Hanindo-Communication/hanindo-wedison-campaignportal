@@ -96,3 +96,17 @@ export const STATS = {
   reviews: '2,000+',
   stations: '20+',
 }
+
+/** Tombol & aria WhatsApp — seragam; beberapa nilai khusus konteks section. */
+export const WHATSAPP_CTA = {
+  button: 'WhatsApp',
+  aria: 'Buka WhatsApp',
+  modalSubmit: 'Lanjut ke WhatsApp',
+  tooltipTitle: 'Butuh bantuan?',
+  tooltipBody: 'Hubungi tim di WhatsApp.',
+  /** Hitung hemat, cerita hemat, kalkulator */
+  savings: 'WhatsApp',
+  financingConsult: 'Tanya cicilan',
+  financingOrder: 'Pesan unit',
+  testDrive: 'Jadwal test drive',
+} as const

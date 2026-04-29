@@ -75,11 +75,11 @@ export const CAMPAIGNS: Campaigns = {
       },
       hero: {
         headline: 'Hemat Hingga 60% Biaya BBM dengan Motor Listrik',
-        subheadline: 'Charge 15 menit, hemat Rp 400rb+ per bulan. DP 0% tersedia.',
+        subheadline: 'Charge 15 menit · hemat BBM · DP 0% (syarat berlaku).',
         highlightBadge: 'Promo Januari 2026',
         ctaText: 'Hitung Penghematan Saya',
         ctaLink: '#combined-savings',
-        secondaryCtaText: 'Chat WhatsApp',
+        secondaryCtaText: 'WhatsApp',
         secondaryCtaLink: 'whatsapp',
       },
       sections: [
@@ -110,11 +110,11 @@ export const CAMPAIGNS: Campaigns = {
       },
       hero: {
         headline: 'Driver Ojol, Hemat Rp 500rb+/Bulan dengan Motor Listrik',
-        subheadline: 'Biaya operasional turun drastis. Charge cepat 15 menit, range 135km.',
+        subheadline: 'Operasional ringan · charge cepat · range panjang.',
         highlightBadge: 'Khusus Ojol Driver',
         ctaText: 'Hitung Penghematan Saya',
         ctaLink: '#combined-savings',
-        secondaryCtaText: 'Chat WhatsApp',
+        secondaryCtaText: 'WhatsApp',
         secondaryCtaLink: 'whatsapp',
       },
       sections: [
@@ -148,11 +148,11 @@ export const CAMPAIGNS: Campaigns = {
       },
       hero: {
         headline: 'Hemat Perjalanan Kamu dengan Motor Listrik Wedison',
-        subheadline: 'Isi rute → lihat perkiraan hemat vs BBM → chat tim untuk promo & next step.',
+        subheadline: '',
         highlightBadge: 'Motor listrik · Rute harian',
         ctaText: 'Cek hemat & promo',
         ctaLink: '#route-promo-estimate',
-        secondaryCtaText: 'Chat WhatsApp',
+        secondaryCtaText: 'WhatsApp',
         secondaryCtaLink: 'whatsapp',
         backgroundImage: '/images/campaigns/052026/hero-reference.png',
       },

@@ -7,6 +7,7 @@ import { FiMenu, FiX } from 'react-icons/fi'
 import { BsWhatsapp } from 'react-icons/bs'
 import { useWhatsAppPreChat } from '@/app/contexts/WhatsAppPreChatContext'
 import Logo from '../ui/Logo'
+import { WHATSAPP_CTA } from '@/utils/constants'
 
 const NAV_LINKS = [
   { label: 'Model', href: '#models' },
@@ -103,10 +104,10 @@ function NavbarInner({ variant = 'default' }: NavbarProps) {
               <button
                 type="button"
                 onClick={openNavWa}
-                className="inline-flex items-center gap-2 px-4 py-2.5 md:px-5 bg-success-green text-white text-sm md:text-base font-semibold rounded-full hover:bg-green-600 transition-all hover:scale-105 shadow-lg"
+                className="inline-flex items-center gap-2 px-3.5 py-2.5 md:px-4 bg-success-green text-white text-sm md:text-base font-semibold rounded-full hover:bg-green-600 transition-all hover:scale-105 shadow-lg"
               >
-                <BsWhatsapp className="text-lg" />
-                <span>Chat WhatsApp</span>
+                <BsWhatsapp className="text-lg" aria-hidden />
+                <span>{WHATSAPP_CTA.button}</span>
               </button>
               {variant !== 'minimal' ? (
                 <button
@@ -160,8 +161,8 @@ function NavbarInner({ variant = 'default' }: NavbarProps) {
                     }}
                     className="flex items-center justify-center gap-2 w-full px-6 py-3 bg-success-green text-white font-semibold rounded-full hover:bg-green-600 transition-colors"
                   >
-                    <BsWhatsapp className="text-xl" />
-                    <span>Chat WhatsApp</span>
+                    <BsWhatsapp className="text-xl" aria-hidden />
+                    <span>{WHATSAPP_CTA.button}</span>
                   </button>
                 </div>
               </div>

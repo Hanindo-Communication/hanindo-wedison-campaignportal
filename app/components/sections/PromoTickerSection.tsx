@@ -8,6 +8,7 @@ import { FiPause, FiPlay } from 'react-icons/fi'
 import { BsWhatsapp } from 'react-icons/bs'
 import { getAdSourceLine } from '@/lib/adSourceFromUrl'
 import { useWhatsAppPreChat } from '@/app/contexts/WhatsAppPreChatContext'
+import { WHATSAPP_CTA } from '@/utils/constants'
 
 /**
  * Placeholder banner — ganti `imageSrc` per item saat asset siap.
@@ -16,31 +17,11 @@ import { useWhatsAppPreChat } from '@/app/contexts/WhatsAppPreChatContext'
 const TICKER_BANNER_PLACEHOLDER = '/images/promo-ticker-banner-placeholder.svg'
 
 const TICKER_ITEMS = [
-  {
-    id: 'apr-2026',
-    text: 'Promo Mei 2026 — detail & syarat via WhatsApp',
-    imageSrc: TICKER_BANNER_PLACEHOLDER,
-  },
-  {
-    id: 'supercharge',
-    text: 'SuperCharge — charge cepat di jaringan Wedison',
-    imageSrc: TICKER_BANNER_PLACEHOLDER,
-  },
-  {
-    id: 'konsultasi',
-    text: 'Konsultasi model & cicilan — chat tim',
-    imageSrc: TICKER_BANNER_PLACEHOLDER,
-  },
-  {
-    id: 'test-drive',
-    text: 'Test drive — Experience Center Pondok Indah',
-    imageSrc: TICKER_BANNER_PLACEHOLDER,
-  },
-  {
-    id: 'trade-in',
-    text: 'Trade-in & pembiayaan — tanya periode ini',
-    imageSrc: TICKER_BANNER_PLACEHOLDER,
-  },
+  { id: 'apr-2026', text: 'Promo Mei 2026', imageSrc: TICKER_BANNER_PLACEHOLDER },
+  { id: 'supercharge', text: 'SuperCharge', imageSrc: TICKER_BANNER_PLACEHOLDER },
+  { id: 'konsultasi', text: 'Model & cicilan', imageSrc: TICKER_BANNER_PLACEHOLDER },
+  { id: 'test-drive', text: 'Test drive · Jakarta', imageSrc: TICKER_BANNER_PLACEHOLDER },
+  { id: 'trade-in', text: 'Trade-in & kredit', imageSrc: TICKER_BANNER_PLACEHOLDER },
 ] as const
 
 function TickerImageSlide({ src, label }: { src: string; label: string }) {
@@ -83,13 +64,10 @@ function PromoTickerSectionInner() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-cyan-300">Info promo</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-cyan-300">Promo</p>
             <h2 id="promo-ticker-heading" className="mt-1 text-xl font-bold tracking-tight text-white md:text-2xl">
-              Program &amp; promo
+              Sorotan program
             </h2>
-            <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-200">
-              Cuplikan promo (placeholder). Konfirmasi resmi lewat tim — pakai jeda kalau teks kecepetan.
-            </p>
           </div>
           <div className="flex flex-wrap items-center gap-2 md:justify-end">
             {runMarquee ? (
@@ -123,7 +101,7 @@ function PromoTickerSectionInner() {
               className="inline-flex items-center gap-2 rounded-full bg-success-green px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-white/30"
             >
               <BsWhatsapp className="text-lg" aria-hidden />
-              Tanya promo
+              {WHATSAPP_CTA.button}
             </button>
           </div>
         </div>

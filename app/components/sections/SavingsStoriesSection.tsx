@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { FiStar, FiChevronLeft, FiChevronRight, FiMapPin, FiCalendar } from 'react-icons/fi'
 import { BsWhatsapp } from 'react-icons/bs'
 import { WHATSAPP_LINKS } from '@/utils/whatsappLinks'
+import { WHATSAPP_CTA } from '@/utils/constants'
 import { trackWhatsAppClick } from '@/utils/analytics'
 
 interface SavingsStory {
@@ -275,7 +276,7 @@ export default function SavingsStoriesSection() {
                     className="flex items-center justify-center gap-2 w-full px-6 py-4 bg-white text-success-green font-bold rounded-full hover:bg-slate-50 transition-colors"
                   >
                     <BsWhatsapp className="text-xl" />
-                    <span>Saya Mau Hemat Juga!</span>
+                    <span>{WHATSAPP_CTA.savings}</span>
                   </a>
                 </motion.div>
               </AnimatePresence>

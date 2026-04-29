@@ -6,6 +6,7 @@ import { FiPlus, FiMinus, FiBattery, FiZap, FiTrendingUp, FiShield, FiTool, FiSm
 import { BsWhatsapp } from 'react-icons/bs'
 import { type CampaignConfig } from '@/lib/campaigns'
 import { useWhatsAppPreChat } from '@/app/contexts/WhatsAppPreChatContext'
+import { WHATSAPP_CTA } from '@/utils/constants'
 
 interface FAQItem {
   question: string
@@ -159,23 +160,28 @@ const FAQ_CATEGORIES: FAQCategory[] = [
 const PROMO_OJOL_FAQ: FAQItem[] = [
   {
     question: 'Apakah angka hemat di halaman ini sama dengan biaya nyata?',
-    answer: 'Ilustrasi dari asumsi demo. Hitungan resmi & promo terbaru — WhatsApp.',
+    answer:
+      'Itu perkiraan ilustratif: jarak pakai heuristik (bukan GPS), asumsi BBM motor, dan biaya listrik rumah seperti kalkulator “Hitung Hemat” di landing utama. Biaya di jalan bisa beda karena ritmu narik, harga BBM, dan pola nge-charge. Untuk angka resmi, promo terbaru, dan cicilan, tanya tim lewat WhatsApp.',
   },
   {
     question: 'Motor Wedison cocok untuk driver ojol full-time?',
-    answer: 'Banyak pakai range panjang + SuperCharge ~15 menit di jeda. Model disesuaikan pola narik.',
+    answer:
+      'Banyak driver pakai model dengan range lebih panjang dan SuperCharge ±15 menit saat istirahat. Pilihan model bisa disesuaikan jarak harian, pola order, dan apakah sering charge di rumah atau di jaringan SuperCharge. Tim bisa bantu rekomendasi singkat lewat WhatsApp.',
   },
   {
     question: 'Bagaimana cara test ride atau lihat unit?',
-    answer: 'WhatsApp untuk jadwal Experience Center; tim bantu model &amp; promo.',
+    answer:
+      'Hubungi tim via WhatsApp untuk jadwal ke Experience Center (Jakarta / Bandung) atau penjelasan lokasi. Sebutkan kota dan waktu yang kamu prefer, nanti tim bantu slot dan model yang ingin dicoba.',
   },
   {
     question: 'Apa itu SuperCharge?',
-    answer: 'Charge cepat Wedison (~10–80% ~15 menit, model mendukung) — pas jeda order.',
+    answer:
+      'SuperCharge adalah pengisian cepat Wedison: perkiraan sekitar 10–80% baterai dalam ±15 menit pada model yang mendukung. Cocok untuk jeda singkat antar order tanpa nunggu lama di colokan rumah.',
   },
   {
     question: 'Promo Mei berlaku untuk semua model?',
-    answer: 'Ikuti kebijakan resmi. Detail per model &amp; lokasi — WhatsApp.',
+    answer:
+      'Syarat, diskon, dan ketersediaan unit mengikuti kebijakan resmi Wedison per periode. Halaman ini menampilkan ilustrasi promo; detail pasti untuk model dan lokasimu selalu dikonfirmasi lewat WhatsApp.',
   },
 ]
 
@@ -208,13 +214,13 @@ export default function FAQSection({ config }: FAQSectionProps) {
             animate={{ opacity: 1, y: 0 }}
             className="text-center mb-10"
           >
-            <span className="inline-block px-4 py-2 bg-electric-blue/10 text-electric-blue rounded-full text-sm font-semibold mb-4">
-              FAQ
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">
-              Tanya sebelum <span className="text-electric-blue">chat WhatsApp</span>
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-800">
+              Sebelum <span className="text-electric-blue">{WHATSAPP_CTA.button}</span>
             </h2>
-            <p className="text-base text-slate-600 md:text-lg">Intinya di sini; detail promo lewat WhatsApp.</p>
+            <p className="mt-4 max-w-2xl mx-auto text-base text-slate-600 md:text-lg leading-relaxed">
+              Hal yang paling sering ditanyakan driver & komuter soal estimasi, promo, test ride, dan SuperCharge. Kalau
+              butuh detail ke kasus kamu, lanjut ke tim.
+            </p>
           </motion.div>
 
           <div className="space-y-3">
@@ -261,14 +267,13 @@ export default function FAQSection({ config }: FAQSectionProps) {
           </div>
 
           <motion.div initial={false} animate={{ opacity: 1, y: 0 }} className="mt-10 text-center">
-            <p className="text-slate-600 mb-4 text-sm md:text-base">Mau lanjut ke tim?</p>
             <button
               type="button"
               onClick={openFaqWa}
               className="inline-flex items-center gap-2 px-8 py-4 bg-success-green text-white font-semibold rounded-full hover:bg-green-600 transition-all hover:scale-105 shadow-lg"
             >
               <BsWhatsapp className="text-xl" />
-              <span>Tanya Langsung via WhatsApp</span>
+              <span>{WHATSAPP_CTA.button}</span>
             </button>
           </motion.div>
         </div>
@@ -298,8 +303,9 @@ export default function FAQSection({ config }: FAQSectionProps) {
             Pertanyaan yang{' '}
             <span className="text-electric-blue">Sering Ditanya</span>
           </h2>
-          <p className="text-lg text-slate-600">
-            Temukan jawaban atas pertanyaan seputar produk, layanan, dan teknologi kami
+          <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
+            Jawaban seputar baterai, pengisian daya, performa, garansi, dan fitur. Belum ketemu? Tim siap bantu lewat{' '}
+            {WHATSAPP_CTA.button}.
           </p>
         </motion.div>
 
@@ -403,16 +409,13 @@ export default function FAQSection({ config }: FAQSectionProps) {
           animate={{ opacity: 1, y: 0 }}
           className="mt-10 text-center"
         >
-          <p className="text-slate-600 mb-4">
-            Masih punya pertanyaan lain?
-          </p>
           <button
             type="button"
             onClick={() => openPreChat({ kind: 'messageKey', messageKey: 'general' })}
             className="inline-flex items-center gap-2 px-8 py-4 bg-success-green text-white font-semibold rounded-full hover:bg-green-600 transition-all hover:scale-105 shadow-lg"
           >
             <BsWhatsapp className="text-xl" />
-            <span>Tanya Langsung via WhatsApp</span>
+            <span>{WHATSAPP_CTA.button}</span>
           </button>
         </motion.div>
       </div>

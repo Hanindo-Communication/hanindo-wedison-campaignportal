@@ -2,7 +2,7 @@
 
 import { BsWhatsapp } from 'react-icons/bs'
 import { FiMapPin, FiMail, FiClock } from 'react-icons/fi'
-import { CONTACT, SHOWROOM_LOCATIONS } from '@/utils/constants'
+import { CONTACT, SHOWROOM_LOCATIONS, WHATSAPP_CTA } from '@/utils/constants'
 import { useWhatsAppPreChat } from '@/app/contexts/WhatsAppPreChatContext'
 import Logo from '../ui/Logo'
 
@@ -30,6 +30,7 @@ export default function Footer() {
                   type="button"
                   onClick={() => openPreChat({ kind: 'messageKey', messageKey: 'general' })}
                   className="flex w-full items-start gap-3 text-left text-slate-400 hover:text-white transition-colors"
+                  aria-label={WHATSAPP_CTA.aria}
                 >
                   <BsWhatsapp className="text-lg mt-1 flex-shrink-0" aria-hidden />
                   <span>{CONTACT.phone}</span>

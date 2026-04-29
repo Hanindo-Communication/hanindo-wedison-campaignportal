@@ -33,11 +33,8 @@ const nextConfig = {
   poweredByHeader: false,
   compress: true,
   
-  // `optimizePackageImports` + framer-motion memicu require `./vendor-chunks/motion-dom.js`
-  // yang tidak ada di server bundle (Next 15 + webpack). react-icons tetap aman.
-  experimental: {
-    optimizePackageImports: ['react-icons'],
-  },
+  // Jangan pakai `optimizePackageImports` untuk react-icons / framer-motion di Next 15 + webpack:
+  // bundle server sering require `./vendor-chunks/*.js` yang tidak ada (runtime error).
   
   // Webpack optimizations
   webpack: (config, { isServer }) => {

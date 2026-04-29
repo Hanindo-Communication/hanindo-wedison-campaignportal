@@ -6,6 +6,7 @@ import { FiBattery, FiZap, FiTruck, FiUser, FiCheck, FiClock } from 'react-icons
 import { BsWhatsapp } from 'react-icons/bs'
 import { MODEL_SPECS } from '@/utils/modelSpecs'
 import { WHATSAPP_LINKS } from '@/utils/whatsappLinks'
+import { WHATSAPP_CTA } from '@/utils/constants'
 import { trackWhatsAppClick } from '@/utils/analytics'
 
 // Charging Time Comparison Data - Line Chart Data Points
@@ -460,7 +461,7 @@ export default function ComparisonSection() {
                 className="flex items-center justify-center gap-2 w-full px-6 py-4 bg-success-green text-white font-bold rounded-full hover:bg-green-600 transition-all hover:scale-105 shadow-lg"
               >
                 <BsWhatsapp className="text-xl" />
-                <span>Saya Mau Hemat Juga!</span>
+                <span>{WHATSAPP_CTA.savings}</span>
               </a>
             </div>
           </div>

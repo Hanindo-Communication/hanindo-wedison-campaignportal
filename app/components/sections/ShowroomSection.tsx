@@ -2,10 +2,9 @@
 
 import { useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { FiMapPin, FiClock, FiNavigation } from 'react-icons/fi'
-import { BsWhatsapp } from 'react-icons/bs'
+import { FiMapPin, FiClock, FiNavigation, FiCalendar } from 'react-icons/fi'
 import { type CampaignConfig } from '@/lib/campaigns'
-import { CONTACT, SHOWROOM_LOCATIONS } from '@/utils/constants'
+import { CONTACT, SHOWROOM_LOCATIONS, WHATSAPP_CTA } from '@/utils/constants'
 import { useWhatsAppPreChat } from '@/app/contexts/WhatsAppPreChatContext'
 import { OPEN_PRECHAT_SHOWROOM_TEST_DRIVE } from '@/lib/preChatSmartDefaults'
 
@@ -49,9 +48,7 @@ export default function ShowroomSection({ config }: { config?: CampaignConfig })
           transition={{ duration: 0.45 }}
           className="text-center max-w-3xl mx-auto mb-12 md:mb-16"
         >
-          <p className="text-sm font-semibold uppercase tracking-wide text-electric-blue mb-2">
-            Experience Center
-          </p>
+          <p className="text-sm font-semibold uppercase tracking-wide text-electric-blue mb-2">Lokasi</p>
           <h2
             id="showroom-heading"
             className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight"
@@ -59,10 +56,6 @@ export default function ShowroomSection({ config }: { config?: CampaignConfig })
             Showroom Wedison{' '}
             <span className="text-electric-blue">Jakarta &amp; Bandung</span>
           </h2>
-          <p className="mt-4 text-base text-slate-600 leading-relaxed md:text-lg">
-            <strong className="font-semibold text-slate-800">Jakarta</strong> (Pondok Indah) &amp;{' '}
-            <strong className="font-semibold text-slate-800">Bandung</strong> — test drive, lihat unit, konsultasi tim.
-          </p>
         </motion.div>
 
         <div className="grid gap-8 lg:grid-cols-2 lg:gap-10">
@@ -137,7 +130,7 @@ export default function ShowroomSection({ config }: { config?: CampaignConfig })
           </div>
 
           <div className="rounded-2xl border border-electric-blue/15 bg-gradient-to-br from-electric-blue/[0.07] to-secondary-teal/[0.05] p-6 ring-1 ring-slate-900/[0.03]">
-            <h3 className="text-lg font-semibold text-slate-900">Yang bisa kamu lakukan</h3>
+            <h3 className="text-lg font-semibold text-slate-900">Fasilitas</h3>
             <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
               {SHOWROOM_FEATURES.map((feature) => (
                 <div key={feature} className="flex items-center gap-2.5 text-[15px] text-slate-700">
@@ -157,10 +150,10 @@ export default function ShowroomSection({ config }: { config?: CampaignConfig })
             <button
               type="button"
               onClick={openTestDriveWa}
-              className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-full bg-success-green px-6 py-3.5 text-center text-base font-semibold text-white shadow-md transition-all hover:scale-[1.02] hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-success-green/50"
+              className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-full border-2 border-electric-blue bg-white px-6 py-3.5 text-center text-base font-semibold text-electric-blue shadow-sm transition-all hover:bg-electric-blue/5 hover:border-electric-blue focus:outline-none focus:ring-2 focus:ring-electric-blue/40"
             >
-              <BsWhatsapp className="shrink-0 text-xl" aria-hidden />
-              <span>Booking test drive</span>
+              <FiCalendar className="shrink-0 text-xl" aria-hidden />
+              <span>{WHATSAPP_CTA.testDrive}</span>
             </button>
           </div>
         </motion.div>

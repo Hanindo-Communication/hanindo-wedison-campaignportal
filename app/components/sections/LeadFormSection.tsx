@@ -7,6 +7,7 @@ import { BsWhatsapp } from 'react-icons/bs'
 import { MODEL_SPECS } from '@/utils/modelSpecs'
 import { trackLeadFormSubmit } from '@/utils/analytics'
 import { useWhatsAppPreChat } from '@/app/contexts/WhatsAppPreChatContext'
+import { WHATSAPP_CTA } from '@/utils/constants'
 
 interface FormData {
   name: string
@@ -66,7 +67,7 @@ export default function LeadFormSection() {
     } catch (err) {
       const errorMessage = err instanceof Error 
         ? err.message 
-        : 'Gagal mengirim data. Silakan coba lagi atau hubungi via WhatsApp.'
+        : 'Gagal mengirim data. Coba lagi atau pakai WhatsApp.'
       setError(errorMessage)
       console.error('Form submission error:', err)
     } finally {
@@ -105,7 +106,7 @@ export default function LeadFormSection() {
             Siap Beralih ke Motor Listrik?
           </h2>
           <p className="text-lg text-white/80 max-w-2xl mx-auto">
-            Isi form di bawah dan tim kami akan menghubungi Anda, atau langsung chat via WhatsApp
+            Isi form di bawah atau lanjut lewat WhatsApp.
           </p>
         </motion.div>
 
@@ -137,7 +138,7 @@ export default function LeadFormSection() {
                 className="flex items-center justify-center gap-2 px-6 py-3 bg-success-green text-white font-semibold rounded-full hover:bg-green-600 transition-colors"
               >
                 <BsWhatsapp className="text-xl" />
-                <span>Chat WhatsApp</span>
+                <span>{WHATSAPP_CTA.button}</span>
               </button>
             </div>
           </motion.div>
@@ -283,7 +284,7 @@ export default function LeadFormSection() {
                   className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-success-green text-white font-semibold rounded-full hover:bg-green-600 transition-all"
                 >
                   <BsWhatsapp className="text-xl" />
-                  <span>Chat WhatsApp Langsung</span>
+                  <span>{WHATSAPP_CTA.modalSubmit}</span>
                 </button>
               </div>
             </form>

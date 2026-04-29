@@ -1,4 +1,5 @@
 import type { AdAttribution } from '@/lib/adSourceFromUrl'
+import { WHATSAPP_CTA } from '@/utils/constants'
 import { WHATSAPP_MESSAGES, type Promo052026MessageParts } from '@/utils/whatsappLinks'
 import { buildLandingPrefilterWaUrl, buildPromoPrefilterWaUrl } from '@/utils/buildWhatsAppPrefilterUrl'
 
@@ -383,14 +384,13 @@ export function buildPrefilterUrlFromPayload(
 
 /** Teks UI modal — seluruhnya Bahasa Indonesia. */
 export const PRECHAT_UI = {
-  modalTitle: 'Sebelum chat WhatsApp',
-  modalSubtitle:
-    'Pilih fokus pertanyaanmu, isi data singkat. Test drive / showroom: pilih lokasi (Jakarta atau Bandung) lalu tanggal.',
-  sectionIntent: 'Pilih kebutuhan pertanyaan kamu',
+  modalTitle: 'Sebelum WhatsApp',
+  modalSubtitle: 'Topik · data singkat · test drive: lokasi & tanggal.',
+  sectionIntent: 'Topik',
   /** Hanya untuk test drive / showroom — di bawah pilihan intent */
   sectionVisit: 'Lokasi & tanggal',
-  sectionData: 'Lengkapi data kamu',
-  submit: 'Hubungi via WhatsApp',
+  sectionData: 'Data kamu',
+  submit: WHATSAPP_CTA.modalSubmit,
   close: 'Tutup',
   /** Ditampilkan di bawah kolom kebutuhan bila terisi otomatis dari konteks halaman */
   smartFillNote: 'Teks ini disarankan dari halaman yang kamu buka — silakan diedit agar sesuai pertanyaanmu.',

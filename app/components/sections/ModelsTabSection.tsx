@@ -8,6 +8,7 @@ import { FiChevronDown, FiCheck, FiZap, FiBattery, FiDollarSign, FiUsers } from 
 import Button from '../ui/Button'
 import { WHATSAPP_MESSAGES } from '@/utils/whatsappLinks'
 import { useWhatsAppPreChat } from '@/app/contexts/WhatsAppPreChatContext'
+import { WHATSAPP_CTA } from '@/utils/constants'
 import { MODEL_SPECS, type ModelSpec } from '@/utils/modelSpecs'
 
 // Best For badges for each model
@@ -330,7 +331,7 @@ export default function ModelsTabSection() {
                     className="flex-1"
                   >
                     <BsWhatsapp className="text-xl" />
-                    <span>Info Lengkap</span>
+                    <span>{WHATSAPP_CTA.button}</span>
                   </Button>
                   <Button
                     href="#showroom"

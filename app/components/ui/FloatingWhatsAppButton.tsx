@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { BsWhatsapp } from 'react-icons/bs'
 import { FiX } from 'react-icons/fi'
 import { useWhatsAppPreChat } from '@/app/contexts/WhatsAppPreChatContext'
+import { WHATSAPP_CTA } from '@/utils/constants'
 
 function FloatingWhatsAppButtonInner() {
   const pathname = usePathname()
@@ -74,9 +75,9 @@ function FloatingWhatsAppButtonInner() {
                   <FiX className="text-lg" />
                 </button>
                 <p className="text-sm text-slate-700 pr-6">
-                  <span className="font-semibold">Butuh bantuan?</span>
+                  <span className="font-semibold">{WHATSAPP_CTA.tooltipTitle}</span>
                   <br />
-                  Chat langsung dengan tim kami!
+                  {WHATSAPP_CTA.tooltipBody}
                 </p>
                 {/* Arrow */}
                 <div className="absolute -bottom-2 right-8 w-4 h-4 bg-white transform rotate-45 shadow-lg" />
@@ -89,7 +90,7 @@ function FloatingWhatsAppButtonInner() {
             type="button"
             onClick={openFloatingWa}
             className="relative flex items-center justify-center w-14 h-14 md:w-16 md:h-16 bg-success-green rounded-full shadow-2xl hover:bg-green-600 hover:scale-110 transition-all"
-            aria-label="Chat WhatsApp"
+            aria-label={WHATSAPP_CTA.aria}
           >
             <BsWhatsapp className="text-2xl md:text-3xl text-white" />
 

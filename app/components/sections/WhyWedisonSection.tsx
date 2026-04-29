@@ -8,23 +8,23 @@ import { MdEnergySavingsLeaf } from 'react-icons/md'
 const REASONS = [
   {
     icon: FiZap,
-    title: 'SuperCharge — isi daya cepat',
-    body: '~10–80% baterai dalam ~15 menit (model yang mendukung).',
+    title: 'SuperCharge · ~15 menit (10–80%)',
+    body: 'Isi cepat di jaringan Wedison — cocok jeda singkat antar order atau sebelum jalan jauh.',
   },
   {
     icon: FiMapPin,
-    title: 'Jaringan pengisian nasional',
-    body: '100+ titik SuperCharge di Indonesia untuk rute harian.',
+    title: '100+ titik pengisian',
+    body: 'Titik SuperCharge tersebar di kota besar — rencanakan rute harian lebih mudah.',
   },
   {
     icon: MdEnergySavingsLeaf,
-    title: 'Energi lebih efisien per jarak tempuh',
-    body: 'Untuk jarak sama, energi per km lebih ringan vs motor bensin.',
+    title: 'Hemat energi per km',
+    body: 'Untuk jarak yang sama, biaya energi listrik biasanya jauh lebih ringan dibanding BBM motor bensin.',
   },
   {
     icon: FiWind,
-    title: 'Tanpa emisi knalpot',
-    body: 'Listrik = tanpa asap knalpot di jalan.',
+    title: 'Tanpa asap knalpot',
+    body: 'Ditenagai listrik — berkendara lebih tenang tanpa emisi knalpot di jalan.',
   },
 ] as const
 
@@ -45,18 +45,13 @@ export default function WhyWedisonSection() {
           transition={{ duration: 0.45 }}
           className="text-center max-w-3xl mx-auto mb-12 md:mb-16"
         >
-          <p className="text-sm font-semibold uppercase tracking-wide text-electric-blue mb-2">
-            Wedison Motors
-          </p>
+          <p className="text-sm font-semibold uppercase tracking-wide text-electric-blue mb-2">Wedison</p>
           <h2
             id="why-wedison-heading"
             className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight"
           >
             Kenapa Wedison?
           </h2>
-          <p className="mt-4 text-base text-slate-600 leading-relaxed md:text-lg">
-            Fokus ke yang sering dicari: charge cepat, jaringan, efisiensi, dan berkendara lebih bersih.
-          </p>
         </motion.div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:gap-8">
@@ -74,8 +69,8 @@ export default function WhyWedisonSection() {
                   <item.icon className="h-6 w-6" aria-hidden />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-lg font-semibold text-slate-900">{item.title}</h3>
-                  <p className="mt-2 text-slate-600 text-[15px] leading-relaxed">{item.body}</p>
+                  <h3 className="text-lg font-semibold text-slate-900 leading-snug">{item.title}</h3>
+                  <p className="mt-2 text-sm text-slate-600 leading-relaxed md:text-[15px]">{item.body}</p>
                 </div>
               </div>
             </motion.article>
@@ -94,7 +89,7 @@ export default function WhyWedisonSection() {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-electric-blue focus:ring-offset-2"
           >
-            Pelajari lebih lanjut di wedison.co
+            wedison.co
             <FiExternalLink className="h-4 w-4 opacity-90" aria-hidden />
           </Link>
           <Link
@@ -103,7 +98,7 @@ export default function WhyWedisonSection() {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-sm font-semibold text-electric-blue hover:underline"
           >
-            Halaman SuperCharge
+            SuperCharge
             <FiExternalLink className="h-4 w-4" aria-hidden />
           </Link>
         </motion.div>

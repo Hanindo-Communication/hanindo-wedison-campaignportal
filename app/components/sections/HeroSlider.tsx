@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FiChevronLeft, FiChevronRight, FiX, FiMaximize2 } from 'react-icons/fi'
-import { MODELS } from '@/utils/constants'
+import { MODELS, WHATSAPP_CTA } from '@/utils/constants'
 import { WHATSAPP_LINKS } from '@/utils/whatsappLinks'
 import { trackWhatsAppClick } from '@/utils/analytics'
 
@@ -35,7 +35,7 @@ export default function HeroSlider() {
       title: 'Sewa Mulai Rp 50/Hari',
       description: 'Promo Terbatas Hanya Bulan Ini • Kuota Terbatas • Harian atau Sewa Hak Milik',
       price: 'Rp 50 Per Hari',
-      ctaText: 'Chat WhatsApp - Ambil Sekarang',
+      ctaText: WHATSAPP_CTA.button,
       ctaLink: WHATSAPP_LINKS.general,
       highlight: 'Promo Terbatas',
     },
@@ -47,7 +47,7 @@ export default function HeroSlider() {
       title: 'Bonus Voucher Charging',
       description: 'Voucher Charging Rp 3 Juta (Cash) • Rp 500 Ribu (Sewa)',
       price: 'Voucher Rp 3 Juta',
-      ctaText: 'Chat WhatsApp - Info Voucher',
+      ctaText: WHATSAPP_CTA.button,
       ctaLink: WHATSAPP_LINKS.general,
       highlight: 'Bonus Spesial',
     },

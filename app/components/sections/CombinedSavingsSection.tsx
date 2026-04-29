@@ -11,6 +11,7 @@ import {
   MODEL_EFFICIENCY,
 } from '@/lib/combinedSavingsFormulas'
 import { useWhatsAppPreChat } from '@/app/contexts/WhatsAppPreChatContext'
+import { WHATSAPP_CTA } from '@/utils/constants'
 
 // Usage presets
 const USAGE_PRESETS = [
@@ -636,7 +637,7 @@ export default function CombinedSavingsSection({ config }: CombinedSavingsSectio
                   className="flex items-center justify-center gap-2 w-full px-6 py-4 bg-white border-2 border-success-green text-success-green font-bold rounded-full hover:bg-success-green/5 transition-all"
                 >
                   <BsWhatsapp className="text-xl" />
-                  <span>Saya Mau Hemat Juga!</span>
+                  <span>{WHATSAPP_CTA.savings}</span>
                 </button>
               </div>
             </div>
@@ -883,7 +884,7 @@ export default function CombinedSavingsSection({ config }: CombinedSavingsSectio
                             className="flex items-center justify-center gap-2 w-full px-5 py-3 bg-white text-success-green font-bold rounded-full hover:bg-slate-50 transition-colors text-sm"
                           >
                             <BsWhatsapp className="text-lg" />
-                            <span>Saya Mau Hemat Juga!</span>
+                            <span>{WHATSAPP_CTA.savings}</span>
                           </button>
                         </motion.div>
                       </AnimatePresence>

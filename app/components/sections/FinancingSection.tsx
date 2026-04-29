@@ -6,6 +6,7 @@ import { FiCheck, FiPercent, FiCalendar, FiDollarSign, FiCreditCard } from 'reac
 import { BsWhatsapp } from 'react-icons/bs'
 import { MODEL_SPECS } from '@/utils/modelSpecs'
 import { useWhatsAppPreChat } from '@/app/contexts/WhatsAppPreChatContext'
+import { WHATSAPP_CTA } from '@/utils/constants'
 
 const FINANCING_BENEFITS = [
   'Cicilan x Kredivo',
@@ -562,7 +563,7 @@ export default function FinancingSection() {
                 className="flex items-center justify-center gap-2 w-full px-8 py-4 bg-success-green text-white font-bold text-lg rounded-full hover:bg-green-600 transition-all hover:scale-105 shadow-xl"
               >
                 <BsWhatsapp className="text-2xl" />
-                <span>Konsultasi Cicilan</span>
+                <span>{WHATSAPP_CTA.financingConsult}</span>
               </a>
             </motion.div>
           </div>
@@ -770,7 +771,7 @@ export default function FinancingSection() {
                 className="flex items-center justify-center gap-2 w-full px-8 py-4 bg-electric-blue text-white font-bold text-lg rounded-full hover:bg-blue-600 transition-all hover:scale-105 shadow-xl"
               >
                 <BsWhatsapp className="text-2xl" />
-                <span>Order Sekarang</span>
+                <span>{WHATSAPP_CTA.financingOrder}</span>
               </a>
             </motion.div>
           </div>
