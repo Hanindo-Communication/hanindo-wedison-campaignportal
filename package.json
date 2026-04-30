@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:clean": "rm -rf .next && next dev",
+    "dev:clean": "npx --yes rimraf@6 .next && next dev",
+    "reinstall": "npx --yes rimraf@6 node_modules .next && npm ci",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
