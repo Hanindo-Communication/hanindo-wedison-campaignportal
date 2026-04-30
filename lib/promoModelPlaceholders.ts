@@ -9,7 +9,21 @@ export interface PromoModelPlaceholder {
   highlights: string[]
 }
 
-/** Main models only (no extended duplicates for chip row). Swap files under public/ when brand assets arrive. */
+/** Basis URL aset pemasaran resmi (webp hero per halaman produk wedison.co). */
+const WEDISON_ASSETS = 'https://wedison.co'
+
+/**
+ * Gambar hero studio resmi — selaras foto produk di situs (Bees silver, Athena olive, Victory hitam matte, EdPower navy).
+ * Untuk kampanye promo 052026 pakai ini; gantikan dengan file lokal di public/ bila ada brand kit baru.
+ */
+const PROMO_MODEL_HERO_SRC: Record<string, string> = {
+  bees: `${WEDISON_ASSETS}/bees-product-hero.webp`,
+  athena: `${WEDISON_ASSETS}/athena-product-hero.webp`,
+  victory: `${WEDISON_ASSETS}/victory-product-hero.webp`,
+  edpower: `${WEDISON_ASSETS}/edpower-product-hero.webp`,
+}
+
+/** Main models only (no extended duplicates for chip row). */
 const WEDISON_PRODUCT_BASE = 'https://wedison.co'
 
 /** Curated mini-highlights aligned with modelSpecs / wedison product lines */
@@ -25,8 +39,8 @@ export function getPromoModelPlaceholders(): PromoModelPlaceholder[] {
   return main.map((m) => ({
     id: m.id,
     name: m.name,
-    imageSrc: `/images/campaigns/052026/models/${m.id}-placeholder.svg`,
-    detailUrl: `${WEDISON_PRODUCT_BASE}`,
+    imageSrc: PROMO_MODEL_HERO_SRC[m.id] ?? `${WEDISON_ASSETS}/navbar-product/${m.id}.webp`,
+    detailUrl: `${WEDISON_PRODUCT_BASE}/${m.id}/`,
     highlights: highlightsFromSpec(m),
   }))
 }

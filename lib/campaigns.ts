@@ -152,7 +152,7 @@ export const CAMPAIGNS: Campaigns = {
         highlightBadge: 'Motor listrik · Rute harian',
         ctaText: 'Cek hemat & promo',
         ctaLink: '#route-promo-estimate',
-        secondaryCtaText: 'WhatsApp',
+        secondaryCtaText: 'Hubungi Sales Wedison',
         secondaryCtaLink: 'whatsapp',
         backgroundImage: '/images/campaigns/052026/hero-reference.png',
       },

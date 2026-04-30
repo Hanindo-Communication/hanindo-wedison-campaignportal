@@ -2,13 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
 :root {
-  --electric-blue: #0891B2;
-  --secondary-teal: #06B6D4;
-  --accent-orange: #F97316;
-  --success-green: #22C55E;
+  --wedison-navy: #1a365d;
+  --wedison-mint: #e8f5e9;
+  --electric-blue: #1b8c5a;
+  --electric-blue-dark: #146b47;
+  --secondary-teal: #36b37e;
+  --accent-orange: #f97316;
+  --success-green: #22c55e;
 }
 
 * {
@@ -24,38 +25,42 @@ html {
 }
 
 body {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: var(--font-montserrat), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   /* Mobile-first font size */
   font-size: 16px;
   line-height: 1.6;
-  color: #1e293b;
+  color: #1a1a1a;
   /* Prevent horizontal scroll */
   overflow-x: hidden;
   width: 100%;
 }
 
-/* Mobile-First Typography */
+/* Mobile-First Typography — warna heading lewat CSS var (hindari @apply token custom di @layer base) */
 @layer base {
   h1 {
     @apply text-3xl md:text-4xl lg:text-5xl font-bold leading-tight;
+    color: var(--wedison-navy);
   }
   
   h2 {
     @apply text-2xl md:text-3xl lg:text-4xl font-bold leading-tight;
+    color: var(--wedison-navy);
   }
   
   h3 {
     @apply text-xl md:text-2xl font-bold leading-tight;
+    color: var(--wedison-navy);
   }
   
   h4 {
     @apply text-lg md:text-xl font-semibold;
+    color: var(--wedison-navy);
   }
   
   p {
-    @apply text-base leading-relaxed;
+    @apply text-base leading-relaxed text-slate-600;
   }
 }
 
@@ -65,7 +70,7 @@ body {
   }
   
   .bg-gradient-primary {
-    background-image: linear-gradient(135deg, #0891B2, #06B6D4);
+    background-image: linear-gradient(135deg, #1b8c5a, #36b37e);
   }
   
   /* Touch-friendly minimum sizes */
@@ -100,9 +105,9 @@ body {
     padding-right: env(safe-area-inset-right);
   }
   
-  /* Gradient text */
+  /* Gradient text — brand greens */
   .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-electric-blue to-cyan-500;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-electric-blue to-secondary-teal;
   }
 }
 
@@ -200,7 +205,7 @@ button:focus {
 button,
 a,
 [role="button"] {
-  -webkit-tap-highlight-color: rgba(8, 145, 178, 0.1);
+  -webkit-tap-highlight-color: rgba(27, 140, 90, 0.12);
 }
 
 /* Smooth scrolling for anchor links */

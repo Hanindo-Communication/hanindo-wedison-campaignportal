@@ -571,7 +571,7 @@ export default function ComparisonSection() {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: 1 }}
-                  className="mt-6 bg-gradient-to-br from-electric-blue/10 to-cyan-50 rounded-2xl p-5 border border-electric-blue/20"
+                  className="mt-6 bg-gradient-to-br from-electric-blue/10 to-wedison-mint rounded-2xl p-5 border border-electric-blue/20"
                 >
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 bg-electric-blue rounded-xl flex items-center justify-center flex-shrink-0">
@@ -659,8 +659,8 @@ export default function ComparisonSection() {
                         {/* Activities after charging */}
                         <div className="absolute inset-y-0 flex items-center" style={{ left: '10%' }}>
                           <div className="flex gap-1 text-xs">
-                            <span className="bg-cyan-100 text-cyan-700 px-2 py-0.5 rounded-full">🍜 Makan</span>
-                            <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">☕ Ngopi</span>
+                            <span className="bg-wedison-mint text-electric-blue-dark px-2 py-0.5 rounded-full">🍜 Makan</span>
+                            <span className="bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">☕ Ngopi</span>
                             <span className="bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">📱 Istirahat</span>
                             <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-full">🛵 Narik lagi</span>
                           </div>
@@ -692,7 +692,7 @@ export default function ComparisonSection() {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: 1.2, type: 'spring' }}
-                  className="bg-gradient-to-r from-electric-blue to-cyan-500 rounded-2xl p-6 text-white text-center"
+                  className="bg-gradient-to-r from-electric-blue to-secondary-teal rounded-2xl p-6 text-white text-center"
                 >
                   <div className="flex items-center justify-center gap-4">
                     <div className="text-left">

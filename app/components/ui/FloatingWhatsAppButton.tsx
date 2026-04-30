@@ -3,8 +3,7 @@
 import { Suspense, useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { BsWhatsapp } from 'react-icons/bs'
-import { FiX } from 'react-icons/fi'
+import { FiMessageCircle, FiX } from 'react-icons/fi'
 import { useWhatsAppPreChat } from '@/app/contexts/WhatsAppPreChatContext'
 import { WHATSAPP_CTA } from '@/utils/constants'
 
@@ -74,28 +73,24 @@ function FloatingWhatsAppButtonInner() {
                 >
                   <FiX className="text-lg" />
                 </button>
-                <p className="text-sm text-slate-700 pr-6">
-                  <span className="font-semibold">{WHATSAPP_CTA.tooltipTitle}</span>
-                  <br />
-                  {WHATSAPP_CTA.tooltipBody}
-                </p>
+                <p className="text-sm text-slate-700 pr-6">{WHATSAPP_CTA.floatingTooltip}</p>
                 {/* Arrow */}
                 <div className="absolute -bottom-2 right-8 w-4 h-4 bg-white transform rotate-45 shadow-lg" />
               </motion.div>
             )}
           </AnimatePresence>
 
-          {/* WhatsApp Button */}
+          {/* Order / chat FAB — selaras navbar promo */}
           <button
             type="button"
             onClick={openFloatingWa}
-            className="relative flex items-center justify-center w-14 h-14 md:w-16 md:h-16 bg-success-green rounded-full shadow-2xl hover:bg-green-600 hover:scale-110 transition-all"
-            aria-label={WHATSAPP_CTA.aria}
+            className="relative flex items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-full shadow-2xl bg-gradient-to-br from-electric-blue to-secondary-teal text-white hover:opacity-95 hover:scale-110 transition-all focus:outline-none focus:ring-2 focus:ring-electric-blue/60"
+            aria-label={WHATSAPP_CTA.ariaOrderCta}
           >
-            <BsWhatsapp className="text-2xl md:text-3xl text-white" />
+            <FiMessageCircle className="text-2xl md:text-3xl" aria-hidden />
 
             {/* Pulse Animation */}
-            <span className="absolute inset-0 rounded-full bg-success-green animate-ping opacity-25" />
+            <span className="absolute inset-0 rounded-full bg-electric-blue animate-ping opacity-20" />
           </button>
         </motion.div>
       )}

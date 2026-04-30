@@ -57,7 +57,7 @@ export default function PasswordPrompt({ onSuccess, storageKey = 'wedison-admin-
       >
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-electric-blue to-cyan-500 p-6 text-center">
+          <div className="bg-gradient-to-r from-electric-blue to-secondary-teal p-6 text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-full mb-4">
               <FiLock className="text-3xl text-white" />
             </div>
@@ -109,7 +109,7 @@ export default function PasswordPrompt({ onSuccess, storageKey = 'wedison-admin-
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-3 bg-electric-blue text-white font-semibold rounded-lg hover:bg-cyan-600 transition-colors shadow-lg hover:shadow-xl"
+              className="w-full py-3 bg-electric-blue text-white font-semibold rounded-lg hover:bg-electric-blue-dark transition-colors shadow-lg hover:shadow-xl"
             >
               Masuk
             </button>

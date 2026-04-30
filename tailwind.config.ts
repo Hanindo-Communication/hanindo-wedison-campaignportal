@@ -11,29 +11,28 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'electric-blue': '#0891B2',
-        'secondary-teal': '#06B6D4',
+        /** Wedison corporate — wordmark & headings */
+        'wedison-navy': '#1A365D',
+        /** Light badge backgrounds (Supercharge App style) */
+        'wedison-mint': '#E8F5E9',
+        /**
+         * Primary CTA / links — name kept as `electric-blue` for backward compatibility
+         * with existing class names across the repo.
+         */
+        'electric-blue': '#1B8C5A',
+        'electric-blue-dark': '#146b47',
+        /** Secondary accent green (lighter) */
+        'secondary-teal': '#36B37E',
         'accent-orange': '#F97316',
+        /** WhatsApp / positive actions */
         'success-green': '#22C55E',
       },
       backgroundImage: {
-        'gradient-primary': 'linear-gradient(135deg, #0891B2, #06B6D4)',
+        'gradient-primary': 'linear-gradient(135deg, #1B8C5A, #36B37E)',
         'gradient-accent': 'linear-gradient(135deg, #F97316, #FB923C)',
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-      },
-      keyframes: {
-        marquee: {
-          '0%': { transform: 'translateX(0)' },
-          '100%': { transform: 'translateX(-50%)' },
-        },
-      },
-      animation: {
-        /** Strip gambar */
-        marquee: 'marquee 60s linear infinite',
-        /** Strip teks — durasi beda supaya tidak “nempel” dengan strip gambar */
-        'marquee-text': 'marquee 78s linear infinite',
+        sans: ['var(--font-montserrat)', 'system-ui', 'sans-serif'],
       },
     },
   },

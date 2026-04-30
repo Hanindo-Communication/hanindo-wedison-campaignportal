@@ -36,7 +36,7 @@ export default function Button({
   `.trim().replace(/\s+/g, ' ')
   
   const variantClasses = {
-    primary: 'bg-electric-blue text-white hover:bg-cyan-600 shadow-lg hover:shadow-xl',
+    primary: 'bg-electric-blue text-white hover:bg-electric-blue-dark shadow-lg hover:shadow-xl',
     secondary: 'bg-success-green text-white hover:bg-green-600 shadow-lg hover:shadow-xl',
     outline: 'border-2 border-electric-blue text-electric-blue hover:bg-electric-blue hover:text-white bg-transparent',
     ghost: 'text-slate-700 hover:bg-slate-100',

@@ -72,7 +72,7 @@ export default function DirectoryList({ onLogout }: DirectoryListProps) {
             <div className="text-sm text-slate-600">Latest campaign slot</div>
           </div>
           <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
-            <div className="text-2xl font-bold text-purple-500">Live</div>
+            <div className="text-2xl font-bold text-electric-blue">Live</div>
             <div className="text-sm text-slate-600">Status</div>
           </div>
         </div>

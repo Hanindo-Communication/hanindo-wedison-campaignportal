@@ -626,7 +626,7 @@ export default function CombinedSavingsSection({ config }: CombinedSavingsSectio
                     e.preventDefault()
                     document.getElementById('financing')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
                   }}
-                  className="flex items-center justify-center gap-2 w-full px-6 py-4 bg-electric-blue text-white font-bold rounded-full hover:bg-blue-600 transition-all hover:scale-105 shadow-lg"
+                  className="flex items-center justify-center gap-2 w-full px-6 py-4 bg-electric-blue text-white font-bold rounded-full hover:bg-electric-blue-dark transition-all hover:scale-105 shadow-lg"
                 >
                   <FiDollarSign className="text-xl" />
                   <span>Lihat Harga & Cara Pembayaran</span>
@@ -653,7 +653,7 @@ export default function CombinedSavingsSection({ config }: CombinedSavingsSectio
                 transition={{ duration: 0.5, ease: 'easeOut' }}
                 className="border-t border-slate-200 overflow-hidden"
               >
-                <div className="p-6 md:p-8 bg-gradient-to-br from-electric-blue/5 to-cyan-50">
+                <div className="p-6 md:p-8 bg-gradient-to-br from-electric-blue/5 to-wedison-mint">
                   <div className="flex items-center justify-between mb-6 gap-2">
                     <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
                       <div className="w-10 h-10 bg-electric-blue rounded-xl flex items-center justify-center flex-shrink-0">
@@ -664,7 +664,7 @@ export default function CombinedSavingsSection({ config }: CombinedSavingsSectio
                         <p className="text-sm text-slate-600">12x lebih cepat dari motor listrik lain</p>
                       </div>
                     </div>
-                    <div className="hidden md:block bg-gradient-to-r from-electric-blue to-cyan-500 rounded-full px-6 py-2 text-white font-bold">
+                    <div className="hidden md:block bg-gradient-to-r from-electric-blue to-secondary-teal rounded-full px-6 py-2 text-white font-bold">
                       12x Lebih Cepat
                     </div>
                   </div>

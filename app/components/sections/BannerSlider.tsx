@@ -101,7 +101,7 @@ export default function BannerSlider() {
                   }}
                 />
               ) : (
-                <div className="w-full h-full bg-gradient-to-r from-electric-blue to-cyan-500 flex items-center justify-center">
+                <div className="w-full h-full bg-gradient-to-r from-electric-blue to-secondary-teal flex items-center justify-center">
                   <div className="text-white text-center">
                     <p className="text-xl font-bold">{currentSlideData.title}</p>
                     {currentSlideData.subtitle && (

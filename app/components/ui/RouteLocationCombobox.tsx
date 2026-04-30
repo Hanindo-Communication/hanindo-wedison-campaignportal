@@ -13,11 +13,13 @@ export type RouteLocationComboboxProps = {
   suggestions: readonly string[]
   iconLeft: ReactNode
   'aria-label'?: string
+  /** `light` untuk hero promo terang; default gelap. */
+  variant?: 'dark' | 'light'
 }
 
 /**
  * Combobox lokasi rute: buka saat fokus, filter ketik, pilih dari daftar.
- * Gaya gelap selaras kartu hero promo; perilaku mirip PrechatDatePicker (popover minimal).
+ * `variant` mengatur kontras field & dropdown (gelap vs terang).
  */
 export default function RouteLocationCombobox({
   id,
@@ -28,6 +30,7 @@ export default function RouteLocationCombobox({
   suggestions,
   iconLeft,
   'aria-label': ariaLabel,
+  variant = 'dark',
 }: RouteLocationComboboxProps) {
   const listboxId = useId()
   const rootRef = useRef<HTMLDivElement>(null)
@@ -110,10 +113,32 @@ export default function RouteLocationCombobox({
     inputRef.current?.focus()
   }
 
+  const light = variant === 'light'
+  const shellClass = light
+    ? 'relative cursor-text rounded-xl border border-slate-200 bg-white shadow-sm transition-colors focus-within:border-electric-blue focus-within:ring-2 focus-within:ring-electric-blue/30'
+    : 'relative cursor-text rounded-xl border border-white/15 bg-slate-900/90 transition-colors focus-within:border-electric-blue focus-within:ring-2 focus-within:ring-electric-blue/40'
+  const inputClass = light
+    ? 'min-h-[48px] w-full rounded-xl bg-transparent py-3 pl-11 pr-10 text-base text-slate-900 placeholder:text-slate-500 focus:outline-none'
+    : 'min-h-[48px] w-full rounded-xl bg-transparent py-3 pl-11 pr-10 text-base text-white placeholder:text-slate-500 focus:outline-none'
+  const listClass = light
+    ? 'absolute left-0 right-0 z-[60] mt-1 max-h-[min(50vh,280px)] overflow-y-auto overscroll-contain rounded-2xl border border-slate-200 bg-white py-1 shadow-lg ring-1 ring-slate-200/80'
+    : 'absolute left-0 right-0 z-[60] mt-1 max-h-[min(50vh,280px)] overflow-y-auto overscroll-contain rounded-2xl border border-white/15 bg-slate-950/95 py-1 shadow-[0_16px_50px_-12px_rgba(0,0,0,0.55)] ring-1 ring-white/10 backdrop-blur-md'
+  const optionClass = (active: boolean) =>
+    light
+      ? active
+        ? 'bg-electric-blue/15 text-electric-blue'
+        : 'text-slate-700 hover:bg-slate-50'
+      : active
+        ? 'bg-electric-blue/25 text-white'
+        : 'text-slate-200 hover:bg-white/10'
+  const emptyTextClass = light
+    ? 'px-3 py-3 text-center text-sm leading-snug text-slate-500'
+    : 'px-3 py-3 text-center text-sm leading-snug text-slate-400'
+
   return (
     <div ref={rootRef} className="relative">
       <div
-        className="relative cursor-text rounded-xl border border-white/15 bg-slate-900/90 transition-colors focus-within:border-electric-blue focus-within:ring-2 focus-within:ring-electric-blue/40"
+        className={shellClass}
         onMouseDown={(e) => {
           if (e.target === inputRef.current) return
           e.preventDefault()
@@ -145,7 +170,7 @@ export default function RouteLocationCombobox({
           onBlur={onInputBlur}
           onChange={onInputChange}
           onKeyDown={onKeyDown}
-          className="min-h-[48px] w-full rounded-xl bg-transparent py-3 pl-11 pr-10 text-base text-white placeholder:text-slate-500 focus:outline-none"
+          className={inputClass}
         />
       </div>
 
@@ -159,7 +184,7 @@ export default function RouteLocationCombobox({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -4, scale: 0.99 }}
             transition={{ type: 'spring', stiffness: 420, damping: 32 }}
-            className="absolute left-0 right-0 z-[60] mt-1 max-h-[min(50vh,280px)] overflow-y-auto overscroll-contain rounded-2xl border border-white/15 bg-slate-950/95 py-1 shadow-[0_16px_50px_-12px_rgba(0,0,0,0.55)] ring-1 ring-white/10 backdrop-blur-md"
+            className={listClass}
           >
             {filtered.length > 0 ? (
               filtered.map((s, i) => {
@@ -176,16 +201,14 @@ export default function RouteLocationCombobox({
                       e.preventDefault()
                       pick(s)
                     }}
-                    className={`flex w-full items-center px-3 py-2.5 text-left text-[15px] font-medium transition ${
-                      active ? 'bg-electric-blue/25 text-white' : 'text-slate-200 hover:bg-white/10'
-                    }`}
+                    className={`flex w-full items-center px-3 py-2.5 text-left text-[15px] font-medium transition ${optionClass(active)}`}
                   >
                     {s}
                   </button>
                 )
               })
             ) : value.trim() ? (
-              <p className="px-3 py-3 text-center text-sm leading-snug text-slate-400">
+              <p className={emptyTextClass}>
                 Tidak ada di daftar singkat — lokasi yang kamu ketik tetap dipakai.
               </p>
             ) : null}

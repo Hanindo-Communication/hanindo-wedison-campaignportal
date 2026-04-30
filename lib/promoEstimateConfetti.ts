@@ -1,7 +1,7 @@
 import type { Options } from 'canvas-confetti'
 
 /** Brand-aligned palette for promo “surprise” bursts */
-const COLORS = ['#0891B2', '#06B6D4', '#22C55E', '#FBBF24', '#F97316', '#FEF3C7', '#FFFFFF']
+const COLORS = ['#1B8C5A', '#36B37E', '#22C55E', '#FBBF24', '#F97316', '#E8F5E9', '#FFFFFF']
 
 const base: Partial<Options> = {
   colors: COLORS,

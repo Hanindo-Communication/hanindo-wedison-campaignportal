@@ -1,12 +1,13 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter } from 'next/font/google'
+import { Montserrat } from 'next/font/google'
 import './globals.css'
 import TikTokPageView from './components/analytics/TikTokPageView'
 
-const inter = Inter({ 
+const montserrat = Montserrat({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-inter',
+  variable: '--font-montserrat',
+  weight: ['400', '500', '600', '700', '800'],
 })
 
 export const metadata: Metadata = {
@@ -61,7 +62,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
-  themeColor: '#0891B2',
+  themeColor: '#1B8C5A',
 }
 
 export default function RootLayout({
@@ -70,7 +71,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="id" className={inter.variable}>
+    <html lang="id" className={montserrat.variable}>
       <head>
         {/* Google Tag Manager */}
         <script
@@ -115,7 +116,7 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
       </head>
-      <body className={`${inter.className} antialiased text-rendering-optimize`}>
+      <body className={`${montserrat.className} antialiased text-rendering-optimize`}>
         {/* Google Tag Manager (noscript) */}
         <noscript>
           <iframe

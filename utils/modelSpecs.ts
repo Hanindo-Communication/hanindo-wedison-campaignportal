@@ -64,8 +64,8 @@ export const MODEL_SPECS: ModelSpec[] = [
       'Music streaming integration',
     ],
     whatsappLink: 'edpower',
-    gradient: 'from-cyan-500 to-blue-500',
-    badgeColor: 'bg-cyan-500',
+    gradient: 'from-emerald-600 to-electric-blue',
+    badgeColor: 'bg-electric-blue',
   },
   {
     id: 'athena',

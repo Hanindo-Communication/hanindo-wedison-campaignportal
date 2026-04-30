@@ -213,7 +213,7 @@ export default function PainPointsSection() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
               whileHover={{ scale: 1.02, y: -4 }}
-              className="col-span-1 bg-gradient-to-br from-electric-blue to-cyan-600 rounded-2xl md:rounded-3xl p-5 md:p-6 text-center cursor-pointer shadow-lg shadow-electric-blue/20"
+              className="col-span-1 bg-gradient-to-br from-electric-blue to-electric-blue-dark rounded-2xl md:rounded-3xl p-5 md:p-6 text-center cursor-pointer shadow-lg shadow-electric-blue/20"
             >
               <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-white/20 flex items-center justify-center mx-auto mb-3">
                 <FiTool className="text-2xl md:text-3xl text-white" />

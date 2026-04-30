@@ -708,7 +708,7 @@ export default function FinancingSection() {
               className="space-y-6"
             >
               {/* Final Price Card */}
-              <div className="bg-gradient-to-br from-electric-blue to-blue-600 rounded-3xl p-4 sm:p-6 md:p-8 text-center">
+              <div className="bg-gradient-to-br from-electric-blue to-electric-blue-dark rounded-3xl p-4 sm:p-6 md:p-8 text-center">
                 <p className="text-white/80 mb-2">Harga Cash</p>
                 <div className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">
                   Rp {cashData?.finalPrice.toLocaleString('id-ID') || '-'}
@@ -768,7 +768,7 @@ export default function FinancingSection() {
                   e.preventDefault()
                   openPreChat({ kind: 'messageKey', messageKey: 'financing' })
                 }}
-                className="flex items-center justify-center gap-2 w-full px-8 py-4 bg-electric-blue text-white font-bold text-lg rounded-full hover:bg-blue-600 transition-all hover:scale-105 shadow-xl"
+                className="flex items-center justify-center gap-2 w-full px-8 py-4 bg-electric-blue text-white font-bold text-lg rounded-full hover:bg-electric-blue-dark transition-all hover:scale-105 shadow-xl"
               >
                 <BsWhatsapp className="text-2xl" />
                 <span>{WHATSAPP_CTA.financingOrder}</span>

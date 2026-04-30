@@ -94,7 +94,7 @@ export default function LeadFormSection() {
   }
 
   return (
-    <section id="lead-form" className="py-12 md:py-20 bg-gradient-to-br from-electric-blue to-cyan-600 text-white">
+    <section id="lead-form" className="py-12 md:py-20 bg-gradient-to-br from-electric-blue to-electric-blue-dark text-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
@@ -267,7 +267,7 @@ export default function LeadFormSection() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-electric-blue text-white font-semibold rounded-full hover:bg-cyan-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-electric-blue text-white font-semibold rounded-full hover:bg-electric-blue-dark transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? (
                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />

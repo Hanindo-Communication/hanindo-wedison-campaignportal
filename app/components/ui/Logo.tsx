@@ -48,7 +48,7 @@ export default function Logo({ className = '', size = 'medium', href = '/', onCl
           priority
         />
       ) : (
-        <span className="font-bold text-xl text-secondary-teal">WEDISON</span>
+        <span className="font-bold text-xl tracking-tight text-wedison-navy">WEDISON</span>
       )}
     </div>
   )

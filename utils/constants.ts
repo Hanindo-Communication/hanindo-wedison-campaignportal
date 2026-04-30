@@ -1,12 +1,12 @@
-// Brand Colors
+// Brand colors — aligned with wedison.co (green + navy)
 export const COLORS = {
-  electricBlue: '#0891B2',
-  secondaryTeal: '#06B6D4',
+  electricBlue: '#1B8C5A',
+  secondaryTeal: '#36B37E',
   accentOrange: '#F97316',
   successGreen: '#22C55E',
   darkBg: '#0F172A',
   lightBg: '#F8FAFC',
-  textPrimary: '#1E293B',
+  textPrimary: '#1A365D',
   textSecondary: '#64748B',
   border: '#E2E8F0',
 }
@@ -100,6 +100,11 @@ export const STATS = {
 /** Tombol & aria WhatsApp — seragam; beberapa nilai khusus konteks section. */
 export const WHATSAPP_CTA = {
   button: 'WhatsApp',
+  /** Navbar / FAB promo — buka pre-chat (bukan label WhatsApp mentah). */
+  navOrderCta: 'Pesan Sekarang',
+  floatingTooltip: 'Hubungi Tim Kami',
+  ariaOrderCta: 'Buka formulir pesan sekarang',
+  ariaSalesCta: 'Hubungi tim sales Wedison',
   aria: 'Buka WhatsApp',
   modalSubmit: 'Lanjut ke WhatsApp',
   tooltipTitle: 'Butuh bantuan?',

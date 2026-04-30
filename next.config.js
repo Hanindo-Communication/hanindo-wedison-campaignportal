@@ -18,6 +18,12 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'wedison.co',
+        port: '',
+        pathname: '/**',
+      },
     ],
     // Enable image optimization for static export
     unoptimized: process.env.NODE_ENV === 'development',
