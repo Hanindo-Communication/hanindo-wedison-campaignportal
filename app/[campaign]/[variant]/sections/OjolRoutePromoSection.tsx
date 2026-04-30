@@ -436,7 +436,7 @@ function OjolRoutePromoSectionContent({ config }: { config: CampaignConfig }) {
         </AnimatePresence>
 
         {/* Model grid — judul + gambar; urutan marketing */}
-        <div className="mt-12">
+        <div id="route-promo-models" className="mt-12 scroll-mt-24 md:scroll-mt-28">
           <h3 className="text-lg font-semibold text-slate-900">Model</h3>
           <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-5">
             {modelsForSection.map((m) => (

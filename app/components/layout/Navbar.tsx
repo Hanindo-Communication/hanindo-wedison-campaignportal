@@ -16,6 +16,15 @@ const NAV_LINKS = [
   { label: 'FAQ', href: '#faq' },
 ]
 
+/** In-page strip for kampanye promo (052026) — anchor ke section di halaman yang sama */
+const PROMO_INPAGE_LINKS = [
+  { label: 'Model', href: '#route-promo-models' },
+  { label: 'Promo', href: '#promo-ticker' },
+  { label: 'Kenapa Wedison', href: '#why-wedison' },
+  { label: 'Lokasi', href: '#showroom' },
+  { label: 'FAQ', href: '#faq' },
+] as const
+
 interface NavbarProps {
   variant?: 'default' | 'minimal'
 }
@@ -67,11 +76,11 @@ function NavbarInner({ variant = 'default' }: NavbarProps) {
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 md:h-20 w-full items-center justify-between gap-3">
+          <div className="flex h-16 md:h-20 w-full items-center justify-between gap-2 md:gap-3">
             {/* Logo */}
             <Logo
               href="https://wedison.co"
-              className={`transition-all ${
+              className={`shrink-0 transition-all ${
                 navSolid ? '' : 'brightness-0 invert'
               }`}
               size="medium"
@@ -95,6 +104,28 @@ function NavbarInner({ variant = 'default' }: NavbarProps) {
                   </a>
                 ))}
               </div>
+            ) : null}
+
+            {/* Promo halaman: menu in-page horizontal (scroll di layar sempit) */}
+            {isPromo052026 ? (
+              <nav
+                aria-label="Navigasi bagian halaman"
+                className="min-w-0 flex-1 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              >
+                <ul className="flex flex-nowrap items-center justify-end gap-1.5 py-1 md:justify-center md:gap-2">
+                  {PROMO_INPAGE_LINKS.map((link) => (
+                    <li key={link.href} className="shrink-0">
+                      <a
+                        href={link.href}
+                        onClick={(e) => handleNavClick(e, link.href)}
+                        className="inline-flex items-center rounded-full border border-slate-200/90 bg-white/95 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-700 shadow-sm transition-colors hover:border-electric-blue/35 hover:text-electric-blue md:px-3 md:text-xs"
+                      >
+                        {link.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
             ) : null}
 
             {/* WA + mobile menu — satu grup supaya di mobile tidak “nyangkut” di tengah */}

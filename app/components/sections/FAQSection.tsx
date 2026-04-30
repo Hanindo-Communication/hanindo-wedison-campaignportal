@@ -218,13 +218,7 @@ export default function FAQSection({ config }: FAQSectionProps) {
             animate={{ opacity: 1, y: 0 }}
             className="text-center mb-10"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-800">
-              Sebelum <span className="text-electric-blue">{WHATSAPP_CTA.button}</span>
-            </h2>
-            <p className="mt-4 max-w-2xl mx-auto text-base text-slate-600 md:text-lg leading-relaxed">
-              Hal yang paling sering ditanyakan driver & komuter soal estimasi, promo, test ride, dan SuperCharge. Kalau
-              butuh detail ke kasus kamu, lanjut ke tim.
-            </p>
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-800">FAQ</h2>
           </motion.div>
 
           <div className="space-y-3">

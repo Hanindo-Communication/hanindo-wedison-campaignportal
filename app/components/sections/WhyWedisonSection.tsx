@@ -102,12 +102,11 @@ export default function WhyWedisonSection() {
           transition={{ duration: 0.45 }}
           className="text-center max-w-3xl mx-auto mb-12 md:mb-16"
         >
-          <p className="text-sm font-semibold uppercase tracking-wide text-electric-blue mb-2">Wedison</p>
           <h2
             id="why-wedison-heading"
-            className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight"
+            className="text-sm font-semibold uppercase tracking-wide text-electric-blue md:text-base"
           >
-            Kenapa Wedison?
+            Kenapa Wedison ?
           </h2>
         </motion.div>
 
