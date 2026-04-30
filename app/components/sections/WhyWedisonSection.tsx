@@ -1,6 +1,7 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
+import { useSectionRevealMotion } from '@/lib/motionPreferences'
 import Link from 'next/link'
 import { useId, useState } from 'react'
 import { FiChevronDown, FiExternalLink, FiMapPin, FiWind, FiZap } from 'react-icons/fi'
@@ -34,14 +35,16 @@ type Reason = (typeof REASONS)[number]
 function ReasonCard({ item, index }: { item: Reason; index: number }) {
   const [open, setOpen] = useState(false)
   const panelId = useId()
+  const reduceMotion = useReducedMotion()
+  const rm = reduceMotion === true
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 14 }}
+      initial={rm ? false : { opacity: 0, y: 14 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-32px' }}
-      transition={{ duration: 0.4, delay: index * 0.06 }}
-      className="group relative rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-slate-200/60 hover:border-electric-blue/25 hover:shadow-md transition-colors"
+      transition={{ duration: rm ? 0 : 0.4, delay: rm ? 0 : index * 0.06 }}
+      className="group relative rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-slate-200/60 transition-all duration-300 hover:border-electric-blue/25 hover:shadow-md md:hover:-translate-y-0.5"
     >
       <div className="flex gap-4">
         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-electric-blue/15 to-secondary-teal/10 text-electric-blue">
@@ -80,8 +83,11 @@ function ReasonCard({ item, index }: { item: Reason; index: number }) {
 }
 
 export default function WhyWedisonSection() {
+  const reveal = useSectionRevealMotion()
+
   return (
-    <section
+    <motion.section
+      {...reveal}
       id="why-wedison"
       className="relative scroll-mt-20 bg-gradient-to-b from-slate-50 to-white py-16 md:py-24 overflow-hidden"
       aria-labelledby="why-wedison-heading"
@@ -137,6 +143,6 @@ export default function WhyWedisonSection() {
           </Link>
         </motion.div>
       </div>
-    </section>
+    </motion.section>
   )
 }

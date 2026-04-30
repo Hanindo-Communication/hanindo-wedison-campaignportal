@@ -1,6 +1,8 @@
 'use client'
 
+import { motion } from 'framer-motion'
 import { BsWhatsapp } from 'react-icons/bs'
+import { useSectionRevealMotion } from '@/lib/motionPreferences'
 import { FiMapPin, FiMail, FiClock } from 'react-icons/fi'
 import { CONTACT, SHOWROOM_LOCATIONS, WHATSAPP_CTA } from '@/utils/constants'
 import { useWhatsAppPreChat } from '@/app/contexts/WhatsAppPreChatContext'
@@ -8,9 +10,10 @@ import Logo from '../ui/Logo'
 
 export default function Footer() {
   const { openPreChat } = useWhatsAppPreChat()
+  const reveal = useSectionRevealMotion()
 
   return (
-    <footer className="bg-slate-900 text-white">
+    <motion.footer {...reveal} className="bg-slate-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-3 lg:gap-12">
           <div className="text-center md:text-left">
@@ -29,7 +32,7 @@ export default function Footer() {
                 <button
                   type="button"
                   onClick={() => openPreChat({ kind: 'messageKey', messageKey: 'general' })}
-                  className="flex w-full items-start gap-3 text-left text-slate-400 hover:text-white transition-colors"
+                  className="flex w-full items-start gap-3 text-left text-slate-400 transition-colors hover:text-white hover:underline underline-offset-2"
                   aria-label={WHATSAPP_CTA.aria}
                 >
                   <BsWhatsapp className="text-lg mt-1 flex-shrink-0" aria-hidden />
@@ -39,7 +42,7 @@ export default function Footer() {
               <li>
                 <a
                   href={`mailto:${CONTACT.email}`}
-                  className="flex items-start gap-3 text-slate-400 hover:text-white transition-colors"
+                  className="flex items-start gap-3 text-slate-400 transition-colors hover:text-white hover:underline underline-offset-2"
                 >
                   <FiMail className="text-lg mt-1 flex-shrink-0" aria-hidden />
                   <span>{CONTACT.email}</span>
@@ -81,6 +84,6 @@ export default function Footer() {
           </div>
         </div>
       </div>
-    </footer>
+    </motion.footer>
   )
 }

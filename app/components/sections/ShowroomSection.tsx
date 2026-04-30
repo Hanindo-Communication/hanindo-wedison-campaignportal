@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { useSectionRevealMotion } from '@/lib/motionPreferences'
 import { FiMapPin, FiClock, FiNavigation, FiCalendar } from 'react-icons/fi'
 import { type CampaignConfig } from '@/lib/campaigns'
 import { CONTACT, SHOWROOM_LOCATIONS, WHATSAPP_CTA } from '@/utils/constants'
@@ -19,6 +20,7 @@ const MAPS_EMBED_KEY = 'AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8'
 
 export default function ShowroomSection({ config }: { config?: CampaignConfig }) {
   const { openPreChat, registerBrowseContext } = useWhatsAppPreChat()
+  const reveal = useSectionRevealMotion()
 
   useEffect(() => {
     registerBrowseContext({ section: 'showroom' })
@@ -33,7 +35,8 @@ export default function ShowroomSection({ config }: { config?: CampaignConfig })
   }
 
   return (
-    <section
+    <motion.section
+      {...reveal}
       id="showroom"
       className="relative scroll-mt-20 md:scroll-mt-24 overflow-hidden bg-gradient-to-b from-white via-slate-50/90 to-slate-50 py-16 md:py-24"
       aria-labelledby="showroom-heading"
@@ -68,7 +71,7 @@ export default function ShowroomSection({ config }: { config?: CampaignConfig })
               transition={{ duration: 0.4, delay: idx * 0.06 }}
               className="flex min-h-0 flex-col gap-4"
             >
-              <div className="relative min-h-[240px] flex-1 overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-100/40 shadow-sm shadow-slate-200/50 ring-1 ring-slate-900/[0.04] sm:min-h-[280px] lg:min-h-[320px]">
+              <div className="relative min-h-[240px] flex-1 overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-100/40 shadow-sm shadow-slate-200/50 ring-1 ring-slate-900/[0.04] transition-shadow duration-300 hover:shadow-lg hover:shadow-slate-300/40 sm:min-h-[280px] lg:min-h-[320px]">
                 <iframe
                   title={`Peta lokasi showroom Wedison ${loc.title}`}
                   src={`https://www.google.com/maps/embed/v1/place?key=${MAPS_EMBED_KEY}&q=${encodeURIComponent(loc.embedQuery)}`}
@@ -158,6 +161,6 @@ export default function ShowroomSection({ config }: { config?: CampaignConfig })
           </div>
         </motion.div>
       </div>
-    </section>
+    </motion.section>
   )
 }

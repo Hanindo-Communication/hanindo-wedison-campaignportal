@@ -7,6 +7,7 @@ import { BsWhatsapp } from 'react-icons/bs'
 import { MODEL_SPECS } from '@/utils/modelSpecs'
 import { useWhatsAppPreChat } from '@/app/contexts/WhatsAppPreChatContext'
 import { WHATSAPP_CTA } from '@/utils/constants'
+import { useSectionRevealMotion } from '@/lib/motionPreferences'
 
 const FINANCING_BENEFITS = [
   'Cicilan x Kredivo',
@@ -158,6 +159,7 @@ const FINANCING_DATA: Record<string, ModelFinancing> = {
 
 export default function FinancingSection() {
   const { openPreChat, registerBrowseContext } = useWhatsAppPreChat()
+  const reveal = useSectionRevealMotion()
   // Filter main models only
   const mainModels = MODEL_SPECS.filter((m) => !m.id.includes('-extended'))
   
@@ -223,7 +225,7 @@ export default function FinancingSection() {
   }
 
   return (
-    <section id="financing" className="py-12 md:py-20 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
+    <motion.section {...reveal} id="financing" className="py-12 md:py-20 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
@@ -777,6 +779,6 @@ export default function FinancingSection() {
           </div>
         </div>
       </div>
-    </section>
+    </motion.section>
   )
 }

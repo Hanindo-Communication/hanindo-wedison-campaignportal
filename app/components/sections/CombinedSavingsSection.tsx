@@ -12,6 +12,7 @@ import {
 } from '@/lib/combinedSavingsFormulas'
 import { useWhatsAppPreChat } from '@/app/contexts/WhatsAppPreChatContext'
 import { WHATSAPP_CTA } from '@/utils/constants'
+import { useSectionRevealMotion } from '@/lib/motionPreferences'
 
 // Usage presets
 const USAGE_PRESETS = [
@@ -197,6 +198,7 @@ interface CombinedSavingsSectionProps {
 
 export default function CombinedSavingsSection({ config }: CombinedSavingsSectionProps) {
   const { openPreChat, registerBrowseContext } = useWhatsAppPreChat()
+  const reveal = useSectionRevealMotion()
   const mainModels = MODEL_SPECS.filter((m) => !m.id.includes('-extended'))
   
   // Calculator states
@@ -291,7 +293,7 @@ export default function CombinedSavingsSection({ config }: CombinedSavingsSectio
   }
 
   return (
-    <section id="combined-savings" className="py-12 md:py-20 bg-slate-50 scroll-mt-16">
+    <motion.section {...reveal} id="combined-savings" className="py-12 md:py-20 bg-slate-50 scroll-mt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
@@ -894,6 +896,6 @@ export default function CombinedSavingsSection({ config }: CombinedSavingsSectio
         </div>
 
       </div>
-    </section>
+    </motion.section>
   )
 }

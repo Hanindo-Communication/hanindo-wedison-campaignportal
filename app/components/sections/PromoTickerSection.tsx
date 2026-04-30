@@ -3,7 +3,8 @@
 import Image from 'next/image'
 import { Suspense, useCallback, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { useReducedMotion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
+import { useSectionRevealMotion } from '@/lib/motionPreferences'
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi'
 import { BsWhatsapp } from 'react-icons/bs'
 import { getAdSourceLine } from '@/lib/adSourceFromUrl'
@@ -29,6 +30,7 @@ const SLIDE_GAP_PX = 16
 function PromoTickerSectionInner() {
   const searchParams = useSearchParams()
   const reduceMotion = useReducedMotion()
+  const reveal = useSectionRevealMotion()
   const scrollerRef = useRef<HTMLDivElement>(null)
   const { openPreChat } = useWhatsAppPreChat()
 
@@ -50,7 +52,8 @@ function PromoTickerSectionInner() {
   )
 
   return (
-    <section
+    <motion.section
+      {...reveal}
       id="promo-ticker"
       className="relative z-10 scroll-mt-20 border-y border-slate-200 bg-white py-8 md:py-10"
       aria-labelledby="promo-ticker-heading"
@@ -116,7 +119,11 @@ function PromoTickerSectionInner() {
                 data-promo-slide
                 className="w-[min(72vw,420px)] shrink-0 snap-start sm:w-[380px] md:w-[460px]"
               >
-                <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl bg-slate-100 ring-1 ring-slate-200">
+                <div
+                  className={`relative aspect-[16/9] w-full overflow-hidden rounded-xl bg-slate-100 ring-1 ring-slate-200 transition-transform duration-300 ${
+                    reduceMotion ? '' : 'hover:scale-[1.02]'
+                  }`}
+                >
                   <Image
                     src={item.imageSrc}
                     alt=""
@@ -153,7 +160,7 @@ function PromoTickerSectionInner() {
           putar otomatis.
         </p>
       </div>
-    </section>
+    </motion.section>
   )
 }
 

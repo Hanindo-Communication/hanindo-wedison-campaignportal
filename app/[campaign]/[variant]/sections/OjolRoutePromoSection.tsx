@@ -18,6 +18,7 @@ import { useScrollLock } from '@/lib/useScrollLock'
 import { MODEL_SPECS } from '@/utils/modelSpecs'
 import PromoTickerSection from '@/app/components/sections/PromoTickerSection'
 import RouteLocationCombobox from '@/app/components/ui/RouteLocationCombobox'
+import { useSectionRevealMotion } from '@/lib/motionPreferences'
 
 /** Urutan tampilan section Model (marketing); tidak mengubah urutan data internal */
 const MODEL_SECTION_ORDER = ['bees', 'athena', 'victory', 'edpower'] as const
@@ -27,6 +28,7 @@ function OjolRoutePromoSectionContent({ config }: { config: CampaignConfig }) {
   const salesCtaLabel = hero.secondaryCtaText ?? WHATSAPP_CTA.button
   const { openPreChat, registerBrowseContext } = useWhatsAppPreChat()
   const reduceMotion = useReducedMotion()
+  const reveal = useSectionRevealMotion()
 
   const [pickup, setPickup] = useState('')
   const [dropoff, setDropoff] = useState('')
@@ -143,7 +145,8 @@ function OjolRoutePromoSectionContent({ config }: { config: CampaignConfig }) {
   const bgImage = hero.backgroundImage
 
   return (
-    <section
+    <motion.section
+      {...reveal}
       className="relative -mt-16 md:-mt-20 pt-16 md:pt-20 min-h-[min(100dvh,920px)] overflow-hidden"
       aria-labelledby="ojol-promo-headline"
     >
@@ -188,9 +191,23 @@ function OjolRoutePromoSectionContent({ config }: { config: CampaignConfig }) {
         {/* Routing card — frosted outer, opaque inner for text */}
         <div
           id="route-promo-form"
+          aria-labelledby="route-promo-form-heading"
           className="mt-8 rounded-2xl border border-slate-200/80 bg-white/80 p-1 shadow-xl shadow-slate-200/50 backdrop-blur-md"
         >
           <div className="rounded-xl bg-white p-4 sm:p-6 ring-1 ring-slate-100">
+            <div className="mb-5">
+              <h2
+                id="route-promo-form-heading"
+                className="text-lg font-bold tracking-tight text-slate-900 sm:text-xl"
+              >
+                Info Hemat & Rekomendasi Motor Wedison
+              </h2>
+              <p className="mt-2 text-sm leading-relaxed text-slate-600 sm:text-[15px]">
+                Cek seberapa hemat kamu dengan motor Wedison berdasarkan{' '}
+                <strong className="font-semibold text-slate-900">Lokasi dan Jarak Tempuh</strong>
+                .
+              </p>
+            </div>
             <div className="flex gap-3">
               <div className="flex flex-col items-center pt-2">
                 <span className="h-3 w-3 shrink-0 rounded-full border-2 border-electric-blue bg-electric-blue/20" aria-hidden />
@@ -437,15 +454,26 @@ function OjolRoutePromoSectionContent({ config }: { config: CampaignConfig }) {
                 <span className="text-center text-xs font-bold uppercase tracking-wide text-slate-900 sm:text-sm">
                   {m.name}
                 </span>
-                <div className="relative mt-3 aspect-[4/3] w-full bg-white">
-                  <Image
-                    src={m.imageSrc}
-                    alt={`Wedison ${m.name}`}
-                    fill
-                    unoptimized={m.imageSrc.endsWith('.svg')}
-                    className="object-contain object-center"
-                    sizes="(max-width:768px) 45vw, 200px"
-                  />
+                <div className="relative mt-3 aspect-[4/3] w-full overflow-hidden rounded-lg bg-white">
+                  <motion.div
+                    className="relative h-full w-full"
+                    initial={false}
+                    whileHover={
+                      reduceMotion
+                        ? undefined
+                        : { scale: 1.08, y: -4 }
+                    }
+                    transition={{ type: 'spring', stiffness: 420, damping: 28 }}
+                  >
+                    <Image
+                      src={m.imageSrc}
+                      alt={`Wedison ${m.name}`}
+                      fill
+                      unoptimized={m.imageSrc.endsWith('.svg')}
+                      className="object-contain object-center"
+                      sizes="(max-width:768px) 45vw, 200px"
+                    />
+                  </motion.div>
                 </div>
               </button>
             ))}
@@ -512,13 +540,20 @@ function OjolRoutePromoSectionContent({ config }: { config: CampaignConfig }) {
                 >
                   Wedison {modalModel.name}
                 </h4>
+                <p className="mt-2 text-sm leading-relaxed text-slate-400">
+                  Informasi lebih lanjut terkait model{' '}
+                  <span className="font-semibold text-slate-100">{modalModel.name}</span>
+                  {'. '}
+                  Kunjungi halaman resmi produk di bawah untuk spesifikasi lengkap.
+                </p>
                 <Link
                   href={modalModel.detailUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-2 inline-block text-sm text-electric-blue hover:underline"
+                  className="mt-2 inline-flex items-center gap-1 text-sm font-semibold text-electric-blue underline-offset-2 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-electric-blue/50 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
                 >
-                  Pelajari di wedison.co →
+                  Pelajari Wedison {modalModel.name} di wedison.co
+                  <span aria-hidden>→</span>
                 </Link>
                 {modalModel.highlights.length > 0 ? (
                   <div
@@ -554,7 +589,7 @@ function OjolRoutePromoSectionContent({ config }: { config: CampaignConfig }) {
           </motion.div>
         ) : null}
       </AnimatePresence>
-    </section>
+    </motion.section>
   )
 }
 

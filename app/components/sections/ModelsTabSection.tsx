@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
+import { useSectionRevealMotion } from '@/lib/motionPreferences'
 import Image from 'next/image'
 import { BsWhatsapp } from 'react-icons/bs'
 import { FiChevronDown, FiCheck, FiZap, FiBattery, FiDollarSign, FiUsers } from 'react-icons/fi'
@@ -43,6 +44,9 @@ const getModelImagePath = (modelId: string): string => {
 
 export default function ModelsTabSection() {
   const { openPreChat, registerBrowseContext } = useWhatsAppPreChat()
+  const reveal = useSectionRevealMotion()
+  const reduceMotion = useReducedMotion()
+  const rm = reduceMotion === true
   const mainModels = MODEL_SPECS.filter((model) => !model.id.includes('-extended'))
   
   const [activeTab, setActiveTab] = useState(0)
@@ -81,8 +85,9 @@ export default function ModelsTabSection() {
   ]
 
   return (
-    <section 
-      id="models" 
+    <motion.section
+      {...reveal}
+      id="models"
       className="py-12 md:py-20 bg-white scroll-mt-16 relative overflow-hidden"
     >
       {/* Background Image dengan opacity 15% - Full Section Viewport */}
@@ -134,10 +139,10 @@ export default function ModelsTabSection() {
                     setActiveTab(index)
                     setSelectedVariant('regular')
                   }}
-                  className={`relative w-[200px] flex-shrink-0 md:w-full p-4 md:p-5 pt-5 md:pt-5 rounded-2xl border-2 transition-all text-left ${
+                  className={`relative w-[200px] flex-shrink-0 md:w-full p-4 md:p-5 pt-5 md:pt-5 rounded-2xl border-2 transition-all duration-300 text-left ${
                     activeTab === index
                       ? 'border-electric-blue bg-electric-blue/5 shadow-lg md:shadow-xl'
-                      : 'border-slate-200 bg-white hover:border-slate-300 hover:shadow-md'
+                      : 'border-slate-200 bg-white hover:border-slate-300 hover:shadow-md md:hover:-translate-y-0.5'
                   }`}
                 >
                   {/* Best For Badge */}
@@ -195,28 +200,36 @@ export default function ModelsTabSection() {
         <AnimatePresence mode="wait">
           <motion.div
             key={activeModel.id}
-            initial={{ opacity: 0, y: 20 }}
+            layout={!rm}
+            initial={rm ? { opacity: 0 } : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
+            exit={rm ? { opacity: 0 } : { opacity: 0, y: -20 }}
+            transition={{ duration: rm ? 0.15 : 0.3 }}
             className="bg-gradient-to-br from-slate-50 to-white rounded-3xl shadow-xl border-2 border-slate-100 overflow-hidden"
           >
             <div className="flex flex-col lg:grid lg:grid-cols-2">
               {/* Left: Image */}
               <div className="relative bg-gradient-to-br from-slate-100 to-slate-200 p-4 sm:p-6 md:p-8 flex items-center justify-center">
-                <div className="relative w-full aspect-square max-w-xs sm:max-w-sm md:max-w-md mx-auto">
-                  <Image
-                    src={imageError 
-                      ? `https://source.unsplash.com/featured/600x600/?electric,motorcycle,${activeModel.name.toLowerCase()}`
-                      : modelImagePath
-                    }
-                    alt={`${activeModel.name} - Wedison Electric Motorcycle`}
-                    fill
-                    className="object-contain"
-                    priority={activeTab === 0}
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    onError={() => setImageError(true)}
-                  />
+                <div className="relative w-full aspect-square max-w-xs sm:max-w-sm md:max-w-md mx-auto overflow-hidden rounded-2xl">
+                  <motion.div
+                    className="relative h-full w-full"
+                    initial={false}
+                    whileHover={rm ? undefined : { scale: 1.06, y: -4 }}
+                    transition={{ type: 'spring', stiffness: 380, damping: 26 }}
+                  >
+                    <Image
+                      src={imageError 
+                        ? `https://source.unsplash.com/featured/600x600/?electric,motorcycle,${activeModel.name.toLowerCase()}`
+                        : modelImagePath
+                      }
+                      alt={`${activeModel.name} - Wedison Electric Motorcycle`}
+                      fill
+                      className="object-contain"
+                      priority={activeTab === 0}
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      onError={() => setImageError(true)}
+                    />
+                  </motion.div>
                 </div>
               </div>
 
@@ -347,6 +360,6 @@ export default function ModelsTabSection() {
           </motion.div>
         </AnimatePresence>
       </div>
-    </section>
+    </motion.section>
   )
 }

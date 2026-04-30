@@ -1,12 +1,17 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
+import { useSectionRevealMotion, getStaggeredItemReveal } from '@/lib/motionPreferences'
 import { FiArrowRight, FiDollarSign, FiClock, FiPercent, FiTool } from 'react-icons/fi'
 import { BsLightningChargeFill } from 'react-icons/bs'
 
 export default function PainPointsSection() {
+  const reveal = useSectionRevealMotion()
+  const reduceMotion = useReducedMotion()
+  const rm = reduceMotion === true
+
   return (
-    <section className="py-16 md:py-24 bg-white overflow-hidden">
+    <motion.section {...reveal} className="py-16 md:py-24 bg-white overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
@@ -27,12 +32,10 @@ export default function PainPointsSection() {
           
           {/* Card 1 - BBM (Large) */}
           <motion.div
-            initial={false}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.1 }}
+            {...getStaggeredItemReveal(rm, 0)}
             className="col-span-2 row-span-2 relative group"
           >
-            <div className="h-full bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl p-6 md:p-8 overflow-hidden border border-slate-700">
+            <div className="h-full bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl p-6 md:p-8 overflow-hidden border border-slate-700 transition-shadow duration-300 hover:shadow-xl hover:shadow-slate-900/20">
               {/* Background Icon */}
               <div className="absolute top-4 right-4 opacity-10">
                 <FiDollarSign className="text-[100px] md:text-[150px] text-white" />
@@ -67,12 +70,10 @@ export default function PainPointsSection() {
 
           {/* Card 2 - Charging Time */}
           <motion.div
-            initial={false}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2 }}
+            {...getStaggeredItemReveal(rm, 1)}
             className="col-span-1 aspect-square relative group"
           >
-            <div className="h-full bg-slate-50 border-2 border-slate-200 rounded-2xl md:rounded-3xl p-4 md:p-6 flex flex-col justify-center items-center text-center hover:border-electric-blue/30 transition-colors">
+            <div className="h-full bg-slate-50 border-2 border-slate-200 rounded-2xl md:rounded-3xl p-4 md:p-6 flex flex-col justify-center items-center text-center transition-all duration-300 hover:border-electric-blue/30 hover:-translate-y-0.5 hover:shadow-md">
               <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-slate-200 flex items-center justify-center mb-3">
                 <FiClock className="text-xl md:text-2xl text-slate-600" />
               </div>
@@ -83,12 +84,10 @@ export default function PainPointsSection() {
 
           {/* Card 3 - Komisi */}
           <motion.div
-            initial={false}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3 }}
+            {...getStaggeredItemReveal(rm, 2)}
             className="col-span-1 aspect-square relative group"
           >
-            <div className="h-full bg-slate-50 border-2 border-slate-200 rounded-2xl md:rounded-3xl p-4 md:p-6 flex flex-col justify-center items-center text-center hover:border-electric-blue/30 transition-colors">
+            <div className="h-full bg-slate-50 border-2 border-slate-200 rounded-2xl md:rounded-3xl p-4 md:p-6 flex flex-col justify-center items-center text-center transition-all duration-300 hover:border-electric-blue/30 hover:-translate-y-0.5 hover:shadow-md">
               <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-slate-200 flex items-center justify-center mb-3">
                 <FiPercent className="text-xl md:text-2xl text-slate-600" />
               </div>
@@ -99,12 +98,10 @@ export default function PainPointsSection() {
 
           {/* Card 4 - Maintenance */}
           <motion.div
-            initial={false}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.4 }}
+            {...getStaggeredItemReveal(rm, 3)}
             className="col-span-1 aspect-square relative group"
           >
-            <div className="h-full bg-slate-50 border-2 border-slate-200 rounded-2xl md:rounded-3xl p-4 md:p-6 flex flex-col justify-center items-center text-center hover:border-electric-blue/30 transition-colors">
+            <div className="h-full bg-slate-50 border-2 border-slate-200 rounded-2xl md:rounded-3xl p-4 md:p-6 flex flex-col justify-center items-center text-center transition-all duration-300 hover:border-electric-blue/30 hover:-translate-y-0.5 hover:shadow-md">
               <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-slate-200 flex items-center justify-center mb-3">
                 <FiTool className="text-xl md:text-2xl text-slate-600" />
               </div>
@@ -115,25 +112,27 @@ export default function PainPointsSection() {
 
           {/* Card 5 - Stress Visual */}
           <motion.div
-            initial={false}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.5 }}
+            {...getStaggeredItemReveal(rm, 4)}
             className="col-span-1 aspect-square relative group"
           >
-            <div className="h-full bg-slate-50 border-2 border-slate-200 rounded-2xl md:rounded-3xl p-4 md:p-6 flex flex-col justify-center items-center text-center hover:border-electric-blue/30 transition-colors">
-              <motion.div 
-                className="text-4xl md:text-5xl mb-2"
-                animate={{ 
-                  rotate: [0, -5, 5, -5, 0],
-                }}
-                transition={{ 
-                  duration: 2,
-                  repeat: Infinity,
-                  repeatDelay: 3
-                }}
-              >
-                😫
-              </motion.div>
+            <div className="h-full bg-slate-50 border-2 border-slate-200 rounded-2xl md:rounded-3xl p-4 md:p-6 flex flex-col justify-center items-center text-center transition-all duration-300 hover:border-electric-blue/30 hover:-translate-y-0.5 hover:shadow-md">
+              {rm ? (
+                <div className="text-4xl md:text-5xl mb-2">😫</div>
+              ) : (
+                <motion.div
+                  className="text-4xl md:text-5xl mb-2"
+                  animate={{
+                    rotate: [0, -5, 5, -5, 0],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    repeatDelay: 3,
+                  }}
+                >
+                  😫
+                </motion.div>
+              )}
               <div className="text-slate-500 text-xs md:text-sm">Pusing terus!</div>
             </div>
           </motion.div>
@@ -145,15 +144,23 @@ export default function PainPointsSection() {
           animate={{ opacity: 1, y: 0 }}
           className="flex justify-center my-8 md:my-12"
         >
-          <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-            className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-electric-blue to-secondary-teal flex items-center justify-center shadow-lg shadow-electric-blue/20"
-          >
-            <svg className="w-7 h-7 md:w-8 md:h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-            </svg>
-          </motion.div>
+          {rm ? (
+            <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-electric-blue to-secondary-teal flex items-center justify-center shadow-lg shadow-electric-blue/20">
+              <svg className="w-7 h-7 md:w-8 md:h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+              </svg>
+            </div>
+          ) : (
+            <motion.div
+              animate={{ y: [0, 8, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+              className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-electric-blue to-secondary-teal flex items-center justify-center shadow-lg shadow-electric-blue/20"
+            >
+              <svg className="w-7 h-7 md:w-8 md:h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+              </svg>
+            </motion.div>
+          )}
         </motion.div>
 
         {/* Solution Section */}
@@ -179,10 +186,8 @@ export default function PainPointsSection() {
             
             {/* Solution 1 - Hemat */}
             <motion.div
-              initial={false}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              whileHover={{ scale: 1.02, y: -4 }}
+              {...getStaggeredItemReveal(rm, 5)}
+              whileHover={rm ? undefined : { scale: 1.02, y: -4 }}
               className="col-span-1 bg-gradient-to-br from-success-green to-emerald-500 rounded-2xl md:rounded-3xl p-5 md:p-6 text-center cursor-pointer shadow-lg shadow-success-green/20"
             >
               <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-white/20 flex items-center justify-center mx-auto mb-3">
@@ -194,10 +199,8 @@ export default function PainPointsSection() {
 
             {/* Solution 2 - Fast Charge */}
             <motion.div
-              initial={false}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              whileHover={{ scale: 1.02, y: -4 }}
+              {...getStaggeredItemReveal(rm, 6)}
+              whileHover={rm ? undefined : { scale: 1.02, y: -4 }}
               className="col-span-1 bg-gradient-to-br from-electric-blue to-secondary-teal rounded-2xl md:rounded-3xl p-5 md:p-6 text-center cursor-pointer shadow-lg shadow-electric-blue/20"
             >
               <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-white/20 flex items-center justify-center mx-auto mb-3">
@@ -209,10 +212,8 @@ export default function PainPointsSection() {
 
             {/* Solution 3 - No Service */}
             <motion.div
-              initial={false}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              whileHover={{ scale: 1.02, y: -4 }}
+              {...getStaggeredItemReveal(rm, 7)}
+              whileHover={rm ? undefined : { scale: 1.02, y: -4 }}
               className="col-span-1 bg-gradient-to-br from-electric-blue to-electric-blue-dark rounded-2xl md:rounded-3xl p-5 md:p-6 text-center cursor-pointer shadow-lg shadow-electric-blue/20"
             >
               <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-white/20 flex items-center justify-center mx-auto mb-3">
@@ -224,10 +225,8 @@ export default function PainPointsSection() {
 
             {/* Solution 4 - ROI */}
             <motion.div
-              initial={false}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              whileHover={{ scale: 1.02, y: -4 }}
+              {...getStaggeredItemReveal(rm, 8)}
+              whileHover={rm ? undefined : { scale: 1.02, y: -4 }}
               className="col-span-1 bg-gradient-to-br from-accent-orange to-orange-500 rounded-2xl md:rounded-3xl p-5 md:p-6 text-center cursor-pointer shadow-lg shadow-accent-orange/20"
             >
               <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-white/20 flex items-center justify-center mx-auto mb-3">
@@ -241,12 +240,7 @@ export default function PainPointsSection() {
           </div>
 
           {/* CTA Button */}
-          <motion.div
-            initial={false}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="mt-10 md:mt-12 text-center"
-          >
+          <motion.div {...getStaggeredItemReveal(rm, 9)} className="mt-10 md:mt-12 text-center">
             <a
               href="#combined-savings"
               className="group inline-flex items-center gap-3 px-8 py-4 bg-slate-900 text-white font-bold text-lg rounded-full hover:bg-slate-800 transition-all hover:scale-105 shadow-xl"
@@ -257,6 +251,6 @@ export default function PainPointsSection() {
           </motion.div>
         </motion.div>
       </div>
-    </section>
+    </motion.section>
   )
 }

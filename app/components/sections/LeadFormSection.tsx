@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { useSectionRevealMotion } from '@/lib/motionPreferences'
 import { FiUser, FiPhone, FiMapPin, FiSend, FiCheck, FiCreditCard } from 'react-icons/fi'
 import { BsWhatsapp } from 'react-icons/bs'
 import { MODEL_SPECS } from '@/utils/modelSpecs'
@@ -19,6 +20,7 @@ interface FormData {
 
 export default function LeadFormSection() {
   const { openPreChat } = useWhatsAppPreChat()
+  const reveal = useSectionRevealMotion()
   const mainModels = MODEL_SPECS.filter((m) => !m.id.includes('-extended'))
   
   const [formData, setFormData] = useState<FormData>({
@@ -94,7 +96,7 @@ export default function LeadFormSection() {
   }
 
   return (
-    <section id="lead-form" className="py-12 md:py-20 bg-gradient-to-br from-electric-blue to-electric-blue-dark text-white">
+    <motion.section {...reveal} id="lead-form" className="py-12 md:py-20 bg-gradient-to-br from-electric-blue to-electric-blue-dark text-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
@@ -291,6 +293,6 @@ export default function LeadFormSection() {
           </motion.div>
         )}
       </div>
-    </section>
+    </motion.section>
   )
 }

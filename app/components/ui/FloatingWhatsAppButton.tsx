@@ -2,7 +2,7 @@
 
 import { Suspense, useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { FiMessageCircle, FiX } from 'react-icons/fi'
 import { useWhatsAppPreChat } from '@/app/contexts/WhatsAppPreChatContext'
 import { WHATSAPP_CTA } from '@/utils/constants'
@@ -10,6 +10,7 @@ import { WHATSAPP_CTA } from '@/utils/constants'
 function FloatingWhatsAppButtonInner() {
   const pathname = usePathname()
   const { openPreChat } = useWhatsAppPreChat()
+  const reduceMotion = useReducedMotion()
   const isPromo052026 = pathname?.includes('/052026/promo')
 
   const openFloatingWa = () => {
@@ -51,10 +52,10 @@ function FloatingWhatsAppButtonInner() {
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          initial={{ opacity: 0, scale: 0.8, y: 20 }}
+          initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.8, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.8, y: 20 }}
-          transition={{ duration: 0.3 }}
+          exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.8, y: 20 }}
+          transition={{ duration: reduceMotion ? 0.15 : 0.3 }}
           className="fixed bottom-6 right-6 z-50"
         >
           {/* Tooltip */}
@@ -84,13 +85,16 @@ function FloatingWhatsAppButtonInner() {
           <button
             type="button"
             onClick={openFloatingWa}
-            className="relative flex items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-full shadow-2xl bg-gradient-to-br from-electric-blue to-secondary-teal text-white hover:opacity-95 hover:scale-110 transition-all focus:outline-none focus:ring-2 focus:ring-electric-blue/60"
+            className={`relative flex items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-full shadow-2xl bg-gradient-to-br from-electric-blue to-secondary-teal text-white transition-all hover:opacity-95 hover:shadow-electric-blue/40 focus:outline-none focus:ring-2 focus:ring-electric-blue/60 ${
+              reduceMotion ? '' : 'hover:scale-110'
+            }`}
             aria-label={WHATSAPP_CTA.ariaOrderCta}
           >
             <FiMessageCircle className="text-2xl md:text-3xl" aria-hidden />
 
-            {/* Pulse Animation */}
-            <span className="absolute inset-0 rounded-full bg-electric-blue animate-ping opacity-20" />
+            {!reduceMotion ? (
+              <span className="pointer-events-none absolute inset-0 rounded-full bg-electric-blue opacity-20 animate-ping" />
+            ) : null}
           </button>
         </motion.div>
       )}

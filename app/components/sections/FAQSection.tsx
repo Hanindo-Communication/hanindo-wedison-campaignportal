@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
+import { useSectionRevealMotion } from '@/lib/motionPreferences'
 import { FiPlus, FiMinus, FiBattery, FiZap, FiTrendingUp, FiShield, FiTool, FiSmartphone } from 'react-icons/fi'
 import { BsWhatsapp } from 'react-icons/bs'
 import { type CampaignConfig } from '@/lib/campaigns'
@@ -191,6 +192,9 @@ interface FAQSectionProps {
 
 export default function FAQSection({ config }: FAQSectionProps) {
   const { openPreChat } = useWhatsAppPreChat()
+  const reveal = useSectionRevealMotion()
+  const reduceMotion = useReducedMotion()
+  const rm = reduceMotion === true
   const [activeCategory, setActiveCategory] = useState(FAQ_CATEGORIES[0].id)
   const [openIndex, setOpenIndex] = useState<number | null>(0)
 
@@ -207,7 +211,7 @@ export default function FAQSection({ config }: FAQSectionProps) {
       setOpenIndex(openIndex === index ? null : index)
     }
     return (
-      <section id="faq" className="py-12 md:py-20 bg-slate-50">
+      <motion.section {...reveal} id="faq" className="py-12 md:py-20 bg-slate-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={false}
@@ -250,10 +254,10 @@ export default function FAQSection({ config }: FAQSectionProps) {
                 <AnimatePresence>
                   {openIndex === index && (
                     <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: 'easeInOut' }}
+                      initial={rm ? { opacity: 0 } : { height: 0, opacity: 0 }}
+                      animate={rm ? { opacity: 1 } : { height: 'auto', opacity: 1 }}
+                      exit={rm ? { opacity: 0 } : { height: 0, opacity: 0 }}
+                      transition={{ duration: rm ? 0 : 0.3, ease: 'easeInOut' }}
                       className="overflow-hidden"
                     >
                       <div className="px-4 md:px-5 pb-4 md:pb-5">
@@ -277,7 +281,7 @@ export default function FAQSection({ config }: FAQSectionProps) {
             </button>
           </motion.div>
         </div>
-      </section>
+      </motion.section>
     )
   }
 
@@ -288,7 +292,7 @@ export default function FAQSection({ config }: FAQSectionProps) {
   const currentCategory = FAQ_CATEGORIES.find(cat => cat.id === activeCategory) || FAQ_CATEGORIES[0]
 
   return (
-    <section id="faq" className="py-12 md:py-20 bg-white">
+    <motion.section {...reveal} id="faq" className="py-12 md:py-20 bg-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
@@ -345,10 +349,10 @@ export default function FAQSection({ config }: FAQSectionProps) {
         <AnimatePresence mode="wait">
           <motion.div
             key={activeCategory}
-            initial={{ opacity: 0, y: 10 }}
+            initial={rm ? { opacity: 0 } : { opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
+            exit={rm ? { opacity: 0 } : { opacity: 0, y: -10 }}
+            transition={{ duration: rm ? 0 : 0.2 }}
             className="space-y-3"
           >
             {currentCategory.items.map((item, index) => (
@@ -384,10 +388,10 @@ export default function FAQSection({ config }: FAQSectionProps) {
                 <AnimatePresence>
                   {openIndex === index && (
                     <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: 'easeInOut' }}
+                      initial={rm ? { opacity: 0 } : { height: 0, opacity: 0 }}
+                      animate={rm ? { opacity: 1 } : { height: 'auto', opacity: 1 }}
+                      exit={rm ? { opacity: 0 } : { height: 0, opacity: 0 }}
+                      transition={{ duration: rm ? 0 : 0.3, ease: 'easeInOut' }}
                       className="overflow-hidden"
                     >
                       <div className="px-4 md:px-5 pb-4 md:pb-5">
@@ -419,6 +423,6 @@ export default function FAQSection({ config }: FAQSectionProps) {
           </button>
         </motion.div>
       </div>
-    </section>
+    </motion.section>
   )
 }

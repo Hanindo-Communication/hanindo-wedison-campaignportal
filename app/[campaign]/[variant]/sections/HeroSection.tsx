@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
+import { useSectionRevealMotion } from '@/lib/motionPreferences'
 import Image from 'next/image'
 import { FiZap, FiBattery, FiDollarSign, FiChevronLeft, FiChevronRight } from 'react-icons/fi'
 import { type CampaignConfig } from '@/lib/campaigns'
@@ -42,6 +43,8 @@ export default function HeroSection({ config }: HeroSectionProps) {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
   const { hero } = config
+  const reduceMotion = useReducedMotion()
+  const reveal = useSectionRevealMotion()
 
   // Navigate to next slide
   const nextSlide = useCallback(() => {
@@ -78,7 +81,10 @@ export default function HeroSection({ config }: HeroSectionProps) {
   }, [isAutoPlaying, nextSlide])
 
   return (
-    <section className="relative min-h-[90vh] md:min-h-screen flex items-center justify-center overflow-hidden -mt-16 md:-mt-20 pt-16 md:pt-20">
+    <motion.section
+      {...reveal}
+      className="relative min-h-[90vh] md:min-h-screen flex items-center justify-center overflow-hidden -mt-16 md:-mt-20 pt-16 md:pt-20"
+    >
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-electric-blue/30">
         {hero.backgroundImage && (
@@ -143,8 +149,10 @@ export default function HeroSection({ config }: HeroSectionProps) {
           className="flex flex-wrap justify-center gap-4 md:gap-8 mb-8"
         >
           {QUICK_STATS.map((stat, index) => (
-            <div
+            <motion.div
               key={index}
+              whileHover={reduceMotion ? undefined : { y: -3 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 28 }}
               className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-xl px-4 py-3 border border-white/10"
             >
               <div className="w-10 h-10 bg-electric-blue/20 rounded-full flex items-center justify-center">
@@ -154,7 +162,7 @@ export default function HeroSection({ config }: HeroSectionProps) {
                 <div className="text-white font-bold">{stat.label}</div>
                 <div className="text-slate-400 text-sm">{stat.sublabel}</div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </motion.div>
 
@@ -174,10 +182,10 @@ export default function HeroSection({ config }: HeroSectionProps) {
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentSlide}
-                initial={{ opacity: 0, scale: 1.02 }}
+                initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 1.02 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.98 }}
-                transition={{ duration: 0.4, ease: 'easeInOut' }}
+                exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.98 }}
+                transition={{ duration: reduceMotion ? 0.2 : 0.4, ease: 'easeInOut' }}
                 className="absolute inset-0"
               >
                 <Image
@@ -227,7 +235,7 @@ export default function HeroSection({ config }: HeroSectionProps) {
             </div>
 
             {/* Progress Bar */}
-            {isAutoPlaying && (
+            {isAutoPlaying && !reduceMotion && (
               <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/20">
                 <motion.div
                   key={currentSlide}
@@ -248,6 +256,6 @@ export default function HeroSection({ config }: HeroSectionProps) {
         {/* ===== END PROMO BANNER SLIDER ===== */}
 
       </div>
-    </section>
+    </motion.section>
   )
 }
