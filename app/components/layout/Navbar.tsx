@@ -27,15 +27,23 @@ const PROMO_INPAGE_LINKS = [
 
 interface NavbarProps {
   variant?: 'default' | 'minimal'
+  /**
+   * Landing promo (minimal nav + section ojol): tampilkan pill anchor.
+   * Harus di-set dari config halaman — jangan hanya mengandalkan pathname (basePath / hosting).
+   */
+  showPromoInPageNav?: boolean
 }
 
-function NavbarInner({ variant = 'default' }: NavbarProps) {
+function NavbarInner({ variant = 'default', showPromoInPageNav = false }: NavbarProps) {
   const pathname = usePathname()
   const { openPreChat } = useWhatsAppPreChat()
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
-  const isPromo052026 = pathname?.includes('/052026/promo')
+  /** Promo Mei / rute: dari prop (utama) atau pola URL (cadangan) */
+  const isPromo052026 =
+    showPromoInPageNav ||
+    (pathname != null && /(^|\/)052026\/promo(\/|$|\?)/.test(pathname))
   const navSolid = isScrolled || isPromo052026
 
   const openNavWa = () => {

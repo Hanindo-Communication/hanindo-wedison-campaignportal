@@ -46,6 +46,8 @@ const SECTION_COMPONENTS: Record<string, React.ComponentType<{ config?: Campaign
 
 export default function LandingPageClient({ config }: LandingPageClientProps) {
   const navVariant = config.navigation === 'minimal' ? 'minimal' : 'default'
+  const showPromoInPageNav =
+    config.navigation === 'minimal' && config.sections.includes('ojol-route-promo')
 
   // Render sections based on config
   const renderSection = (sectionName: string) => {
@@ -67,7 +69,7 @@ export default function LandingPageClient({ config }: LandingPageClientProps) {
     <AdAttributionProvider>
       <WhatsAppPreChatProvider>
         <main className="min-h-screen bg-white overflow-x-hidden">
-          <Navbar variant={navVariant} />
+          <Navbar variant={navVariant} showPromoInPageNav={showPromoInPageNav} />
 
           {config.heroPopupBanner ? (
             <HeroPopupBanner
