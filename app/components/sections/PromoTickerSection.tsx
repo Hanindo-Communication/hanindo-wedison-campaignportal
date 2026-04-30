@@ -55,7 +55,7 @@ function PromoTickerSectionInner() {
     <motion.section
       {...reveal}
       id="promo-ticker"
-      className="relative z-10 scroll-mt-20 border-y border-slate-200 bg-white py-8 md:py-10"
+      className="relative z-10 scroll-mt-20 md:scroll-mt-24 border-y border-slate-200 bg-white py-8 md:py-10"
       aria-labelledby="promo-ticker-heading"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -63,7 +63,7 @@ function PromoTickerSectionInner() {
           <div>
             <p className="text-xs font-semibold uppercase tracking-wider text-electric-blue">Promo</p>
             <h2 id="promo-ticker-heading" className="mt-1 text-xl font-bold tracking-tight text-slate-900 md:text-2xl">
-              Sorotan program
+              Promo menarik untuk kamu
             </h2>
           </div>
           <div className="flex flex-wrap items-center gap-2 md:justify-end">
@@ -78,7 +78,7 @@ function PromoTickerSectionInner() {
               className="inline-flex items-center gap-2 rounded-full bg-success-green px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-electric-blue/40"
             >
               <BsWhatsapp className="text-lg" aria-hidden />
-              {WHATSAPP_CTA.button}
+              {WHATSAPP_CTA.promoTickerCta}
             </button>
           </div>
         </div>

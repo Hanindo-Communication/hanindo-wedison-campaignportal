@@ -29,7 +29,7 @@ export interface CampaignConfig {
     description: string
     keywords: string
   }
-  /** Minimal nav: logo + WA only (e.g. promo landing without #models anchors) */
+  /** `default` = anchor menu landing utama · `minimal` = logo + WA; dipakai juga landing promo (pills in-page lewat `showPromoInPageNav`). */
   navigation?: 'default' | 'minimal'
   /** FAQ copy density: promo ojol uses shorter driver-focused items */
   faqMode?: 'default' | 'promo-ojol'

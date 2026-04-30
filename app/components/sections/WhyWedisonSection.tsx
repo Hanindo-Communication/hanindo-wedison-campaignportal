@@ -89,7 +89,7 @@ export default function WhyWedisonSection() {
     <motion.section
       {...reveal}
       id="why-wedison"
-      className="relative scroll-mt-20 bg-gradient-to-b from-slate-50 to-white py-16 md:py-24 overflow-hidden"
+      className="relative scroll-mt-20 md:scroll-mt-24 bg-gradient-to-b from-slate-50 to-white py-16 md:py-24 overflow-hidden"
       aria-labelledby="why-wedison-heading"
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-electric-blue/30 to-transparent" />
@@ -104,9 +104,9 @@ export default function WhyWedisonSection() {
         >
           <h2
             id="why-wedison-heading"
-            className="text-sm font-semibold uppercase tracking-wide text-electric-blue md:text-base"
+            className="text-base font-semibold tracking-wide text-electric-blue md:text-lg"
           >
-            Kenapa Wedison ?
+            Kenapa Wedison?
           </h2>
         </motion.div>
 

@@ -20,7 +20,7 @@ const NAV_LINKS = [
 const PROMO_INPAGE_LINKS = [
   { label: 'Model', href: '#route-promo-models' },
   { label: 'Promo', href: '#promo-ticker' },
-  { label: 'Kenapa Wedison', href: '#why-wedison' },
+  { label: 'Kenapa Wedison?', href: '#why-wedison' },
   { label: 'Lokasi', href: '#showroom' },
   { label: 'FAQ', href: '#faq' },
 ] as const

@@ -188,6 +188,41 @@ function OjolRoutePromoSectionContent({ config }: { config: CampaignConfig }) {
           <p className="mt-4 text-lg md:text-xl text-slate-600 max-w-2xl leading-relaxed">{hero.subheadline}</p>
         ) : null}
 
+        {/* Model grid — judul + gambar; di atas form rute (urutan marketing) */}
+        <div id="route-promo-models" className="mt-8 scroll-mt-20 md:scroll-mt-24">
+          <h3 className="text-lg font-semibold text-slate-900">Model</h3>
+          <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-5">
+            {modelsForSection.map((m) => (
+              <button
+                key={m.id}
+                type="button"
+                onClick={() => {
+                  skipAutoRecommendationPopup.current = true
+                  openModelModal(m, false)
+                }}
+                title={`Klik untuk preview ${m.name}`}
+                aria-label={`Buka preview model ${m.name}`}
+                className="group flex min-h-[44px] flex-col overflow-hidden rounded-xl border border-slate-200 bg-white p-3 text-left shadow-sm transition-[transform,box-shadow,border-color] duration-200 ease-out hover:z-[1] hover:scale-[1.04] hover:-translate-y-1 hover:border-electric-blue/35 hover:shadow-lg motion-reduce:transition-colors motion-reduce:hover:scale-100 motion-reduce:hover:translate-y-0 focus:outline-none focus:ring-2 focus:ring-electric-blue focus:ring-offset-2 focus:ring-offset-white active:scale-[0.99] active:translate-y-0"
+              >
+                <span className="text-center text-xs font-bold uppercase tracking-wide text-slate-900 transition-colors duration-200 group-hover:text-electric-blue sm:text-sm">
+                  {m.name}
+                </span>
+                <div className="relative mt-3 aspect-[4/3] w-full overflow-hidden rounded-lg bg-white">
+                  <Image
+                    key={m.imageSrc}
+                    src={m.imageSrc}
+                    alt={`Wedison ${m.name}`}
+                    fill
+                    unoptimized={m.imageSrc.endsWith('.svg')}
+                    className="object-contain object-center transition-transform duration-200 ease-out group-hover:scale-105 motion-reduce:group-hover:scale-100"
+                    sizes="(max-width:768px) 45vw, 200px"
+                  />
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Routing card — frosted outer, opaque inner for text */}
         <div
           id="route-promo-form"
@@ -200,12 +235,11 @@ function OjolRoutePromoSectionContent({ config }: { config: CampaignConfig }) {
                 id="route-promo-form-heading"
                 className="text-lg font-bold tracking-tight text-slate-900 sm:text-xl"
               >
-                Info Hemat & Rekomendasi Motor Wedison
+                Simulasi ongkos perjalanan dengan motor Wedison
               </h2>
               <p className="mt-2 text-sm leading-relaxed text-slate-600 sm:text-[15px]">
                 Cek seberapa hemat kamu dengan motor Wedison berdasarkan{' '}
-                <strong className="font-semibold text-slate-900">Lokasi dan Jarak Tempuh</strong>
-                .
+                <strong className="font-semibold text-slate-900">lokasi dan jarak tempuh</strong>.
               </p>
             </div>
             <div className="flex gap-3">
@@ -343,6 +377,7 @@ function OjolRoutePromoSectionContent({ config }: { config: CampaignConfig }) {
                     <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center">
                       <div className="relative h-28 w-full shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-100 sm:h-32 sm:w-44">
                         <Image
+                          key={recommendedModel.imageSrc}
                           src={recommendedModel.imageSrc}
                           alt={`Wedison ${recommendedModel.name}`}
                           fill
@@ -379,44 +414,99 @@ function OjolRoutePromoSectionContent({ config }: { config: CampaignConfig }) {
 
                 <details className="mt-2 group rounded-xl border border-slate-200 bg-slate-50/80">
                   <summary className="cursor-pointer list-none px-4 py-3 text-sm font-medium text-slate-800 [&::-webkit-details-marker]:hidden flex items-center justify-between gap-2">
-                    Rumus singkat
+                    Perbandingan Motor Bensin vs Motor Wedison
                     <span className="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
                   </summary>
-                  <div className="border-t border-slate-200 px-4 py-3 text-sm text-slate-600 leading-relaxed space-y-3">
-                    <p>
-                      <strong className="text-slate-800">Jarak</strong> ~{result.distanceKm.toFixed(1)} km (heuristik lokasi, bukan
-                      peta).
+                  <div className="border-t border-slate-200 px-4 py-3 text-sm text-slate-600 leading-relaxed">
+                    <p className="mb-3 text-xs text-slate-500">
+                      Perkiraan ilustratif dari heuristik lokasi (bukan peta GPS). Angka mengikuti asumsi di bawah.
                     </p>
-                    <p>
-                      <strong className="text-slate-800">BBM (motor konvensional)</strong> ≈ liter × harga/liter. Liter = jarak ÷{' '}
-                      {result.breakdown.fuelKmPerLiter} km/L ={' '}
-                      <span className="tabular-nums text-slate-900">
-                        {result.breakdown.fuelLiters.toLocaleString('id-ID', { maximumFractionDigits: 2 })} L
-                      </span>{' '}
-                      × Rp {result.breakdown.fuelPriceIdrPerLiter.toLocaleString('id-ID')} →{' '}
-                      <span className="tabular-nums text-slate-900">
-                        Rp {result.baselineBbmIdr.toLocaleString('id-ID')}
-                      </span>
-                      .
-                    </p>
-                    <p>
-                      <strong className="text-slate-800">
-                        Listrik (ilustrasi,{' '}
-                        {MODEL_SPECS.find((m) => m.id === result.assumptionModelId)?.name ?? 'EdPower'})
-                      </strong>{' '}
-                      ≈ kWh × Rp/kWh. kWh = jarak ÷ {result.breakdown.kmPerKwhElectric.toFixed(2)} km/kWh ={' '}
-                      <span className="tabular-nums text-slate-900">
-                        {result.breakdown.electricityKWh.toLocaleString('id-ID', { maximumFractionDigits: 2 })} kWh
-                      </span>{' '}
-                      × Rp {result.breakdown.electricityIdrPerKwh.toLocaleString('id-ID')} →{' '}
-                      <span className="tabular-nums text-slate-900">
-                        Rp {result.electricCostIdr.toLocaleString('id-ID')}
-                      </span>
-                      .
-                    </p>
-                    <p>
-                      <strong className="text-slate-800">Hemat vs BBM</strong> = BBM − listrik (sebelum promo). Promo: diskon
-                      ilustratif ~{result.promoDiscountPercent}% pada listrik.
+                    <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white shadow-sm">
+                      <table className="w-full min-w-[300px] text-left text-sm">
+                        <caption className="sr-only">
+                          Perbandingan rumus perkiraan biaya BBM dan listrik untuk jarak tempuh yang sama
+                        </caption>
+                        <thead>
+                          <tr className="border-b border-slate-200 bg-slate-50">
+                            <th scope="col" className="px-3 py-2.5 font-semibold text-slate-800 w-[38%]">
+                              Rincian
+                            </th>
+                            <th scope="col" className="px-3 py-2.5 font-semibold text-slate-800">
+                              BBM (motor bensin)
+                            </th>
+                            <th scope="col" className="px-3 py-2.5 font-semibold text-electric-blue">
+                              Listrik (
+                              {MODEL_SPECS.find((m) => m.id === result.assumptionModelId)?.name ?? 'EdPower'}, ilustrasi)
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100 text-slate-700">
+                          <tr>
+                            <th scope="row" className="px-3 py-2 font-medium text-slate-600">
+                              Jarak referensi
+                            </th>
+                            <td className="px-3 py-2 tabular-nums text-slate-900" colSpan={2}>
+                              ~{result.distanceKm.toFixed(1)} km
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="row" className="px-3 py-2 font-medium text-slate-600">
+                              Asumsi efisiensi
+                            </th>
+                            <td className="px-3 py-2 tabular-nums">
+                              {result.breakdown.fuelKmPerLiter} km/L
+                            </td>
+                            <td className="px-3 py-2 tabular-nums text-electric-blue">
+                              {result.breakdown.kmPerKwhElectric.toFixed(2)} km/kWh
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="row" className="px-3 py-2 font-medium text-slate-600">
+                              Konsumsi untuk jarak ini
+                            </th>
+                            <td className="px-3 py-2 tabular-nums text-slate-900">
+                              {result.breakdown.fuelLiters.toLocaleString('id-ID', { maximumFractionDigits: 2 })} L
+                            </td>
+                            <td className="px-3 py-2 tabular-nums text-slate-900">
+                              {result.breakdown.electricityKWh.toLocaleString('id-ID', { maximumFractionDigits: 2 })} kWh
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="row" className="px-3 py-2 font-medium text-slate-600">
+                              Tarif acuan
+                            </th>
+                            <td className="px-3 py-2 tabular-nums">
+                              Rp {result.breakdown.fuelPriceIdrPerLiter.toLocaleString('id-ID')}/L
+                            </td>
+                            <td className="px-3 py-2 tabular-nums">
+                              Rp {result.breakdown.electricityIdrPerKwh.toLocaleString('id-ID')}/kWh
+                            </td>
+                          </tr>
+                          <tr className="bg-slate-50/80 font-medium text-slate-900">
+                            <th scope="row" className="px-3 py-2.5 text-slate-800">
+                              Perkiraan biaya rute
+                            </th>
+                            <td className="px-3 py-2.5 tabular-nums">
+                              Rp {result.baselineBbmIdr.toLocaleString('id-ID')}
+                            </td>
+                            <td className="px-3 py-2.5 tabular-nums text-electric-blue">
+                              Rp {result.electricCostIdr.toLocaleString('id-ID')}
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="row" className="px-3 py-2.5 font-medium text-slate-800">
+                              Hemat vs BBM (sebelum promo)
+                            </th>
+                            <td className="px-3 py-2.5 tabular-nums text-slate-500" colSpan={2}>
+                              Rp {result.savingsIdr.toLocaleString('id-ID')} = BBM − listrik
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <p className="mt-3 text-xs text-slate-500">
+                      Promo ilustratif: diskon ~{result.promoDiscountPercent}% diperhitungkan pada biaya listrik di atas
+                      (bukan pada BBM).
                     </p>
                   </div>
                 </details>
@@ -434,51 +524,6 @@ function OjolRoutePromoSectionContent({ config }: { config: CampaignConfig }) {
             </motion.div>
           ) : null}
         </AnimatePresence>
-
-        {/* Model grid — judul + gambar; urutan marketing */}
-        <div id="route-promo-models" className="mt-12 scroll-mt-24 md:scroll-mt-28">
-          <h3 className="text-lg font-semibold text-slate-900">Model</h3>
-          <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-5">
-            {modelsForSection.map((m) => (
-              <button
-                key={m.id}
-                type="button"
-                onClick={() => {
-                  skipAutoRecommendationPopup.current = true
-                  openModelModal(m, false)
-                }}
-                title={`Klik untuk preview ${m.name}`}
-                aria-label={`Buka preview model ${m.name}`}
-                className="group flex min-h-[44px] flex-col overflow-hidden rounded-xl border border-slate-200 bg-white p-3 text-left shadow-sm transition hover:border-electric-blue/35 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-electric-blue focus:ring-offset-2 focus:ring-offset-white active:scale-[0.99]"
-              >
-                <span className="text-center text-xs font-bold uppercase tracking-wide text-slate-900 sm:text-sm">
-                  {m.name}
-                </span>
-                <div className="relative mt-3 aspect-[4/3] w-full overflow-hidden rounded-lg bg-white">
-                  <motion.div
-                    className="relative h-full w-full"
-                    initial={false}
-                    whileHover={
-                      reduceMotion
-                        ? undefined
-                        : { scale: 1.08, y: -4 }
-                    }
-                    transition={{ type: 'spring', stiffness: 420, damping: 28 }}
-                  >
-                    <Image
-                      src={m.imageSrc}
-                      alt={`Wedison ${m.name}`}
-                      fill
-                      unoptimized={m.imageSrc.endsWith('.svg')}
-                      className="object-contain object-center"
-                      sizes="(max-width:768px) 45vw, 200px"
-                    />
-                  </motion.div>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
       </div>
 
       <PromoTickerSection />
@@ -517,6 +562,7 @@ function OjolRoutePromoSectionContent({ config }: { config: CampaignConfig }) {
               </button>
               <div className="relative aspect-[4/3] w-full bg-slate-900">
                 <Image
+                  key={modalModel.imageSrc}
                   src={modalModel.imageSrc}
                   alt={`Wedison ${modalModel.name}`}
                   fill
@@ -530,7 +576,7 @@ function OjolRoutePromoSectionContent({ config }: { config: CampaignConfig }) {
                     id="model-modal-route-context"
                     className="mb-3 text-xs font-medium text-electric-blue/95"
                   >
-                    Dari estimasi rute — detail &amp; syarat lewat tim.
+                    berdasarkan lokasi dan jarak tempuh , kamu cocok menggunakan :
                   </p>
                 ) : null}
                 <h4

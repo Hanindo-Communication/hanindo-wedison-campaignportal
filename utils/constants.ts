@@ -114,4 +114,6 @@ export const WHATSAPP_CTA = {
   financingConsult: 'Tanya cicilan',
   financingOrder: 'Pesan unit',
   testDrive: 'Jadwal test drive',
+  /** Strip #promo-ticker — hanya label tombol; handler tetap `openPreChat` di `PromoTickerSection`. */
+  promoTickerCta: 'Cek Promo',
 } as const

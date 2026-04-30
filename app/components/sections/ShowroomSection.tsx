@@ -27,7 +27,7 @@ export default function ShowroomSection({ config }: { config?: CampaignConfig })
   }, [registerBrowseContext])
 
   const openTestDriveWa = () => {
-    if (config?.navigation === 'minimal') {
+    if (config?.whatsappLink === 'promo052026') {
       openPreChat({ kind: 'promo052026', promoParts: {} }, OPEN_PRECHAT_SHOWROOM_TEST_DRIVE)
     } else {
       openPreChat({ kind: 'messageKey', messageKey: 'testDrive' })
@@ -56,8 +56,7 @@ export default function ShowroomSection({ config }: { config?: CampaignConfig })
             id="showroom-heading"
             className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight"
           >
-            Showroom Wedison{' '}
-            <span className="text-electric-blue">Jakarta &amp; Bandung</span>
+            Showroom Wedison
           </h2>
         </motion.div>
 
@@ -71,6 +70,9 @@ export default function ShowroomSection({ config }: { config?: CampaignConfig })
               transition={{ duration: 0.4, delay: idx * 0.06 }}
               className="flex min-h-0 flex-col gap-4"
             >
+              <h3 className="text-center text-xl font-bold tracking-tight text-electric-blue sm:text-2xl lg:text-left">
+                {loc.title}
+              </h3>
               <div className="relative min-h-[240px] flex-1 overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-100/40 shadow-sm shadow-slate-200/50 ring-1 ring-slate-900/[0.04] transition-shadow duration-300 hover:shadow-lg hover:shadow-slate-300/40 sm:min-h-[280px] lg:min-h-[320px]">
                 <iframe
                   title={`Peta lokasi showroom Wedison ${loc.title}`}
@@ -91,8 +93,7 @@ export default function ShowroomSection({ config }: { config?: CampaignConfig })
                     <FiMapPin className="text-lg" aria-hidden />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-electric-blue">{loc.title}</p>
-                    <h3 className="mt-0.5 text-lg font-semibold text-slate-900">{loc.area}</h3>
+                    <h4 className="text-lg font-semibold text-slate-900">{loc.area}</h4>
                     <p className="mt-1 text-sm text-slate-600 leading-relaxed" translate="no">
                       {loc.address}
                     </p>

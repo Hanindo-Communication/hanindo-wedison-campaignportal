@@ -211,7 +211,7 @@ export default function FAQSection({ config }: FAQSectionProps) {
       setOpenIndex(openIndex === index ? null : index)
     }
     return (
-      <motion.section {...reveal} id="faq" className="py-12 md:py-20 bg-slate-50">
+      <motion.section {...reveal} id="faq" className="scroll-mt-20 md:scroll-mt-24 py-12 md:py-20 bg-slate-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={false}
@@ -219,6 +219,10 @@ export default function FAQSection({ config }: FAQSectionProps) {
             className="text-center mb-10"
           >
             <h2 className="text-3xl md:text-4xl font-bold text-slate-800">FAQ</h2>
+            <p className="mt-4 max-w-2xl mx-auto text-base text-slate-600 md:text-lg leading-relaxed">
+              Hal yang paling sering ditanyakan driver & komuter soal estimasi, promo, test ride, dan SuperCharge. Kalau
+              butuh detail ke kasus kamu, lanjut ke tim.
+            </p>
           </motion.div>
 
           <div className="space-y-3">
@@ -286,7 +290,7 @@ export default function FAQSection({ config }: FAQSectionProps) {
   const currentCategory = FAQ_CATEGORIES.find(cat => cat.id === activeCategory) || FAQ_CATEGORIES[0]
 
   return (
-    <motion.section {...reveal} id="faq" className="py-12 md:py-20 bg-white">
+    <motion.section {...reveal} id="faq" className="scroll-mt-20 md:scroll-mt-24 py-12 md:py-20 bg-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
